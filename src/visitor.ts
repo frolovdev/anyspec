@@ -1,6 +1,4 @@
 import { inspect } from './utils';
-// import type { Maybe } from '/Maybe';
-
 import type { ASTNode, ASTKindToNode } from './ast';
 import { isNode } from './ast';
 
@@ -77,7 +75,16 @@ type ReducedField<T, R> = T extends null | undefined
   : R;
 
 const QueryDocumentKeys = {
- 
+  Name: [],
+  Document: ['definitions'],
+
+  NamedType: ['name'],
+  ListType: ['name', 'fields'],
+
+  ModelTypeDefinition: ['description', 'name', 'extendsModels', 'fields'],
+  FieldDefinition: ['name', 'type'],
+  EnumInlineTypeDefinition: ['name', 'values'],
+  EnumValueDefinition: ['name'],
 };
 
 export const BREAK: unknown = {};

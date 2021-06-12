@@ -88,3 +88,9 @@ https://youtu.be/TeZqKnC2gvA
 
 
 # Чего делать во второй версии
+
+
+
+delete $TSFixMe
+
+delete $Maybe
