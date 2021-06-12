@@ -1,0 +1,15 @@
+node_modules
+.serverless
+.webpack
+.DS_Store
+dist
+tmp
+coverage
+.env
+
+.idea
+.vscode
+
+**/*.log
+
+.huskyrc.local.js
