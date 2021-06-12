@@ -3,9 +3,9 @@
 
 ## TODO
 
-- [x] Lexer
-- [x] Lexer should treat multiline descriptions as two separate tokens
-
+- [ ] write a visitor tests
+- [ ] write a base validator layer
+- [ ] present to infra team
 
 ### Parser
 
