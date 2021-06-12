@@ -1,7 +1,7 @@
 import type { Source } from './source';
-import type { Location } from './location';
-import type { SourceLocation } from './location';
-import { getLocation } from './location';
+import type { Location } from './Location';
+import type { SourceLocation } from './Location';
+import { getLocation } from './Location';
 
 /**
  * Render a helpful description of the location in the EasySpec Source document.

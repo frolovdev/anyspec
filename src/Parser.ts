@@ -17,7 +17,7 @@ import {
   OptionalNameNode,
   TypeNode,
 } from './ast';
-import { Location } from './location';
+import { Location } from './Location';
 
 export interface ParseOptions {
   /**

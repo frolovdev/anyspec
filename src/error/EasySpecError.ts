@@ -1,5 +1,5 @@
 import { Source } from '../source';
-import { getLocation, SourceLocation } from '../location';
+import { getLocation, SourceLocation } from '../Location';
 import { isObjectLike } from '../utils/isObjectLike';
 import { printLocation, printSourceLocation } from '../printLocation';
 import { ASTNode } from '../ast';
