@@ -67,6 +67,18 @@ BankAccountStatus (
 
 ```
 
+Что делать с такими енамами
+
+
+```
+BankAccountStatus (
+  -amount |
+  amount |
+  + amount |
+)
+
+```
+
 ### IDEAS
 
 Генерация клиента для мобилы
