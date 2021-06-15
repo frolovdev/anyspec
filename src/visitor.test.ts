@@ -120,7 +120,6 @@ describe(__filename, () => {
       FieldDefinition: {
         enter(node) {
           checkVisitorFnArgs(ast, arguments);
-          log(node);
           nameNode = node.name;
           return {
             ...node,
@@ -225,6 +224,39 @@ describe(__filename, () => {
           strict: false,
         },
       ],
+    });
+  });
+
+  it('allows editing the root node on enter and on leave', () => {
+    const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
+
+    const { definitions } = ast;
+
+    const editedAST = visit(ast, {
+      Document: {
+        enter(node) {
+          checkVisitorFnArgs(ast, arguments);
+          return {
+            ...node,
+            definitions: [],
+            didEnter: true,
+          };
+        },
+        leave(node) {
+          checkVisitorFnArgs(ast, arguments, /* isEdited */ true);
+          return {
+            ...node,
+            definitions,
+            didLeave: true,
+          };
+        },
+      },
+    });
+
+    expect(editedAST).toEqual({
+      ...ast,
+      didEnter: true,
+      didLeave: true,
     });
   });
 });
