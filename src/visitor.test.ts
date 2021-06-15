@@ -82,4 +82,32 @@ describe(__filename, () => {
       ['leave', []],
     ]);
   });
+
+  it('validates ancestors argument', () => {
+    const ast = parse('AcDocument { a }', { noLocation: true });
+    const visitedNodes: Array<any> = [];
+
+    visit(ast, {
+      enter(node, key, parent, _path, ancestors) {
+        const inArray = typeof key === 'number';
+        if (inArray) {
+          visitedNodes.push(parent);
+        }
+        visitedNodes.push(node);
+
+        const expectedAncestors = visitedNodes.slice(0, -2);
+        expect(ancestors).toEqual(expectedAncestors);
+      },
+      leave(_node, key, _parent, _path, ancestors) {
+        const expectedAncestors = visitedNodes.slice(0, -2);
+        expect(ancestors).toEqual(expectedAncestors);
+
+        const inArray = typeof key === 'number';
+        if (inArray) {
+          visitedNodes.pop();
+        }
+        visitedNodes.pop();
+      },
+    });
+  });
 });
