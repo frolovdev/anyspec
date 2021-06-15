@@ -1,4 +1,4 @@
-import { ASTNodeKind, NamedTypeNode, NameNode, TypeNode } from './ast';
+import { ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
 import { parse } from './parser';
 import { log } from './utils';
 import { visit } from './visitor';
@@ -114,20 +114,16 @@ describe(__filename, () => {
   it('allows editing a node both on enter and on leave', () => {
     const ast = parse('AcDoc { a, b, c: { a, b, c } }', { noLocation: true });
 
-    let typeNode: TypeNode;
+    let name: NameNode | OptionalNameNode;
 
     const editedAST = visit(ast, {
-      FieldDefinition: {
+      NamedType: {
         enter(node) {
-          checkVisitorFnArgs(ast, arguments, true);
-          typeNode = node.type;
+          checkVisitorFnArgs(ast, arguments);
+          name = node.name;
           return {
             ...node,
-            type: {
-              ...typeNode,
-              kind: typeNode.kind,
-              name: { kind: 'Name', value: 'boolean' },
-            },
+            name: { ...name, value: 'boolean' },
             didEnter: true,
           };
         },
@@ -140,8 +136,6 @@ describe(__filename, () => {
         },
       },
     });
-
-    log(editedAST);
 
     expect(editedAST).toEqual({
       kind: 'Document',
@@ -158,11 +152,11 @@ describe(__filename, () => {
               type: {
                 kind: 'NamedType',
                 name: { kind: 'Name', value: 'boolean' },
+                didEnter: true,
+                didLeave: true,
               },
               omitted: false,
               optional: false,
-              didEnter: true,
-              didLeave: true,
             },
             {
               kind: 'FieldDefinition',
@@ -170,18 +164,18 @@ describe(__filename, () => {
               type: {
                 kind: 'NamedType',
                 name: { kind: 'Name', value: 'boolean' },
+                didEnter: true,
+                didLeave: true,
               },
               omitted: false,
               optional: false,
-              didEnter: true,
-              didLeave: true,
             },
             {
               kind: 'FieldDefinition',
               name: { kind: 'Name', value: 'c' },
               omitted: false,
               type: {
-                kind: 'NamedType',
+                kind: 'ObjectTypeDefinition',
                 fields: [
                   {
                     kind: 'FieldDefinition',
@@ -189,11 +183,11 @@ describe(__filename, () => {
                     type: {
                       kind: 'NamedType',
                       name: { kind: 'Name', value: 'boolean' },
+                      didEnter: true,
+                      didLeave: true,
                     },
                     omitted: false,
                     optional: false,
-                    didEnter: true,
-                    didLeave: true,
                   },
                   {
                     kind: 'FieldDefinition',
@@ -201,11 +195,11 @@ describe(__filename, () => {
                     type: {
                       kind: 'NamedType',
                       name: { kind: 'Name', value: 'boolean' },
+                      didEnter: true,
+                      didLeave: true,
                     },
                     omitted: false,
                     optional: false,
-                    didEnter: true,
-                    didLeave: true,
                   },
                   {
                     kind: 'FieldDefinition',
@@ -213,18 +207,15 @@ describe(__filename, () => {
                     type: {
                       kind: 'NamedType',
                       name: { kind: 'Name', value: 'boolean' },
+                      didEnter: true,
+                      didLeave: true,
                     },
                     omitted: false,
                     optional: false,
-                    didEnter: true,
-                    didLeave: true,
                   },
                 ],
-                name: { kind: 'Name', value: 'boolean' },
               },
               optional: false,
-              didEnter: true,
-              didLeave: true,
             },
           ],
           strict: false,
@@ -266,16 +257,12 @@ describe(__filename, () => {
     });
   });
 
-  it.skip('allows for editing on enter', () => {
+  it('allows for editing on enter', () => {
     const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
 
-    log('astast');
-    log(ast);
     const editedAST = visit(ast, {
       enter(node) {
         checkVisitorFnArgs(ast, arguments);
-        log('qweqwlpoqiouytqwefuqwp[p');
-        log({ kind: node.kind, name: node?.name || null });
         if (node.kind === 'FieldDefinition' && node.name.value === 'b') {
           return null;
         }
