@@ -1,4 +1,4 @@
-import { ASTNodeKind } from './ast';
+import { ASTNodeKind, NameNode } from './ast';
 import { parse } from './parser';
 import { log } from './utils';
 import { visit } from './visitor';
@@ -108,6 +108,123 @@ describe(__filename, () => {
         }
         visitedNodes.pop();
       },
+    });
+  });
+
+  it('allows editing a node both on enter and on leave', () => {
+    const ast = parse('AcDoc { a, b, c: { a, b, c } }', { noLocation: true });
+
+    let nameNode: NameNode;
+
+    const editedAST = visit(ast, {
+      FieldDefinition: {
+        enter(node) {
+          checkVisitorFnArgs(ast, arguments);
+          log(node);
+          nameNode = node.name;
+          return {
+            ...node,
+            name: {
+              kind: nameNode.kind,
+              value: 'boolean',
+            },
+            didEnter: true,
+          };
+        },
+        leave(node) {
+          checkVisitorFnArgs(ast, arguments, true);
+          return {
+            ...node,
+            ...nameNode,
+            didLeave: true,
+          };
+        },
+      },
+    });
+
+    expect(editedAST).toEqual({
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: [
+        {
+          kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+          description: undefined,
+          name: { kind: ASTNodeKind.NAME, value: 'AcDoc' },
+          extendsModels: [],
+          fields: [
+            {
+              kind: ASTNodeKind.NAME,
+              name: { kind: ASTNodeKind.NAME, value: 'boolean' },
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: { kind: ASTNodeKind.NAME, value: undefined },
+              },
+              omitted: false,
+              optional: false,
+              didEnter: true,
+              value: 'a',
+              didLeave: true,
+            },
+            {
+              kind: ASTNodeKind.NAME,
+              name: { kind: ASTNodeKind.NAME, value: 'boolean' },
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: { kind: ASTNodeKind.NAME, value: undefined },
+              },
+              omitted: false,
+              optional: false,
+              didEnter: true,
+              value: 'b',
+              didLeave: true,
+            },
+            {
+              kind: ASTNodeKind.NAME,
+              name: { kind: ASTNodeKind.NAME, value: 'boolean' },
+              omitted: false,
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                fields: [
+                  {
+                    kind: 'FieldDefinition',
+                    name: { kind: ASTNodeKind.NAME, value: 'a' },
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: { kind: ASTNodeKind.NAME, value: undefined },
+                    },
+                    omitted: false,
+                    optional: false,
+                  },
+                  {
+                    kind: 'FieldDefinition',
+                    name: { kind: ASTNodeKind.NAME, value: 'b' },
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: { kind: ASTNodeKind.NAME, value: undefined },
+                    },
+                    omitted: false,
+                    optional: false,
+                  },
+                  {
+                    kind: 'FieldDefinition',
+                    name: { kind: ASTNodeKind.NAME, value: 'c' },
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: { kind: ASTNodeKind.NAME, value: undefined },
+                    },
+                    omitted: false,
+                    optional: false,
+                  },
+                ],
+              },
+              optional: false,
+              didEnter: true,
+              value: 'c',
+              didLeave: true,
+            },
+          ],
+          strict: false,
+        },
+      ],
     });
   });
 });
