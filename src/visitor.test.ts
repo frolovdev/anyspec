@@ -185,7 +185,7 @@ describe(__filename, () => {
                 kind: ASTNodeKind.NAMED_TYPE,
                 fields: [
                   {
-                    kind: 'FieldDefinition',
+                    kind: ASTNodeKind.FIELD_DEFINITION,
                     name: { kind: ASTNodeKind.NAME, value: 'a' },
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -195,7 +195,7 @@ describe(__filename, () => {
                     optional: false,
                   },
                   {
-                    kind: 'FieldDefinition',
+                    kind: ASTNodeKind.FIELD_DEFINITION,
                     name: { kind: ASTNodeKind.NAME, value: 'b' },
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -205,7 +205,7 @@ describe(__filename, () => {
                     optional: false,
                   },
                   {
-                    kind: 'FieldDefinition',
+                    kind: ASTNodeKind.FIELD_DEFINITION,
                     name: { kind: ASTNodeKind.NAME, value: 'c' },
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
