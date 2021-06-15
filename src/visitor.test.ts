@@ -11,17 +11,16 @@ function checkVisitorFnArgs(ast: any, args: any, isEdited: boolean = false) {
   const isRoot = key === undefined;
   if (isRoot) {
     if (!isEdited) {
-      expect(node.toJSON()).toEqual(ast);
+      expect(node).toEqual(ast);
     }
-    expect(parent.toJSON()).toEqual(undefined);
+    expect(parent).toEqual(undefined);
     expect(path).toEqual([]);
     expect(ancestors).toEqual([]);
     return;
   }
 
   expect(['number', 'string']).toContain(typeof key);
-
-  expect(parent).toHaveProperty(key);
+  expect(parent).toHaveProperty(String(key));
 
   expect(path).toBeInstanceOf(Array);
   expect(path[path.length - 1]).toEqual(key);
@@ -52,7 +51,7 @@ describe(__filename, () => {
   it('validates path argument', () => {
     const visited: Array<any> = [];
 
-    const ast = parse('{ a }', { noLocation: true });
+    const ast = parse('AcDocument { a }', { noLocation: true });
 
     visit(ast, {
       enter(_node, _key, _parent, path) {
@@ -64,4 +63,5 @@ describe(__filename, () => {
         visited.push(['leave', path.slice()]);
       },
     });
+  });
 });
