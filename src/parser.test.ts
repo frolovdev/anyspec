@@ -384,9 +384,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -400,9 +403,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -444,9 +450,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -460,9 +469,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -504,9 +516,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -520,9 +535,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -569,9 +587,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -585,9 +606,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -634,9 +658,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -650,9 +677,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -703,9 +733,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -719,9 +752,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -773,9 +809,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -811,9 +850,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
@@ -840,7 +882,7 @@ describe(__filename, () => {
       });
     });
 
-    it.only('correctly parse model with inline type definitions', () => {
+    it('correctly parse model with inline type definitions', () => {
       const model = `
       AcDocument < Kek, Lel !{
             -name?: s[],
