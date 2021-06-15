@@ -14,6 +14,7 @@ import {
   ModelTypeDefinitionNode,
   NamedTypeNode,
   NameNode,
+  ObjectTypeDefinitionNode,
   OptionalNameNode,
   TypeNode,
 } from './ast';
@@ -313,7 +314,10 @@ class Parser {
       if (bracket) {
         return this.node<ListTypeNode>(startToken, {
           kind: ASTNodeKind.LIST_TYPE,
-          name,
+          type: {
+            kind: ASTNodeKind.NAMED_TYPE,
+            name,
+          },
         });
       }
 
@@ -332,12 +336,15 @@ class Parser {
       this.expectToken(TokenKind.BRACKET_R);
       return this.node<ListTypeNode>(startToken, {
         kind: ASTNodeKind.LIST_TYPE,
-        fields,
+        type: {
+          kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+          fields,
+        },
       });
     }
 
-    return this.node<NamedTypeNode>(startToken, {
-      kind: ASTNodeKind.NAMED_TYPE,
+    return this.node<ObjectTypeDefinitionNode>(startToken, {
+      kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
       fields,
     });
   }
@@ -423,14 +430,13 @@ class Parser {
     });
   }
 
-
   // FIXME: in futrue
   // becuase of tinyspec allows to use syntatic sugar around string
 
   // {
   //  s,
-   //   b
-   //  }
+  //   b
+  //  }
   parseOptionalName(): OptionalNameNode {
     return this.node<OptionalNameNode>(this.lexer.token, {
       kind: ASTNodeKind.NAME,

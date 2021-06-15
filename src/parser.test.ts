@@ -32,7 +32,7 @@ describe(__filename, () => {
         `;
 
       const ast = parse(model);
-      
+
       expect(toJSONDeep(ast)).toEqual({
         kind: ASTNodeKind.DOCUMENT,
         definitions: [
@@ -840,7 +840,7 @@ describe(__filename, () => {
       });
     });
 
-    it('correctly parse model with inline type definitions', () => {
+    it.only('correctly parse model with inline type definitions', () => {
       const model = `
       AcDocument < Kek, Lel !{
             -name?: s[],
@@ -866,9 +866,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 's',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 's',
+                    },
                   },
                 },
               },
@@ -903,7 +906,7 @@ describe(__filename, () => {
                   value: 'kek',
                 },
                 type: {
-                  kind: ASTNodeKind.NAMED_TYPE,
+                  kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                   fields: [
                     {
                       kind: ASTNodeKind.FIELD_DEFINITION,
@@ -931,56 +934,59 @@ describe(__filename, () => {
                       optional: false,
                       type: {
                         kind: ASTNodeKind.LIST_TYPE,
-                        fields: [
-                          {
-                            kind: ASTNodeKind.FIELD_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'id',
-                            },
-                            omitted: false,
-                            optional: false,
-                            type: {
-                              kind: ASTNodeKind.NAMED_TYPE,
+                        type: {
+                          kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                          fields: [
+                            {
+                              kind: ASTNodeKind.FIELD_DEFINITION,
                               name: {
                                 kind: ASTNodeKind.NAME,
-                                value: 'i',
+                                value: 'id',
+                              },
+                              omitted: false,
+                              optional: false,
+                              type: {
+                                kind: ASTNodeKind.NAMED_TYPE,
+                                name: {
+                                  kind: ASTNodeKind.NAME,
+                                  value: 'i',
+                                },
                               },
                             },
-                          },
-                          {
-                            kind: ASTNodeKind.FIELD_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'nickname',
-                            },
-                            omitted: false,
-                            optional: false,
-                            type: {
-                              kind: ASTNodeKind.NAMED_TYPE,
+                            {
+                              kind: ASTNodeKind.FIELD_DEFINITION,
                               name: {
                                 kind: ASTNodeKind.NAME,
-                                value: undefined,
+                                value: 'nickname',
+                              },
+                              omitted: false,
+                              optional: false,
+                              type: {
+                                kind: ASTNodeKind.NAMED_TYPE,
+                                name: {
+                                  kind: ASTNodeKind.NAME,
+                                  value: undefined,
+                                },
                               },
                             },
-                          },
-                          {
-                            kind: ASTNodeKind.FIELD_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'avatar',
-                            },
-                            omitted: false,
-                            optional: true,
-                            type: {
-                              kind: ASTNodeKind.NAMED_TYPE,
+                            {
+                              kind: ASTNodeKind.FIELD_DEFINITION,
                               name: {
                                 kind: ASTNodeKind.NAME,
-                                value: undefined,
+                                value: 'avatar',
+                              },
+                              omitted: false,
+                              optional: true,
+                              type: {
+                                kind: ASTNodeKind.NAMED_TYPE,
+                                name: {
+                                  kind: ASTNodeKind.NAME,
+                                  value: undefined,
+                                },
                               },
                             },
-                          },
-                        ],
+                          ],
+                        },
                       },
                     },
                   ],
@@ -996,9 +1002,12 @@ describe(__filename, () => {
                 },
                 type: {
                   kind: ASTNodeKind.LIST_TYPE,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'b',
+                    },
                   },
                 },
               },
