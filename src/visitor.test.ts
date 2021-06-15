@@ -1,5 +1,6 @@
 import { ASTNodeKind } from './ast';
 import { parse } from './parser';
+import { log } from './utils';
 import { visit } from './visitor';
 
 function checkVisitorFnArgs(ast: any, args: any, isEdited: boolean = false) {
@@ -63,5 +64,22 @@ describe(__filename, () => {
         visited.push(['leave', path.slice()]);
       },
     });
+
+    expect(visited).toEqual([
+      ['enter', []],
+      ['enter', ['definitions', 0]],
+      ['enter', ['definitions', 0, 'name']],
+      ['leave', ['definitions', 0, 'name']],
+      ['enter', ['definitions', 0, 'fields', 0]],
+      ['enter', ['definitions', 0, 'fields', 0, 'name']],
+      ['leave', ['definitions', 0, 'fields', 0, 'name']],
+      ['enter', ['definitions', 0, 'fields', 0, 'type']],
+      ['enter', ['definitions', 0, 'fields', 0, 'type', 'name']],
+      ['leave', ['definitions', 0, 'fields', 0, 'type', 'name']],
+      ['leave', ['definitions', 0, 'fields', 0, 'type']],
+      ['leave', ['definitions', 0, 'fields', 0]],
+      ['leave', ['definitions', 0]],
+      ['leave', []],
+    ]);
   });
 });
