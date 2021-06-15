@@ -1,4 +1,4 @@
-import { ASTNodeKind, NameNode } from './ast';
+import { ASTNodeKind, NamedTypeNode, NameNode, TypeNode } from './ast';
 import { parse } from './parser';
 import { log } from './utils';
 import { visit } from './visitor';
@@ -114,18 +114,19 @@ describe(__filename, () => {
   it('allows editing a node both on enter and on leave', () => {
     const ast = parse('AcDoc { a, b, c: { a, b, c } }', { noLocation: true });
 
-    let nameNode: NameNode;
+    let typeNode: TypeNode;
 
     const editedAST = visit(ast, {
       FieldDefinition: {
         enter(node) {
-          checkVisitorFnArgs(ast, arguments);
-          nameNode = node.name;
+          checkVisitorFnArgs(ast, arguments, true);
+          typeNode = node.type;
           return {
             ...node,
-            name: {
-              kind: nameNode.kind,
-              value: 'boolean',
+            type: {
+              ...typeNode,
+              kind: typeNode.kind,
+              name: { kind: 'Name', value: 'boolean' },
             },
             didEnter: true,
           };
@@ -134,90 +135,95 @@ describe(__filename, () => {
           checkVisitorFnArgs(ast, arguments, true);
           return {
             ...node,
-            ...nameNode,
             didLeave: true,
           };
         },
       },
     });
 
+    log(editedAST);
+
     expect(editedAST).toEqual({
-      kind: ASTNodeKind.DOCUMENT,
+      kind: 'Document',
       definitions: [
         {
-          kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+          kind: 'ModelTypeDefinition',
           description: undefined,
-          name: { kind: ASTNodeKind.NAME, value: 'AcDoc' },
+          name: { kind: 'Name', value: 'AcDoc' },
           extendsModels: [],
           fields: [
             {
-              kind: ASTNodeKind.NAME,
-              name: { kind: ASTNodeKind.NAME, value: 'boolean' },
+              kind: 'FieldDefinition',
+              name: { kind: 'Name', value: 'a' },
               type: {
-                kind: ASTNodeKind.NAMED_TYPE,
-                name: { kind: ASTNodeKind.NAME, value: undefined },
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'boolean' },
               },
               omitted: false,
               optional: false,
               didEnter: true,
-              value: 'a',
               didLeave: true,
             },
             {
-              kind: ASTNodeKind.NAME,
-              name: { kind: ASTNodeKind.NAME, value: 'boolean' },
+              kind: 'FieldDefinition',
+              name: { kind: 'Name', value: 'b' },
               type: {
-                kind: ASTNodeKind.NAMED_TYPE,
-                name: { kind: ASTNodeKind.NAME, value: undefined },
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'boolean' },
               },
               omitted: false,
               optional: false,
               didEnter: true,
-              value: 'b',
               didLeave: true,
             },
             {
-              kind: ASTNodeKind.NAME,
-              name: { kind: ASTNodeKind.NAME, value: 'boolean' },
+              kind: 'FieldDefinition',
+              name: { kind: 'Name', value: 'c' },
               omitted: false,
               type: {
-                kind: ASTNodeKind.NAMED_TYPE,
+                kind: 'NamedType',
                 fields: [
                   {
-                    kind: ASTNodeKind.FIELD_DEFINITION,
-                    name: { kind: ASTNodeKind.NAME, value: 'a' },
+                    kind: 'FieldDefinition',
+                    name: { kind: 'Name', value: 'a' },
                     type: {
-                      kind: ASTNodeKind.NAMED_TYPE,
-                      name: { kind: ASTNodeKind.NAME, value: undefined },
+                      kind: 'NamedType',
+                      name: { kind: 'Name', value: 'boolean' },
                     },
                     omitted: false,
                     optional: false,
+                    didEnter: true,
+                    didLeave: true,
                   },
                   {
-                    kind: ASTNodeKind.FIELD_DEFINITION,
-                    name: { kind: ASTNodeKind.NAME, value: 'b' },
+                    kind: 'FieldDefinition',
+                    name: { kind: 'Name', value: 'b' },
                     type: {
-                      kind: ASTNodeKind.NAMED_TYPE,
-                      name: { kind: ASTNodeKind.NAME, value: undefined },
+                      kind: 'NamedType',
+                      name: { kind: 'Name', value: 'boolean' },
                     },
                     omitted: false,
                     optional: false,
+                    didEnter: true,
+                    didLeave: true,
                   },
                   {
-                    kind: ASTNodeKind.FIELD_DEFINITION,
-                    name: { kind: ASTNodeKind.NAME, value: 'c' },
+                    kind: 'FieldDefinition',
+                    name: { kind: 'Name', value: 'c' },
                     type: {
-                      kind: ASTNodeKind.NAMED_TYPE,
-                      name: { kind: ASTNodeKind.NAME, value: undefined },
+                      kind: 'NamedType',
+                      name: { kind: 'Name', value: 'boolean' },
                     },
                     omitted: false,
                     optional: false,
+                    didEnter: true,
+                    didLeave: true,
                   },
                 ],
+                name: { kind: 'Name', value: 'boolean' },
               },
               optional: false,
               didEnter: true,
-              value: 'c',
               didLeave: true,
             },
           ],
@@ -258,5 +264,26 @@ describe(__filename, () => {
       didEnter: true,
       didLeave: true,
     });
+  });
+
+  it.skip('allows for editing on enter', () => {
+    const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
+
+    log('astast');
+    log(ast);
+    const editedAST = visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        log('qweqwlpoqiouytqwefuqwp[p');
+        log({ kind: node.kind, name: node?.name || null });
+        if (node.kind === 'FieldDefinition' && node.name.value === 'b') {
+          return null;
+        }
+      },
+    });
+
+    expect(ast).toEqual(parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }));
+
+    expect(editedAST).toEqual(parse('Doc { a,    c: { a,    c } }', { noLocation: true }));
   });
 });

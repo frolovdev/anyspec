@@ -75,17 +75,20 @@ type ReducedField<T, R> = T extends null | undefined
   : R;
 
 const QueryDocumentKeys = {
-  Name: [],
+  ModelDescription: [],
+  Name: [] ,
+  OptionalName: [],
   Document: ['definitions'],
 
   NamedType: ['name'],
-  ListType: ['name', 'fields'],
+  ListType: ['type'],
 
+  ObjectTypeDefinition: ['fields'],
   ModelTypeDefinition: ['description', 'name', 'extendsModels', 'fields'],
   FieldDefinition: ['name', 'type'],
   EnumInlineTypeDefinition: ['name', 'values'],
   EnumValueDefinition: ['name'],
-};
+} as  const;
 
 export const BREAK: unknown = {};
 

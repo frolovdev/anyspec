@@ -53,6 +53,7 @@ export interface ASTKindToNode {
   NamedType: NamedTypeNode;
   ListType: ListTypeNode;
   FieldDefinition: FieldDefinitionNode;
+  ObjectTypeDefinition: ObjectTypeDefinitionNode;
   ModelTypeDefinition: ModelTypeDefinitionNode;
   EnumInlineTypeDefinition: EnumInlineTypeDefinitionNode;
   EnumValueDefinition: EnumValueDefinitionNode;
