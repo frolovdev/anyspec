@@ -111,9 +111,10 @@ function readToken(lexer: Lexer, prev: Token): Token {
       case 41: //  )
         return new Token(TokenKind.PAREN_R, pos, pos + 1, line, col, prev);
       case 46: //  .
-        if (body.charCodeAt(pos + 1) === 46 && body.charCodeAt(pos + 2) === 46) {
-          return new Token(TokenKind.SPREAD, pos, pos + 3, line, col, prev);
-        }
+        // if (body.charCodeAt(pos + 1) === 46 && body.charCodeAt(pos + 2) === 46) {
+        //   return new Token(TokenKind.SPREAD, pos, pos + 3, line, col, prev);
+        // }
+        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
         break;
       case 47: // /
         return readModelDescription(source, pos, line, col, prev);
@@ -342,8 +343,8 @@ function readModelDescription(
   let code;
   let position = start;
 
-  const nextPosition = position + 1
-  const nextCode = body.charCodeAt(nextPosition)
+  const nextPosition = position + 1;
+  const nextCode = body.charCodeAt(nextPosition);
   if (nextCode !== 47) {
     throw syntaxError(source, nextPosition, unexpectedCharacterMessage(nextCode));
   }
@@ -414,7 +415,6 @@ export function isPunctuatorTokenKind(kind: TokenKindEnum): boolean {
     TokenKind.AMP,
     TokenKind.PAREN_L,
     TokenKind.PAREN_R,
-    TokenKind.SPREAD,
     TokenKind.COLON,
     TokenKind.EQUALS,
     TokenKind.AT,

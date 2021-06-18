@@ -4,6 +4,7 @@ A {
 
 }
 
+# enum
 A (
   f | b | 
 )
@@ -20,6 +21,7 @@ A # comment {
 
 MyModel {ekek: b[],kek: i[] }
 
+# inline enum
 MyModel {color: (sample|42|true)}
 
 # commnet
