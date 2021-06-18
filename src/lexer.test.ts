@@ -324,13 +324,6 @@ describe(__filename, () => {
       value: undefined,
     });
 
-    expect(lexFirst('...').toJSON()).toMatchObject({
-      kind: TokenKind.SPREAD,
-      start: 0,
-      end: 3,
-      value: undefined,
-    });
-
     expect(lexFirst(':').toJSON()).toMatchObject({
       kind: TokenKind.COLON,
       start: 0,
