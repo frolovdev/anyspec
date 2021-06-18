@@ -25,6 +25,7 @@ export const ASTNodeKind = {
   MODEL_TYPE_DEFINITION: 'ModelTypeDefinition',
   ENUM_INLINE_TYPE_DEFINITION: 'EnumInlineTypeDefinition',
   OBJECT_TYPE_DEFINITION: 'ObjectTypeDefinition',
+  ENUM_TYPE_DEFINITION: "EnumTypeDefinition"
 } as const;
 
 /**
