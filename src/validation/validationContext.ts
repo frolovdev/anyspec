@@ -1,5 +1,4 @@
-import { AnySpecError } from 'error/AnySpecError';
-
+import { AnySpecError } from 'error';
 import { ASTVisitor } from 'visitor';
 import { DocumentNode } from '../language';
 import { AnySpecSchema } from 'runtypes';

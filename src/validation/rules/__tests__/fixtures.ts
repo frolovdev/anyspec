@@ -1,5 +1,6 @@
 import { parse } from 'parser';
 import { AnySpecSchema } from 'runtypes';
+import { log } from 'utils';
 import { validate } from '../../validate';
 import { ValidationRule } from '../../validationContext';
 
@@ -8,7 +9,8 @@ export function expectValidationErrorsWithSchema(rule: ValidationRule, queryStr:
 
   const schema = new AnySpecSchema({ ast: doc });
   const errors = validate(schema, doc, [rule]);
-  return expect(errors);
+
+  return errors;
 }
 
 export function expectValidationErrors(rule: ValidationRule, queryStr: string): any {

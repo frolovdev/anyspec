@@ -42,6 +42,7 @@ export function validate(
       );
       throw abortObj;
     }
+
     errors.push(error);
   });
 
