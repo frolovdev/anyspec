@@ -1,10 +1,10 @@
-import { Source } from '../source';
-import { getLocation, SourceLocation } from '../location';
-import { isObjectLike } from '../utils/isObjectLike';
-import { printLocation, printSourceLocation } from '../printLocation';
-import { ASTNode } from '../ast';
+import { Source } from 'source';
+import { getLocation, SourceLocation } from 'location';
+import { isObjectLike } from 'utils/isObjectLike';
+import { printLocation, printSourceLocation } from 'printLocation';
+import { ASTNode } from 'ast';
 
-export class EasySpecError extends Error {
+export class AnySpecError extends Error {
   /**
    * An array of { line, column } locations within the source Tinyspec document
    * which correspond to this error.
@@ -116,7 +116,7 @@ export class EasySpecError extends Error {
     }
 
     Object.defineProperties(this, {
-      name: { value: 'EasySpecError' },
+      name: { value: 'AnySpecError' },
       message: {
         value: message,
         // By being enumerable, JSON.stringify will include `message` in the
@@ -178,7 +178,7 @@ export class EasySpecError extends Error {
 
     // istanbul ignore next (See: 'https://github.com/graphql/graphql-js/issues/2317')
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, EasySpecError);
+      Error.captureStackTrace(this, AnySpecError);
     } else {
       Object.defineProperty(this, 'stack', {
         value: Error().stack,
@@ -201,10 +201,10 @@ export class EasySpecError extends Error {
 }
 
 /**
- * Prints a EasySpecError to a string, representing useful location information
+ * Prints a AnySpecError to a string, representing useful location information
  * about the error's position in the source.
  */
-export function printError(error: EasySpecError): string {
+export function printError(error: AnySpecError): string {
   let output = error.message;
 
   if (error.nodes) {

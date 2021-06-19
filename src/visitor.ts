@@ -76,7 +76,7 @@ type ReducedField<T, R> = T extends null | undefined
 
 const QueryDocumentKeys = {
   ModelDescription: [],
-  Name: [] ,
+  Name: [],
   OptionalName: [],
   Document: ['definitions'],
 
@@ -88,9 +88,11 @@ const QueryDocumentKeys = {
   FieldDefinition: ['name', 'type'],
   EnumInlineTypeDefinition: ['name', 'values'],
   EnumValueDefinition: ['name'],
-} as  const;
+} as const;
 
-export const BREAK: unknown = {};
+export const BREAK = {
+  __brand: 'BREAK',
+} as const;
 
 /**
  * visit() will walk through an AST using a depth-first traversal, calling

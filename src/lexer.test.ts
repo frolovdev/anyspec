@@ -2,8 +2,8 @@ import { Source } from './source';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
 import { Token, TokenKind } from './token';
 import { inspect } from 'util';
-import { dedent } from './testsUtils/dedent';
-import { EasySpecError } from './error/EasySpecError';
+import { dedent } from './__testsUtils__/dedent';
+import { AnySpecError } from './error/AnySpecError';
 
 function lexFirst(str: string) {
   const lexer = new Lexer(new Source(str));
@@ -535,7 +535,6 @@ describe('isPunctuatorTokenKind', () => {
     expect(isPunctuatorToken('&')).toEqual(true);
     expect(isPunctuatorToken('(')).toEqual(true);
     expect(isPunctuatorToken(')')).toEqual(true);
-    expect(isPunctuatorToken('...')).toEqual(true);
     expect(isPunctuatorToken(':')).toEqual(true);
     expect(isPunctuatorToken('=')).toEqual(true);
     expect(isPunctuatorToken('@')).toEqual(true);

@@ -4,9 +4,13 @@
 
 ## TODO
 
-- [ ] write a visitor tests
+- [x] write a visitor tests
 - [ ] write a base validator layer
 - [ ] present to infra team
+- [ ] After creating enum /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
+
+- [ ] After creating endpoints add similar case /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
+- [ ] lear how to visit in parallel
 
 ### Parser
 

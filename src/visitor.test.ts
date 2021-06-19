@@ -1,7 +1,8 @@
-import { ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
+import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
 import { parse } from './parser';
 import { log } from './utils';
-import { visit } from './visitor';
+import { BREAK, visit } from './visitor';
+import { modelsFile } from './__testsUtils__/veryComplexFile';
 
 function checkVisitorFnArgs(ast: any, args: any, isEdited: boolean = false) {
   const [node, key, parent, path, ancestors] = args;
@@ -273,4 +274,274 @@ describe(__filename, () => {
 
     expect(editedAST).toEqual(parse('Doc { a,    c: { a,    c } }', { noLocation: true }));
   });
+
+  it('allows for editing on leave', () => {
+    const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
+    const editedAST = visit(ast, {
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments, /* isEdited */ true);
+        if (node.kind === 'FieldDefinition' && node.name.value === 'b') {
+          return null;
+        }
+      },
+    });
+
+    expect(ast).toEqual(parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }));
+
+    expect(editedAST).toEqual(parse('Doc { a,    c: { a,    c } }', { noLocation: true }));
+  });
+
+  it('ignores false returned on leave', () => {
+    const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
+    const returnedAST = visit(ast, {
+      leave() {
+        return false;
+      },
+    });
+
+    expect(returnedAST).toEqual(parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }));
+  });
+
+  it('visits edited node', () => {
+    const addedField = {
+      kind: ASTNodeKind.NAME,
+      value: 'kek',
+    };
+
+    let didVisitAddedField;
+
+    const ast = parse('Doc { a: { x } }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments, /* isEdited */ true);
+        if (node.kind === 'FieldDefinition' && node.name.value === 'a') {
+          return {
+            kind: 'FieldDefinition',
+            name: addedField,
+            type: node.type,
+          };
+        }
+        if (node === addedField) {
+          didVisitAddedField = true;
+        }
+      },
+    });
+
+    expect(didVisitAddedField).toEqual(true);
+  });
+
+  it('allows skipping a sub-tree', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+        if (node.kind === 'FieldDefinition' && node.name.value === 'b') {
+          return false;
+        }
+      },
+
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['leave', node.kind, getValue(node)]);
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined], // here's the skip of b!
+      ['enter', 'FieldDefinition', undefined], // and here's we enter to c, skipping all subtree of b
+      ['enter', 'Name', 'c'],
+      ['leave', 'Name', 'c'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['leave', 'ModelTypeDefinition', undefined],
+      ['leave', 'Document', undefined],
+    ]);
+  });
+
+  it('allows early exit while visiting', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+        if (node.kind === 'Name' && node.value === 'x') {
+          return BREAK;
+        }
+      },
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['leave', node.kind, getValue(node)]);
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'b'],
+      ['leave', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'x'],
+    ]);
+  });
+
+  it('allows early exit while leaving', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['leave', node.kind, getValue(node)]);
+        if (node.kind === 'Name' && node.value === 'x') {
+          return BREAK;
+        }
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'b'],
+      ['leave', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'x'],
+      ['leave', 'Name', 'x'],
+    ]);
+  });
+
+  it('allows a named functions visitor API', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      Name(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+      ObjectTypeDefinition: {
+        enter(node) {
+          checkVisitorFnArgs(ast, arguments);
+          visited.push(['enter', node.kind, getValue(node)]);
+        },
+        leave(node) {
+          checkVisitorFnArgs(ast, arguments);
+          visited.push(['leave', node.kind, getValue(node)]);
+        },
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Name', 'Doc'],
+      ['enter', 'Name', 'a'],
+      ['enter', 'Name', undefined],
+      ['enter', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'Name', 'x'],
+      ['enter', 'Name', undefined],
+      ['leave', 'ObjectTypeDefinition', undefined],
+      ['enter', 'Name', 'c'],
+      ['enter', 'Name', undefined],
+    ]);
+  });
+
+  it('visit nodes with unknown kinds but does not traverse deeper', () => {
+    const customAST = parse('Doc { a }');
+    // @ts-expect-error
+    customAST.definitions[0].fields.push({
+      kind: 'CustomField',
+      name: { kind: 'Name', value: 'NamedNodeToBeSkipped' },
+      type: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'random' },
+      },
+    });
+
+    const visited: Array<any> = [];
+    visit(customAST, {
+      enter(node) {
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+      leave(node) {
+        visited.push(['leave', node.kind, getValue(node)]);
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'CustomField', undefined],
+      ['leave', 'CustomField', undefined],
+      ['leave', 'ModelTypeDefinition', undefined],
+      ['leave', 'Document', undefined],
+    ]);
+  });
+
+  it.skip('correctly visits modelsFile', () => {
+    const ast = parse(modelsFile);
+  })
 });
+
+// private
+
+function getValue(node: ASTNode) {
+  return 'value' in node ? node.value : undefined;
+}
