@@ -362,7 +362,7 @@ describe(__filename, () => {
       ['leave', 'NamedType', undefined],
       ['leave', 'FieldDefinition', undefined],
       ['enter', 'FieldDefinition', undefined], // here's the skip of b!
-      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined], // and here's we enter to c, skipping all subtree of b
       ['enter', 'Name', 'c'],
       ['leave', 'Name', 'c'],
       ['enter', 'NamedType', undefined],
