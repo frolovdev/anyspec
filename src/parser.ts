@@ -4,7 +4,7 @@ import { TokenKindEnum, Token, TokenKind } from './token';
 import { isSource, Source } from './source';
 import {
   ASTNodeKind,
-  DefinitionNode,
+  TypeDefinitionNode,
   DocumentNode,
   EnumInlineTypeDefinitionNode,
   EnumValueDefinitionNode,
@@ -148,7 +148,7 @@ class Parser {
     });
   }
 
-  parseDefinition(): DefinitionNode {
+  parseDefinition(): TypeDefinitionNode {
     if (this.peek(TokenKind.DESCRIPTION)) {
       return this.parseModelTypeDefinition();
     }
@@ -193,7 +193,7 @@ class Parser {
     return syntaxError(this.lexer.source, token.start, `Unexpected ${getTokenDesc(token)}.`);
   }
 
-  parseTypeSystemDefinition(): DefinitionNode {
+  parseTypeSystemDefinition(): TypeDefinitionNode {
     // Many definitions begin with a description and require a lookahead.
     const braces = this.lexer.lookahead();
 
