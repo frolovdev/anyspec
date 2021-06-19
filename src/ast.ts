@@ -44,7 +44,7 @@ export type ASTNode =
   | ModelTypeDefinitionNode
   | ObjectTypeDefinitionNode
   | EnumInlineTypeDefinitionNode
-  | EnumTypeDefinition
+  | EnumTypeDefinitionNode
   | EnumValueDefinitionNode
   | ModelDescriptionNode
   | NameNode
@@ -116,7 +116,7 @@ export interface EnumInlineTypeDefinitionNode {
   readonly values: ReadonlyArray<EnumValueDefinitionNode>;
 }
 
-export interface EnumTypeDefinition {
+export interface EnumTypeDefinitionNode {
   readonly kind: 'EnumTypeDefinition';
   readonly name: NameNode;
   readonly loc?: Location;

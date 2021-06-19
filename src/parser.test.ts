@@ -1,4 +1,4 @@
-import { ASTNodeKind, EnumTypeDefinition, ModelTypeDefinitionNode } from './ast';
+import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './ast';
 import { AnySpecError } from './error/AnySpecError';
 import { parse } from './parser';
 import { toJSONDeep, log } from './utils';
@@ -1085,7 +1085,7 @@ describe(__filename, () => {
           )
         `;
 
-      const EnumA: EnumTypeDefinition = {
+      const EnumA: EnumTypeDefinitionNode = {
         values: [
           {
             kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
@@ -1124,7 +1124,7 @@ describe(__filename, () => {
 
           MyModel {color: A}
         `;
-      const EnumA: EnumTypeDefinition = {
+      const EnumA: EnumTypeDefinitionNode = {
         values: [
           {
             kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
