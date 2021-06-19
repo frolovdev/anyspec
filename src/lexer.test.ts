@@ -24,7 +24,7 @@ function expectSyntaxErrorFirst(text: string, expectedError: any) {
     error = e;
   }
 
-  expect(error!.toJSON()).toEqual(expectedError);
+  expect(error).toEqual(expectedError);
 }
 
 function expectSyntaxErrorSecond(text: string, expectedError: any) {
@@ -35,7 +35,7 @@ function expectSyntaxErrorSecond(text: string, expectedError: any) {
     error = e;
   }
 
-  expect(error!.toJSON()).toEqual(expectedError);
+  expect(error).toEqual(expectedError);
 }
 
 describe(__filename, () => {

@@ -98,11 +98,11 @@ class Parser {
    */
   node<T extends { loc?: Location }>(startToken: Token, node: T): T {
     if (this.options?.noLocation !== true) {
-      // node.loc = new Location(
-      //   startToken,
-      //   this._lexer.lastToken,
-      //   this._lexer.source,
-      // );
+      node.loc = new Location(
+        startToken,
+        this.lexer.lastToken,
+        this.lexer.source,
+      );
     }
     return node;
   }
