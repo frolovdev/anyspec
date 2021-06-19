@@ -414,6 +414,48 @@ describe(__filename, () => {
       ['enter', 'Name', 'x'],
     ]);
   });
+
+  it('allows early exit while leaving', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['leave', node.kind, getValue(node)]);
+        if (node.kind === 'Name' && node.value === 'x') {
+          return BREAK;
+        }
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'b'],
+      ['leave', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'x'],
+      ['leave', 'Name', 'x'],
+    ]);
+  });
 });
 
 // private
