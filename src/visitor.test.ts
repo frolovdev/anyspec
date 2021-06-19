@@ -307,4 +307,32 @@ describe(__filename, () => {
     );
   });
 
+  it('visits edited node', () => {
+    const addedField = {
+      kind: ASTNodeKind.NAME,
+      value: 'kek'
+    };
+
+    let didVisitAddedField;
+
+    const ast = parse('Doc { a: { x } }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments, /* isEdited */ true);
+        if (node.kind === 'FieldDefinition' && node.name.value === 'a') {
+          return {
+            kind: 'FieldDefinition',
+            name: addedField,
+            type: node.type
+          };
+        }
+        if (node === addedField) {
+          didVisitAddedField = true;
+        }
+      },
+    });
+
+    expect(didVisitAddedField).toEqual(true);
+  });
+
 });
