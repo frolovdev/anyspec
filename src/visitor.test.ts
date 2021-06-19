@@ -456,6 +456,41 @@ describe(__filename, () => {
       ['leave', 'Name', 'x'],
     ]);
   });
+
+  it('allows a named functions visitor API', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      Name(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+      ObjectTypeDefinition: {
+        enter(node) {
+          checkVisitorFnArgs(ast, arguments);
+          visited.push(['enter', node.kind, getValue(node)]);
+        },
+        leave(node) {
+          checkVisitorFnArgs(ast, arguments);
+          visited.push(['leave', node.kind, getValue(node)]);
+        },
+      },
+    });
+
+    expect(visited).toEqual([
+      [ 'enter', 'Name', 'Doc' ],
+      [ 'enter', 'Name', 'a' ],
+      [ 'enter', 'Name', undefined ],
+      [ 'enter', 'Name', 'b' ],
+      [ 'enter', 'ObjectTypeDefinition', undefined ],
+      [ 'enter', 'Name', 'x' ],
+      [ 'enter', 'Name', undefined ],
+      [ 'leave', 'ObjectTypeDefinition', undefined ],
+      [ 'enter', 'Name', 'c' ],
+      [ 'enter', 'Name', undefined ]
+    ]);
+  });
 });
 
 // private
