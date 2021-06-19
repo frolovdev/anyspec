@@ -1,7 +1,7 @@
 import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
 import { parse } from './parser';
 import { log } from './utils';
-import { visit } from './visitor';
+import { BREAK, visit } from './visitor';
 
 function checkVisitorFnArgs(ast: any, args: any, isEdited: boolean = false) {
   const [node, key, parent, path, ancestors] = args;
@@ -372,6 +372,46 @@ describe(__filename, () => {
       ['leave', 'FieldDefinition', undefined],
       ['leave', 'ModelTypeDefinition', undefined],
       ['leave', 'Document', undefined],
+    ]);
+  });
+
+  it('allows early exit while visiting', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+        if (node.kind === 'Name' && node.value === 'x') {
+          return BREAK;
+        }
+      },
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['leave', node.kind, getValue(node)]);
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'b'],
+      ['leave', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'x'],
     ]);
   });
 });
