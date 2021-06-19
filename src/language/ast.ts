@@ -74,7 +74,7 @@ export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';
   readonly loc?: Location;
   readonly description?: ModelDescriptionNode;
-  readonly name: NameNode | OptionalNameNode;
+  readonly name: NameNode;
   readonly extendsModels: ReadonlyArray<NamedTypeNode>;
   readonly fields: ReadonlyArray<FieldDefinitionNode>;
   readonly strict: boolean;
