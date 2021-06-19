@@ -1,4 +1,4 @@
-import { Location } from './location';
+import { Location } from '../location';
 
 /**
  * The set of allowed kind values for AST nodes.
@@ -67,16 +67,16 @@ export interface ASTKindToNode {
 export interface DocumentNode {
   readonly kind: 'Document';
   readonly loc?: Location;
-  readonly definitions: ReadonlyArray<DefinitionNode>;
+  readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
-export type DefinitionNode = ModelTypeDefinitionNode;
+export type TypeDefinitionNode = ModelTypeDefinitionNode;
 
 export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';
   readonly loc?: Location;
   readonly description?: ModelDescriptionNode;
-  readonly name: NameNode | OptionalNameNode;
+  readonly name: NameNode;
   readonly extendsModels: ReadonlyArray<NamedTypeNode>;
   readonly fields: ReadonlyArray<FieldDefinitionNode>;
   readonly strict: boolean;

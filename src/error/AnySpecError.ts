@@ -2,11 +2,11 @@ import { Source } from 'source';
 import { getLocation, SourceLocation } from 'location';
 import { isObjectLike } from 'utils/isObjectLike';
 import { printLocation, printSourceLocation } from 'printLocation';
-import { ASTNode } from 'ast';
+import { ASTNode } from 'language';
 
 export class AnySpecError extends Error {
   /**
-   * An array of { line, column } locations within the source Tinyspec document
+   * An array of { line, column } locations within the source AnySpec document
    * which correspond to this error.
    *
    * Errors during validation often contain multiple locations, for example to
@@ -26,12 +26,12 @@ export class AnySpecError extends Error {
   readonly path?: ReadonlyArray<string | number>;
 
   /**
-   * An array of AST Nodes corresponding to this error.
+   * An array of AnySpec AST Nodes corresponding to this error.
    */
   readonly nodes?: ReadonlyArray<ASTNode>;
 
   /**
-   * The source document for the first location of this error.
+   * The source AnySpec document for the first location of this error.
    *
    * Note that if this Error represents more than one node, the source may not
    * represent nodes after the first node.
@@ -39,7 +39,7 @@ export class AnySpecError extends Error {
   readonly source?: Source;
 
   /**
-   * An array of character offsets within the source document
+   * An array of character offsets within the source AnySpec document
    * which correspond to this error.
    */
   readonly positions?: ReadonlyArray<number>;
@@ -47,7 +47,7 @@ export class AnySpecError extends Error {
   /**
    * The original error thrown from a field resolver during execution.
    */
-  readonly originalError?: $Maybe<Error>;
+  readonly originalError: $Maybe<Error>;
 
   /**
    * Extension fields to add to the formatted error.
@@ -120,7 +120,7 @@ export class AnySpecError extends Error {
       message: {
         value: message,
         // By being enumerable, JSON.stringify will include `message` in the
-        // resulting output. This ensures that the simplest possible
+        // resulting output. This ensures that the simplest possible AnySpec
         // service adheres to the spec.
         enumerable: true,
         writable: true,
@@ -130,7 +130,7 @@ export class AnySpecError extends Error {
         // in JSON.stringify() when not provided.
         value: _locations ?? undefined,
         // By being enumerable, JSON.stringify will include `locations` in the
-        // resulting output. This ensures that the simplest possible
+        // resulting output. This ensures that the simplest possible AnySpec
         // service adheres to the spec.
         enumerable: _locations != null,
       },
@@ -139,7 +139,7 @@ export class AnySpecError extends Error {
         // in JSON.stringify() when not provided.
         value: path ?? undefined,
         // By being enumerable, JSON.stringify will include `path` in the
-        // resulting output. This ensures that the simplest possible
+        // resulting output. This ensures that the simplest possible AnySpec
         // service adheres to the spec.
         enumerable: path != null,
       },
@@ -160,7 +160,7 @@ export class AnySpecError extends Error {
         // in JSON.stringify() when not provided.
         value: _extensions ?? undefined,
         // By being enumerable, JSON.stringify will include `path` in the
-        // resulting output. This ensures that the simplest possible
+        // resulting output. This ensures that the simplest possible AnySpec
         // service adheres to the spec.
         enumerable: _extensions != null,
       },
@@ -192,11 +192,9 @@ export class AnySpecError extends Error {
     return printError(this);
   }
 
-  toJSON(): { message: string; locations?: ReadonlyArray<SourceLocation> } {
-    return {
-      message: this.message,
-      locations: this.locations,
-    };
+  // FIXME: workaround to not break chai comparisons, should be remove in v16
+  get [Symbol.toStringTag](): string {
+    return 'Object';
   }
 }
 

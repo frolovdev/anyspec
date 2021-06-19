@@ -1,6 +1,6 @@
 import { invariant } from './utils/invariant';
 
-import type { Source } from './source';
+import { Source } from './source';
 import { Token } from './token';
 
 const LineRegExp = /\r\n|[\n\r]/g;

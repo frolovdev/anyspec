@@ -1,4 +1,4 @@
-import { ASTNodeKind } from 'ast';
+import { ASTNodeKind } from 'language';
 import { assert } from 'utils';
 import { parse, ParseOptions } from 'parser';
 import { Source } from 'source';

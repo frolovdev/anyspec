@@ -1,6 +1,5 @@
 import { inspect } from './utils';
-import type { ASTNode, ASTKindToNode } from './ast';
-import { isNode } from './ast';
+import { ASTNode, ASTKindToNode, isNode } from './language';
 
 /**
  * A visitor is provided to visit, it contains the collection of

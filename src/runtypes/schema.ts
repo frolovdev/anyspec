@@ -1,4 +1,4 @@
-import { DocumentNode } from '../ast';
+import { DocumentNode } from '../language';
 
 export interface BuildSchemaOptions {
   ast: DocumentNode;

@@ -29,6 +29,8 @@ here no model so we should throw an error
 
 ### Validator
 
+- [] split up base validation and schema validation (sdl)
+
 
 https://cuelang.org/docs/
 
