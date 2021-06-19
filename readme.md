@@ -4,7 +4,7 @@
 
 ## TODO
 
-- [ ] write a visitor tests
+- [x] write a visitor tests
 - [ ] write a base validator layer
 - [ ] present to infra team
 - [ ] After creating enum /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
