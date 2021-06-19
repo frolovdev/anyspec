@@ -2,6 +2,7 @@ import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNo
 import { parse } from './parser';
 import { log } from './utils';
 import { BREAK, visit } from './visitor';
+import { modelsFile } from './__testsUtils__/veryComplexFile';
 
 function checkVisitorFnArgs(ast: any, args: any, isEdited: boolean = false) {
   const [node, key, parent, path, ancestors] = args;
@@ -533,6 +534,10 @@ describe(__filename, () => {
       ['leave', 'Document', undefined],
     ]);
   });
+
+  it.skip('correctly visits modelsFile', () => {
+    const ast = parse(modelsFile);
+  })
 });
 
 // private
