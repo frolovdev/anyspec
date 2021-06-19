@@ -1,4 +1,4 @@
-import { ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
+import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
 import { parse } from './parser';
 import { log } from './utils';
 import { visit } from './visitor';
@@ -285,13 +285,9 @@ describe(__filename, () => {
       },
     });
 
-    expect(ast).toEqual(
-      parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }),
-    );
+    expect(ast).toEqual(parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }));
 
-    expect(editedAST).toEqual(
-      parse('Doc { a,    c: { a,    c } }', { noLocation: true }),
-    );
+    expect(editedAST).toEqual(parse('Doc { a,    c: { a,    c } }', { noLocation: true }));
   });
 
   it('ignores false returned on leave', () => {
@@ -302,15 +298,13 @@ describe(__filename, () => {
       },
     });
 
-    expect(returnedAST).toEqual(
-      parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }),
-    );
+    expect(returnedAST).toEqual(parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }));
   });
 
   it('visits edited node', () => {
     const addedField = {
       kind: ASTNodeKind.NAME,
-      value: 'kek'
+      value: 'kek',
     };
 
     let didVisitAddedField;
@@ -323,7 +317,7 @@ describe(__filename, () => {
           return {
             kind: 'FieldDefinition',
             name: addedField,
-            type: node.type
+            type: node.type,
           };
         }
         if (node === addedField) {
@@ -335,4 +329,55 @@ describe(__filename, () => {
     expect(didVisitAddedField).toEqual(true);
   });
 
+  it('allows skipping a sub-tree', () => {
+    const visited: Array<any> = [];
+
+    const ast = parse('Doc { a, b: { x }, c }', { noLocation: true });
+    visit(ast, {
+      enter(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+        if (node.kind === 'FieldDefinition' && node.name.value === 'b') {
+          return false;
+        }
+      },
+
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['leave', node.kind, getValue(node)]);
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'FieldDefinition', undefined], // here's the skip of b!
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'c'],
+      ['leave', 'Name', 'c'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['leave', 'ModelTypeDefinition', undefined],
+      ['leave', 'Document', undefined],
+    ]);
+  });
 });
+
+// private
+
+function getValue(node: ASTNode) {
+  return 'value' in node ? node.value : undefined;
+}
