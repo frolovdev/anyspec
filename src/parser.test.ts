@@ -1,5 +1,5 @@
 import { ASTNodeKind } from './ast';
-import { EasySpecError } from './error/EasySpecError';
+import { AnySpecError } from './error/AnySpecError';
 import { parse } from './parser';
 import { toJSONDeep, log } from './utils';
 
@@ -11,7 +11,7 @@ describe(__filename, () => {
         `;
 
       const ast = () => parse(description);
-      expect(ast).toThrowError(EasySpecError);
+      expect(ast).toThrowError(AnySpecError);
     });
 
     it('throws an error when parse multiline description without model', () => {
@@ -21,7 +21,7 @@ describe(__filename, () => {
         `;
 
       const ast = () => parse(description);
-      expect(ast).toThrowError(EasySpecError);
+      expect(ast).toThrowError(AnySpecError);
     });
 
     it('correctly parse empty model with description', () => {
