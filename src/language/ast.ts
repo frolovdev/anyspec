@@ -65,10 +65,10 @@ export interface ASTKindToNode {
 export interface DocumentNode {
   readonly kind: 'Document';
   readonly loc?: Location;
-  readonly definitions: ReadonlyArray<DefinitionNode>;
+  readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
-export type DefinitionNode = ModelTypeDefinitionNode;
+export type TypeDefinitionNode = ModelTypeDefinitionNode;
 
 export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';
