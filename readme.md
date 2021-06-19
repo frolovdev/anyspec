@@ -10,6 +10,7 @@
 - [ ] After creating enum /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
 
 - [ ] After creating endpoints add similar case /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
+- [ ] lear how to visit in parallel
 
 ### Parser
 
