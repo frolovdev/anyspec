@@ -462,7 +462,7 @@ function getTokenKindDesc(kind: TokenKindEnum): string {
 
 /**
  * Given a source, parses it into a Document.
- * Throws EasySpecError if a syntax error is encountered.
+ * Throws AnySpecError if a syntax error is encountered.
  */
 export function parse(source: string | Source, options?: ParseOptions): DocumentNode {
   /// DocumentNode
