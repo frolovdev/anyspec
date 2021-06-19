@@ -294,4 +294,17 @@ describe(__filename, () => {
     );
   });
 
+  it('ignores false returned on leave', () => {
+    const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
+    const returnedAST = visit(ast, {
+      leave() {
+        return false;
+      },
+    });
+
+    expect(returnedAST).toEqual(
+      parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }),
+    );
+  });
+
 });
