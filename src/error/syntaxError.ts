@@ -1,4 +1,4 @@
-import type { Source } from '../source';
+import type { Source } from 'source';
 
 import { AnySpecError } from './AnySpecError';
 

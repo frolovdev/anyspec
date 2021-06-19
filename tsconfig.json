@@ -6,7 +6,7 @@
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "baseUrl": ".",
+    "baseUrl": "src",
     "outDir": "dist",
     "typeRoots": ["./node_modules/@types", "./src/types"],
   },
