@@ -2,7 +2,7 @@ import { Source } from './source';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
 import { Token, TokenKind } from './token';
 import { inspect } from 'util';
-import { dedent } from './testsUtils/dedent';
+import { dedent } from './__testsUtils__/dedent';
 import { EasySpecError } from './error/EasySpecError';
 
 function lexFirst(str: string) {
