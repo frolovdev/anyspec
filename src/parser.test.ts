@@ -1,4 +1,4 @@
-import { ASTNodeKind } from './ast';
+import { ASTNodeKind, EnumTypeDefinition, ModelTypeDefinitionNode } from './ast';
 import { EasySpecError } from './error/EasySpecError';
 import { parse } from './parser';
 import { toJSONDeep, log } from './utils';
@@ -1074,127 +1074,114 @@ describe(__filename, () => {
           },
         ],
       });
-      it('correctly parse model with named enum', () => {
-        const model = `
-            A (
-              f | b | 
-            )
-          `;
-
-        const ast = parse(model);
-        expect(toJSONDeep(ast)).toEqual({
-          kind: ASTNodeKind.DOCUMENT,
-          definitions: [
-            {
-              fields: [
-                {
-                  omitted: false,
-                  optional: false,
-                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'f',
-                  },
-                },
-                {
-                  omitted: false,
-                  optional: false,
-                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
-                  },
-                },
-              ],
-              name: {
-                kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
-                value: 'A',
-              },
-              strict: false,
-              kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-              description: undefined,
-              extendsModels: [],
-            },
-          ],
-        });
-      });
-
-      it('correctly parse model that uses named enum', () => {
-        const model = `
-            A (
-              f | b | 
-            )
-  
-            MyModel {color: A}
-          `;
-
-        const ast = parse(model);
-        expect(toJSONDeep(ast)).toEqual({
-          kind: ASTNodeKind.DOCUMENT,
-          definitions: [
-            {
-              fields: [
-                {
-                  omitted: false,
-                  optional: false,
-                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'f',
-                  },
-                },
-                {
-                  omitted: false,
-                  optional: false,
-                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'b',
-                  },
-                },
-              ],
-              name: {
-                kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
-                value: 'A',
-              },
-              strict: false,
-              kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-              description: undefined,
-              extendsModels: [],
-            },
-            {
-              fields: [
-                {
-                  omitted: false,
-                  optional: false,
-                  kind: ASTNodeKind.FIELD_DEFINITION,
-                  name: {
-                    kind: ASTNodeKind.NAME,
-                    value: 'color',
-                  },
-                  type: {
-                    kind: ASTNodeKind.NAMED_TYPE,
-                    name: {
-                      kind: ASTNodeKind.NAME,
-                      value: 'A',
-                    },
-                  },
-                },
-              ],
-              name: {
-                kind: ASTNodeKind.NAME,
-                value: 'MyModel',
-              },
-              strict: false,
-              kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-              description: undefined,
-              extendsModels: [],
-            },
-          ],
-        });
-      });
     });
   });
 
-  describe('enum', () => {});
+  describe('enum', () => {
+    it('correctly parse model with named enum', () => {
+      const model = `
+          A (
+            f | b | 
+          )
+        `;
+
+      const EnumA: EnumTypeDefinition = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'f',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'A',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA],
+      });
+    });
+
+    it('correctly parse model that uses named enum', () => {
+      const model = `
+          A (
+            f | b | 
+          )
+
+          MyModel {color: A}
+        `;
+      const EnumA: EnumTypeDefinition = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'f',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'A',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const MyModel: ModelTypeDefinitionNode = {
+        fields: [
+          {
+            omitted: false,
+            optional: false,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'color',
+            },
+            type: {
+              kind: ASTNodeKind.NAMED_TYPE,
+              name: {
+                kind: ASTNodeKind.NAME,
+                value: 'A',
+              },
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'MyModel',
+        },
+        strict: false,
+        kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+        description: undefined,
+        extendsModels: [],
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA, MyModel],
+      });
+    });
+  });
 });
