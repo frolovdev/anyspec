@@ -5,3 +5,4 @@ export * from './mapValue';
 export * from './toJSONDeep';
 export * from './assert';
 export * from './didYouMean';
+export * from './suggestionList';

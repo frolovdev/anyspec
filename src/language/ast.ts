@@ -1,4 +1,4 @@
-import { Location } from './location';
+import { Location } from '../location';
 
 /**
  * The set of allowed kind values for AST nodes.

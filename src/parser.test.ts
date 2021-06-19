@@ -1,4 +1,4 @@
-import { ASTNodeKind } from './ast';
+import { ASTNodeKind } from './language';
 import { AnySpecError } from './error/AnySpecError';
 import { parse } from './parser';
 import { toJSONDeep, log } from './utils';

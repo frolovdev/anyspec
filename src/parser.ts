@@ -17,7 +17,7 @@ import {
   ObjectTypeDefinitionNode,
   OptionalNameNode,
   TypeNode,
-} from './ast';
+} from './language';
 import { Location } from './location';
 
 export interface ParseOptions {

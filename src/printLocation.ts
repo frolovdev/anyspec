@@ -1,6 +1,6 @@
-import type { Source } from './source';
-import type { Location } from './location';
-import type { SourceLocation } from './location';
+import { Source } from './source';
+import { Location } from './location';
+import { SourceLocation } from './location';
 import { getLocation } from './location';
 
 /**

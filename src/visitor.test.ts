@@ -1,4 +1,4 @@
-import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './ast';
+import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './language';
 import { parse } from './parser';
 import { log } from './utils';
 import { BREAK, visit } from './visitor';

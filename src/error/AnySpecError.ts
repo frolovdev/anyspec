@@ -2,7 +2,7 @@ import { Source } from 'source';
 import { getLocation, SourceLocation } from 'location';
 import { isObjectLike } from 'utils/isObjectLike';
 import { printLocation, printSourceLocation } from 'printLocation';
-import { ASTNode } from 'ast';
+import { ASTNode } from 'language';
 
 export class AnySpecError extends Error {
   /**
