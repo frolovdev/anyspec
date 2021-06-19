@@ -273,4 +273,25 @@ describe(__filename, () => {
 
     expect(editedAST).toEqual(parse('Doc { a,    c: { a,    c } }', { noLocation: true }));
   });
+
+  it('allows for editing on leave', () => {
+    const ast = parse('Doc { a, b, c: { a, b, c } }', { noLocation: true });
+    const editedAST = visit(ast, {
+      leave(node) {
+        checkVisitorFnArgs(ast, arguments, /* isEdited */ true);
+        if (node.kind === 'FieldDefinition' && node.name.value === 'b') {
+          return null;
+        }
+      },
+    });
+
+    expect(ast).toEqual(
+      parse('Doc { a, b, c: { a, b, c } }', { noLocation: true }),
+    );
+
+    expect(editedAST).toEqual(
+      parse('Doc { a,    c: { a,    c } }', { noLocation: true }),
+    );
+  });
+
 });
