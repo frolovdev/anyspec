@@ -1,6 +1,6 @@
 import { dedent } from '__testsUtils__';
 
-import { invariant, log, toJSONDeep } from 'utils';
+import { invariant } from 'utils';
 
 import { ASTNodeKind } from 'language';
 import { parse } from 'parser';

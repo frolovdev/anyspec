@@ -1,6 +1,5 @@
-import { ASTNode, ASTNodeKind, NamedTypeNode, NameNode, OptionalNameNode, TypeNode } from './language';
+import { ASTNode, ASTNodeKind, NameNode, OptionalNameNode } from './language';
 import { parse } from './parser';
-import { log } from './utils';
 import { BREAK, visit } from './visitor';
 import { modelsFile } from './__testsUtils__/veryComplexFile';
 

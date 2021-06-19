@@ -1,5 +1,5 @@
 import { specifiedScalarTypes } from 'runtypes';
-import { log, toJSONDeep } from 'utils';
+import { toJSONDeep } from 'utils';
 import { KnownTypeNamesRule } from '../knownTypeNames.rule';
 import { expectValidationErrors } from './fixtures';
 
