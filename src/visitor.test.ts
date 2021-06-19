@@ -479,16 +479,58 @@ describe(__filename, () => {
     });
 
     expect(visited).toEqual([
-      [ 'enter', 'Name', 'Doc' ],
-      [ 'enter', 'Name', 'a' ],
-      [ 'enter', 'Name', undefined ],
-      [ 'enter', 'Name', 'b' ],
-      [ 'enter', 'ObjectTypeDefinition', undefined ],
-      [ 'enter', 'Name', 'x' ],
-      [ 'enter', 'Name', undefined ],
-      [ 'leave', 'ObjectTypeDefinition', undefined ],
-      [ 'enter', 'Name', 'c' ],
-      [ 'enter', 'Name', undefined ]
+      ['enter', 'Name', 'Doc'],
+      ['enter', 'Name', 'a'],
+      ['enter', 'Name', undefined],
+      ['enter', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'Name', 'x'],
+      ['enter', 'Name', undefined],
+      ['leave', 'ObjectTypeDefinition', undefined],
+      ['enter', 'Name', 'c'],
+      ['enter', 'Name', undefined],
+    ]);
+  });
+
+  it('visit nodes with unknown kinds but does not traverse deeper', () => {
+    const customAST = parse('Doc { a }');
+    // @ts-expect-error
+    customAST.definitions[0].fields.push({
+      kind: 'CustomField',
+      name: { kind: 'Name', value: 'NamedNodeToBeSkipped' },
+      type: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'random' },
+      },
+    });
+
+    const visited: Array<any> = [];
+    visit(customAST, {
+      enter(node) {
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+      leave(node) {
+        visited.push(['leave', node.kind, getValue(node)]);
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Document', undefined],
+      ['enter', 'ModelTypeDefinition', undefined],
+      ['enter', 'Name', 'Doc'],
+      ['leave', 'Name', 'Doc'],
+      ['enter', 'FieldDefinition', undefined],
+      ['enter', 'Name', 'a'],
+      ['leave', 'Name', 'a'],
+      ['enter', 'NamedType', undefined],
+      ['enter', 'Name', undefined],
+      ['leave', 'Name', undefined],
+      ['leave', 'NamedType', undefined],
+      ['leave', 'FieldDefinition', undefined],
+      ['enter', 'CustomField', undefined],
+      ['leave', 'CustomField', undefined],
+      ['leave', 'ModelTypeDefinition', undefined],
+      ['leave', 'Document', undefined],
     ]);
   });
 });
