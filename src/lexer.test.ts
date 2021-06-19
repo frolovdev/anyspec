@@ -535,7 +535,6 @@ describe('isPunctuatorTokenKind', () => {
     expect(isPunctuatorToken('&')).toEqual(true);
     expect(isPunctuatorToken('(')).toEqual(true);
     expect(isPunctuatorToken(')')).toEqual(true);
-    expect(isPunctuatorToken('...')).toEqual(true);
     expect(isPunctuatorToken(':')).toEqual(true);
     expect(isPunctuatorToken('=')).toEqual(true);
     expect(isPunctuatorToken('@')).toEqual(true);
