@@ -489,7 +489,7 @@ describe(__filename, () => {
     ]);
   });
 
-  it('throws errors in wrong description syntax', () => {})
+  it('throws errors in wrong description syntax', () => {});
 
   it('respects descriptions', () => {
     expect(lexFirst('// qweqweqweqweqw qwe').toJSON()).toMatchObject({
@@ -553,4 +553,115 @@ describe('isPunctuatorTokenKind', () => {
   // expect(isPunctuatorToken('"str"')).toEqual(false);
   // expect(isPunctuatorToken('"""str"""')).toEqual(false);
   // });
+});
+
+describe('lexer understands enums', () => {
+  const getFullTokenList = (source: Source) => {
+    const lexer = new Lexer(source);
+
+    let tokenList = [];
+
+    while (lexer.lookahead().kind !== TokenKind.EOF) {
+      let current = lexer.advance();
+      tokenList.push(current.kind === TokenKind.NAME ? current.value : current.kind);
+    }
+
+    return tokenList;
+  };
+
+  it('lexer understand normal enum', () => {
+    const enumString = new Source(`A (f | b)`);
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual(['A', '(', 'f', '|', 'b', ')']);
+  });
+
+  it('lexer understand enum with spaces and symbols', () => {
+    const enumString = new Source(`A 
+      (f f |
+        b (a, d+))`);
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual(['A', '(', 'f f', '|', 'b (a, d+)', ')']);
+  });
+
+  it('lexer understand complex enum with spaces and symbols', () => {
+    const enumString = new Source(`CompanyType (
+      Branch Office Singapore |
+      Exempt Private Company Limited by Shares (Pte. Ltd.) |
+      Limited Liability Partnership (LLP) |
+      Limited Partnership (LP) |
+      Private Company Limited by Shares (Pte. Ltd.) |
+    
+      Private Limited Company, use of 'Limited' exemption |
+      Protected cell company |
+      Assurance company |
+    )`);
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual([
+      'CompanyType',
+      '(',
+      'Branch Office Singapore',
+      '|',
+      'Exempt Private Company Limited by Shares (Pte. Ltd.)',
+      '|',
+      'Limited Liability Partnership (LLP)',
+      '|',
+      'Limited Partnership (LP)',
+      '|',
+      'Private Company Limited by Shares (Pte. Ltd.)',
+      '|',
+      "Private Limited Company, use of 'Limited' exemption",
+      '|',
+      'Protected cell company',
+      '|',
+      'Assurance company',
+      '|',
+      ')',
+    ]);
+  });
+
+  it('lexer understand enum with symbols', () => {
+    const enumString = new Source(`BankAccountStatus (
+      -amount |
+      amount |
+      + amount |
+    )`);
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual([
+      'BankAccountStatus',
+      '(',
+      '-amount',
+      '|',
+      'amount',
+      '|',
+      '+ amount',
+      '|',
+      ')',
+    ]);
+  });
+
+  it('lexer understand enum with dashes', () => {
+    const enumString = new Source(`CompanyType (
+      b-office-singapore |
+      exempt-private
+    )`);
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual([
+      'CompanyType',
+      '(',
+      'b-office-singapore',
+      '|',
+      'exempt-private',
+      ')',
+    ]);
+  });
 });
