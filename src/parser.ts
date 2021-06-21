@@ -17,6 +17,7 @@ import {
   ObjectTypeDefinitionNode,
   OptionalNameNode,
   TypeNode,
+  EnumTypeDefinitionNode,
 } from './language';
 import { Location } from './location';
 
@@ -98,11 +99,7 @@ class Parser {
    */
   node<T extends { loc?: Location }>(startToken: Token, node: T): T {
     if (this.options?.noLocation !== true) {
-      node.loc = new Location(
-        startToken,
-        this.lexer.lastToken,
-        this.lexer.source,
-      );
+      node.loc = new Location(startToken, this.lexer.lastToken, this.lexer.source);
     }
     return node;
   }
@@ -205,7 +202,18 @@ class Parser {
     throw this.unexpected();
   }
 
-  parseEnumTypeDefinition(): $TSFixMe {}
+  parseEnumTypeDefinition(): EnumTypeDefinitionNode {
+    const start = this.lexer.token;
+    const name = this.parseName();
+    const kind = ASTNodeKind.ENUM_TYPE_DEFINITION;
+    const values = this.parseEnumValuesDefinition();
+
+    return this.node<EnumTypeDefinitionNode>(start, {
+      kind,
+      name,
+      values,
+    });
+  }
 
   parseModelTypeDefinition(): ModelTypeDefinitionNode {
     const start = this.lexer.token;
