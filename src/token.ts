@@ -104,7 +104,7 @@ export const TokenKind = {
   COMMENT: 'Comment',
   EXTENDS: '<',
   QUESTION_MARK: '?',
-  DESCRIPTION: 'Description'
+  DESCRIPTION: 'Description',
 } as const;
 
 /**

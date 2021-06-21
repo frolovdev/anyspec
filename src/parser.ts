@@ -203,7 +203,6 @@ class Parser {
   }
 
   parseEnumTypeDefinition(): EnumTypeDefinitionNode {
-    
     const start = this.lexer.token;
     const name = this.parseName();
     const kind = ASTNodeKind.ENUM_TYPE_DEFINITION;
