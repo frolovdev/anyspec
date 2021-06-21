@@ -70,7 +70,7 @@ export interface DocumentNode {
   readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
-export type TypeDefinitionNode = ModelTypeDefinitionNode;
+export type TypeDefinitionNode = ModelTypeDefinitionNode | EnumTypeDefinitionNode;
 
 export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';

@@ -227,6 +227,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
 
   const line = lexer.line;
   const col = 1 + pos - lexer.lineStart;
+
   return new Token(TokenKind.EOF, bodyLength, bodyLength, line, col, prev);
 }
 
