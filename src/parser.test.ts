@@ -1242,5 +1242,75 @@ describe(__filename, () => {
         definitions: [EnumA],
       });
     });
+
+    it('correctly parse model with named with complicated values v2', () => {
+      const model = `
+          BankAccountStatus (
+            ACTIVE |
+            ARCHIVED |
+          )
+
+          BankAccountStatusV2 (
+            + active |
+            archived :(-) |
+          )
+        `;
+
+      const EnumA: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'ACTIVE',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'ARCHIVED',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'BankAccountStatus',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const EnumB: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: '+ active',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'archived :(-)',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'BankAccountStatusV2',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA, EnumB],
+      });
+    });
   });
 });
+
+
