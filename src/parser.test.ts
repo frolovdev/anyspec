@@ -1122,7 +1122,8 @@ describe(__filename, () => {
     it('correctly parse model that uses named enum', () => {
       const model = `
           A (
-            f | b | 
+            f |
+            b
           )
 
           MyModel {color: A}
@@ -1184,6 +1185,61 @@ describe(__filename, () => {
       expect(toJSONDeep(ast)).toEqual({
         kind: ASTNodeKind.DOCUMENT,
         definitions: [EnumA, MyModel],
+      });
+    });
+
+    it('correctly parse model with named with complicated values', () => {
+      const model = `
+          CompanyType (
+            Branch Office Singapore |
+            Private Company 'Limited' by Shares (Pte. Ltd.) |
+            + amount | 
+            b-office-singapore
+          )
+        `;
+
+      const EnumA: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'Branch Office Singapore',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: "Private Company 'Limited' by Shares (Pte. Ltd.)",
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: '+ amount',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b-office-singapore',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'CompanyType',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA],
       });
     });
   });

@@ -655,13 +655,32 @@ describe('lexer understands enums', () => {
 
     const tokens = getFullTokenList(enumString);
 
-    expect(tokens).toEqual([
-      'CompanyType',
-      '(',
-      'b-office-singapore',
-      '|',
-      'exempt-private',
-      ')',
-    ]);
+    expect(tokens).toEqual(['CompanyType', '(', 'b-office-singapore', '|', 'exempt-private', ')']);
+  });
+
+  it('unbalanced parenthesis not allowed', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership ((LP) |
+      exempt-private
+    )`);
+
+    try {
+      getFullTokenList(enumString);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AnySpecError)
+    }
+  });
+
+  it('nested parenthesis not allowed', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership ((LP)) |
+      exempt-private
+    )`);
+
+    try {
+      getFullTokenList(enumString);
+    } catch (e) {
+      expect(e).toBeInstanceOf(AnySpecError)
+    }
   });
 });
