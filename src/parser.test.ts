@@ -1,4 +1,4 @@
-import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode  } from './language';
+import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
 import { AnySpecError } from './error/AnySpecError';
 import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
@@ -1243,74 +1243,210 @@ describe(__filename, () => {
       });
     });
 
-    it('correctly parse model with named with complicated values v2', () => {
+    it('correctly parse model with complicated inline enums', () => {
       const model = `
-          BankAccountStatus (
-            ACTIVE |
-            ARCHIVED |
-          )
-
-          BankAccountStatusV2 (
-            + active |
-            archived :(-) |
-          )
+          AcDocument < Kek, Lel !{
+            -name?: s[],
+            type?: ( + amount | - amount | summ + | Private Company 'Limited' by Shares (Pte. Ltd.) ),
+            kek: { conversationId: i, users: { id: i, nickname, avatar? }[] },
+            surname: b[],
+          }
+    
         `;
 
-      const EnumA: EnumTypeDefinitionNode = {
-        values: [
+      const Model: ModelTypeDefinitionNode = {
+        fields: [
           {
-            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            omitted: true,
+            optional: true,
+            kind: ASTNodeKind.FIELD_DEFINITION,
             name: {
               kind: ASTNodeKind.NAME,
-              value: 'ACTIVE',
+              value: 'name',
+            },
+            type: {
+              kind: ASTNodeKind.LIST_TYPE,
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 's',
+                },
+              },
             },
           },
           {
-            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            omitted: false,
+            optional: true,
+            kind: ASTNodeKind.FIELD_DEFINITION,
             name: {
               kind: ASTNodeKind.NAME,
-              value: 'ARCHIVED',
+              value: 'type',
+            },
+            type: {
+              kind: ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION,
+              values: [
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: { kind: ASTNodeKind.NAME, value: '+ amount' },
+                },
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: { kind: ASTNodeKind.NAME, value: '- amount' },
+                },
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: { kind: ASTNodeKind.NAME, value: 'summ +' },
+                },
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: "Private Company 'Limited' by Shares (Pte. Ltd.)",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            omitted: false,
+            optional: false,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'kek',
+            },
+            type: {
+              kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+              fields: [
+                {
+                  kind: ASTNodeKind.FIELD_DEFINITION,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: 'conversationId',
+                  },
+                  omitted: false,
+                  optional: false,
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'i',
+                    },
+                  },
+                },
+                {
+                  kind: ASTNodeKind.FIELD_DEFINITION,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: 'users',
+                  },
+                  omitted: false,
+                  optional: false,
+                  type: {
+                    kind: ASTNodeKind.LIST_TYPE,
+                    type: {
+                      kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                      fields: [
+                        {
+                          kind: ASTNodeKind.FIELD_DEFINITION,
+                          name: {
+                            kind: ASTNodeKind.NAME,
+                            value: 'id',
+                          },
+                          omitted: false,
+                          optional: false,
+                          type: {
+                            kind: ASTNodeKind.NAMED_TYPE,
+                            name: {
+                              kind: ASTNodeKind.NAME,
+                              value: 'i',
+                            },
+                          },
+                        },
+                        {
+                          kind: ASTNodeKind.FIELD_DEFINITION,
+                          name: {
+                            kind: ASTNodeKind.NAME,
+                            value: 'nickname',
+                          },
+                          omitted: false,
+                          optional: false,
+                          type: {
+                            kind: ASTNodeKind.NAMED_TYPE,
+                            name: {
+                              kind: ASTNodeKind.NAME,
+                              value: undefined,
+                            },
+                          },
+                        },
+                        {
+                          kind: ASTNodeKind.FIELD_DEFINITION,
+                          name: {
+                            kind: ASTNodeKind.NAME,
+                            value: 'avatar',
+                          },
+                          omitted: false,
+                          optional: true,
+                          type: {
+                            kind: ASTNodeKind.NAMED_TYPE,
+                            name: {
+                              kind: ASTNodeKind.NAME,
+                              value: undefined,
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            omitted: false,
+            optional: false,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'surname',
+            },
+            type: {
+              kind: ASTNodeKind.LIST_TYPE,
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 'b',
+                },
+              },
             },
           },
         ],
         name: {
           kind: ASTNodeKind.NAME,
-          value: 'BankAccountStatus',
+          value: 'AcDocument',
         },
-        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
-      };
-
-      const EnumB: EnumTypeDefinitionNode = {
-        values: [
+        extendsModels: [
           {
-            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-            name: {
-              kind: ASTNodeKind.NAME,
-              value: '+ active',
-            },
+            kind: ASTNodeKind.NAMED_TYPE,
+            name: { kind: ASTNodeKind.NAME, value: 'Kek' },
           },
           {
-            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-            name: {
-              kind: ASTNodeKind.NAME,
-              value: 'archived :(-)',
-            },
+            kind: ASTNodeKind.NAMED_TYPE,
+            name: { kind: ASTNodeKind.NAME, value: 'Lel' },
           },
         ],
-        name: {
-          kind: ASTNodeKind.NAME,
-          value: 'BankAccountStatusV2',
-        },
-        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+        kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+        strict: true,
+        description: undefined,
       };
 
       const ast = parse(model);
       expect(toJSONDeep(ast)).toEqual({
         kind: ASTNodeKind.DOCUMENT,
-        definitions: [EnumA, EnumB],
+        definitions: [Model],
       });
     });
   });
 });
-
-
