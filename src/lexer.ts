@@ -25,6 +25,9 @@ export class Lexer {
    */
   lineStart: number;
 
+  /**
+   * is Lexer read insides of Enum?.
+   */
   isInsideEnum = false;
 
   constructor(source: Source) {
@@ -128,10 +131,6 @@ function readToken(lexer: Lexer, prev: Token): Token {
       }
 
       case 41: //  )
-        // if (!lexer.isInsideEnum) {
-        //   throw syntaxError(source, pos, unexpectedCharacterMessage(code));
-        // }
-
         lexer.isInsideEnum = false;
 
         return new Token(TokenKind.PAREN_R, pos, pos + 1, line, col, prev);
@@ -384,8 +383,8 @@ function readName(
 }
 
 /**
- * Allow any symbols inside Enum definition
- *
+ * Reads Name token inside Enum context
+ * 
  */
 function readNameInsideEnum(
   source: Source,
@@ -397,23 +396,27 @@ function readNameInsideEnum(
   const body = source.body;
   const bodyLength = body.length;
   let position = start + 1;
-  let braces = 0;
+  let parenthesisCount = 0;
   let code = 0;
 
-  while (position !== bodyLength && !isNaN((code = body.charCodeAt(position))) && code !== 124) {
-    if (braces === 0 && code === 41) {
+  // For now allow any symbols inside Enum definition
+  // Need implement some restrictions in future
+
+  while (position !== bodyLength && !isNaN((code = body.charCodeAt(position))) && code !== 124 /* | */) {
+    if (parenthesisCount === 0 && code === 41 /* ) */) {
       break;
     }
 
     if (code === 40) {
-      braces += 1;
+      parenthesisCount += 1;
     }
 
     if (code === 41) {
-      braces -= 1;
+      parenthesisCount -= 1;
     }
 
-    if (braces > 1 || braces < 0) {
+    if (parenthesisCount > 1 || parenthesisCount < 0) {
+      // no unbalanced or nested parenthesis
       throw syntaxError(source, position, unexpectedCharacterMessage(code));
     }
 
