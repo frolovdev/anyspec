@@ -35,7 +35,7 @@
         => TigerDocument
 
     // **Send** for signature
-    POST /tiger_documents/:id/send_for_signature {messageSenderId?: i, conversationId?: i, ticketId?: i, taskId?: i, isNewTicketRequired?: b}
+    POST /tiger_documents/:id/send_for_signature {messageSenderId?: i, conversationId?: i, ticketId?: i, taskId?: i, isNewTicketRequired?: b }
         => {tigerDocument: TigerDocument, pandaDocument: PandaDocument, messageIds: i[]}
 
     // **GET** tiger document as pdf
@@ -44,3 +44,15 @@
 
 GET /hero/exchangeRates?HrGetExchangeRateRequestQuery
   => HrGetExchangeRateListResponse
+
+
+`/roles`:
+    @token $CRUDL /roles
+
+HEAD /pechkin/mandrill/event
+  => {}
+
+// **Delete**
+    // Permissions: `companies:write`
+    @token DELETE /accounting/bank_accounts/:id:i
+        => 204

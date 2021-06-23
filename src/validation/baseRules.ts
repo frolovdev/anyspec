@@ -1,3 +1,4 @@
+import { KnownTypeNamesRule } from './rules/knownTypeNames.rule';
 import { ValidationRule } from './validationContext';
 
 /**
@@ -6,4 +7,4 @@ import { ValidationRule } from './validationContext';
  * The order of the rules in this list has been adjusted to lead to the
  * most clear output when encountering multiple validation errors.
  */
-export const baseRules: ReadonlyArray<ValidationRule> = [];
+export const baseRules: ReadonlyArray<ValidationRule> = [KnownTypeNamesRule];
