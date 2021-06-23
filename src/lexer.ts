@@ -384,7 +384,7 @@ function readName(
 
 /**
  * Reads Name token inside Enum context
- * 
+ *
  */
 function readNameInsideEnum(
   source: Source,
@@ -399,28 +399,49 @@ function readNameInsideEnum(
   let parenthesisCount = 0;
   let code = 0;
 
-  // For now allow any symbols inside Enum definition
-  // Need implement some restrictions in future
+  while (
+    position !== bodyLength &&
+    !isNaN((code = body.charCodeAt(position))) &&
+    (code === 95 || // _
+      code === 45 || // -
+      (code >= 48 && code <= 57) || // 0-9
+      (code >= 65 && code <= 90) || // A-Z
+      (code >= 97 && code <= 122) || // a-z
+      code === 32 || //  <space>
+      code === 44 || //  ,
+      code === 33 || //  !
+      code === 36 || //  $
+      code === 38 || //  &
+      code === 39 || // '
+      code === 40 || // (
+      code === 41 || // )
+      code === 46 || //  .
+      code === 34 || // "
+      code === 43) // +
+  ) {
 
-  while (position !== bodyLength && !isNaN((code = body.charCodeAt(position))) && code !== 124 /* | */) {
-    if (parenthesisCount === 0 && code === 41 /* ) */) {
-      break;
+    if (code === 41 && parenthesisCount === 0) {
+      break
+    }
+
+    if (code === 124 && parenthesisCount !== 0) {
+      throw syntaxError(source, position, 'unbalanced parenthesis inside unum definition');
     }
 
     if (code === 40) {
-      parenthesisCount += 1;
+      parenthesisCount++;
     }
 
     if (code === 41) {
-      parenthesisCount -= 1;
-    }
-
-    if (parenthesisCount > 1 || parenthesisCount < 0) {
-      // no unbalanced or nested parenthesis
-      throw syntaxError(source, position, unexpectedCharacterMessage(code));
+      parenthesisCount--;
     }
 
     ++position;
+  }
+
+  if (parenthesisCount !== 0) {
+    // no unbalanced parenthesis
+    throw syntaxError(source, position, 'unbalanced parenthesis inside unum definition');
   }
 
   const value = body.slice(start, position).trim();

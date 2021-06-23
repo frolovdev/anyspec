@@ -658,29 +658,131 @@ describe('lexer understands enums', () => {
     expect(tokens).toEqual(['CompanyType', '(', 'b-office-singapore', '|', 'exempt-private', ')']);
   });
 
-  it('unbalanced parenthesis not allowed', () => {
+  it.only('unbalanced parenthesis not allowed', () => {
     const enumString = new Source(`CompanyType (
-      Limited Partnership ((LP) |
-      exempt-private
+      Limited Partnership (LP)) |
+      exempt-private |
     )`);
 
-    try {
-      getFullTokenList(enumString);
-    } catch (e) {
-      expect(e).toBeInstanceOf(AnySpecError)
-    }
+    console.log(getFullTokenList(enumString))
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
   });
 
-  it('nested parenthesis not allowed', () => {
+  it('unbalanced parenthesis not allowed 2', () => {
     const enumString = new Source(`CompanyType (
-      Limited Partnership ((LP)) |
+      Limited Partnership (LP)( |
       exempt-private
     )`);
 
-    try {
-      getFullTokenList(enumString);
-    } catch (e) {
-      expect(e).toBeInstanceOf(AnySpecError)
-    }
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+  it('unbalanced parenthesis not allowed 3', () => {
+    const enumString = new Source(`CompanyType (
+      (Limited Partnership |
+      exempt-private
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+  it('unbalanced parenthesis not allowed 4', () => {
+    const enumString = new Source(`CompanyType (
+      )Limited Partnership |
+      exempt-private
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+
+  it('unbalanced parenthesis not allowed 5', () => {
+    const enumString = new Source(`CompanyType (
+      )Limited Partnership( |
+      exempt-private
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+  it('unbalanced parenthesis not allowed 6', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership |
+      exempt-private) |
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+
+  it('unbalanced parenthesis not allowed 7', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership |
+      exempt-private)
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+
+  it('unbalanced parenthesis not allowed 8', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership |
+      exempt-private(
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+
+  it('unbalanced parenthesis not allowed 9', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership |
+      exempt-private( |
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+
+  it('unbalanced parenthesis not allowed 9', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership |
+      )exempt-private( |
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
+  });
+
+  it('unbalanced parenthesis not allowed 10', () => {
+    const enumString = new Source(`CompanyType (
+      Limited Partnership |
+      (exempt-private( 
+    )`);
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unbalanced parenthesis inside unum definition',
+    );
   });
 });
