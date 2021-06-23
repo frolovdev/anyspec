@@ -416,10 +416,10 @@ function readNameInsideEnum(
       code === 40 || // (
       code === 41 || // )
       code === 46 || //  .
+      code === 47 || // /
       code === 34 || // "
       code === 43) // +
   ) {
-
     if (code === 41 && parenthesisCount === 0) {
       break;
     }

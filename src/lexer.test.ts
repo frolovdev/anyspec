@@ -596,6 +596,7 @@ describe('lexer understands enums', () => {
       Private Company Limited by Shares (Pte. Ltd.) |
     
       Private Limited Company, use of 'Limited' exemption |
+      Converted / closed |
       Protected cell company |
       Assurance company |
     )`);
@@ -616,6 +617,8 @@ describe('lexer understands enums', () => {
       'Private Company Limited by Shares (Pte. Ltd.)',
       '|',
       "Private Limited Company, use of 'Limited' exemption",
+      '|',
+      'Converted / closed',
       '|',
       'Protected cell company',
       '|',
