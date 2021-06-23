@@ -25,6 +25,7 @@ export const ASTNodeKind = {
   MODEL_TYPE_DEFINITION: 'ModelTypeDefinition',
   ENUM_INLINE_TYPE_DEFINITION: 'EnumInlineTypeDefinition',
   OBJECT_TYPE_DEFINITION: 'ObjectTypeDefinition',
+  ENUM_TYPE_DEFINITION: 'EnumTypeDefinition',
 } as const;
 
 /**
@@ -43,6 +44,7 @@ export type ASTNode =
   | ModelTypeDefinitionNode
   | ObjectTypeDefinitionNode
   | EnumInlineTypeDefinitionNode
+  | EnumTypeDefinitionNode
   | EnumValueDefinitionNode
   | ModelDescriptionNode
   | NameNode
@@ -68,7 +70,7 @@ export interface DocumentNode {
   readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
-export type TypeDefinitionNode = ModelTypeDefinitionNode;
+export type TypeDefinitionNode = ModelTypeDefinitionNode | EnumTypeDefinitionNode;
 
 export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';
@@ -96,7 +98,11 @@ export interface FieldDefinitionNode {
   readonly optional: boolean;
 }
 
-export type TypeNode = NamedTypeNode | ListTypeNode | EnumInlineTypeDefinitionNode | ObjectTypeDefinitionNode;
+export type TypeNode =
+  | NamedTypeNode
+  | ListTypeNode
+  | EnumInlineTypeDefinitionNode
+  | ObjectTypeDefinitionNode;
 
 export interface ListTypeNode {
   readonly kind: 'ListType';
@@ -106,6 +112,13 @@ export interface ListTypeNode {
 
 export interface EnumInlineTypeDefinitionNode {
   readonly kind: 'EnumInlineTypeDefinition';
+  readonly loc?: Location;
+  readonly values: ReadonlyArray<EnumValueDefinitionNode>;
+}
+
+export interface EnumTypeDefinitionNode {
+  readonly kind: 'EnumTypeDefinition';
+  readonly name: NameNode;
   readonly loc?: Location;
   readonly values: ReadonlyArray<EnumValueDefinitionNode>;
 }

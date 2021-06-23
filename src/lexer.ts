@@ -25,6 +25,11 @@ export class Lexer {
    */
   lineStart: number;
 
+  /**
+   * is Lexer read insides of Enum?.
+   */
+  isInsideEnum = false;
+
   constructor(source: Source) {
     const startOfFileToken = new Token(TokenKind.SOF, 0, 0, 0, 0, null);
 
@@ -99,26 +104,51 @@ function readToken(lexer: Lexer, prev: Token): Token {
         lexer.lineStart = pos;
         continue;
       case 33: //  !
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         return new Token(TokenKind.BANG, pos, pos + 1, line, col, prev);
       case 35: //  #
         return readComment(source, pos, line, col, prev);
       case 36: //  $
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         return new Token(TokenKind.DOLLAR, pos, pos + 1, line, col, prev);
       case 38: //  &
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         return new Token(TokenKind.AMP, pos, pos + 1, line, col, prev);
-      case 40: //  (
+      case 40: {
+        //  (
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
+
+        lexer.isInsideEnum = true;
         return new Token(TokenKind.PAREN_L, pos, pos + 1, line, col, prev);
+      }
+
       case 41: //  )
+        lexer.isInsideEnum = false;
+
         return new Token(TokenKind.PAREN_R, pos, pos + 1, line, col, prev);
       case 46: //  .
         // if (body.charCodeAt(pos + 1) === 46 && body.charCodeAt(pos + 2) === 46) {
         //   return new Token(TokenKind.SPREAD, pos, pos + 3, line, col, prev);
         // }
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
         break;
       case 47: // /
         return readModelDescription(source, pos, line, col, prev);
       case 58: //  :
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         return new Token(TokenKind.COLON, pos, pos + 1, line, col, prev);
       case 61: //  =
         return new Token(TokenKind.EQUALS, pos, pos + 1, line, col, prev);
@@ -143,10 +173,21 @@ function readToken(lexer: Lexer, prev: Token): Token {
         // }
         // return readString(source, pos, line, col, prev);
         // for now we dont support strings
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
 
+      case 43: {
+        // +
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
+        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+      }
+
       case 45: //  - for now we allow dashes to in words
-        return readName(source, pos, line, col, prev);
+        return readName(source, pos, line, col, prev, lexer.isInsideEnum);
       case 48: //  0
       case 49: //  1
       case 50: //  2
@@ -165,6 +206,9 @@ function readToken(lexer: Lexer, prev: Token): Token {
         return new Token(TokenKind.EXTENDS, pos, pos + 1, line, col, prev);
 
       case 63: // ?
+        if (lexer.isInsideEnum) {
+          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        }
         return new Token(TokenKind.QUESTION_MARK, pos, pos + 1, line, col, prev);
       case 65: //  A
       case 66: //  B
@@ -219,7 +263,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
       case 120: // x
       case 121: // y
       case 122: // z
-        return readName(source, pos, line, col, prev);
+        return readName(source, pos, line, col, prev, lexer.isInsideEnum);
     }
 
     throw syntaxError(source, pos, unexpectedCharacterMessage(code));
@@ -227,6 +271,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
 
   const line = lexer.line;
   const col = 1 + pos - lexer.lineStart;
+
   return new Token(TokenKind.EOF, bodyLength, bodyLength, line, col, prev);
 }
 
@@ -312,7 +357,12 @@ function readName(
   line: number,
   col: number,
   prev: Token | null,
+  isInsideEnum?: boolean,
 ): Token {
+  if (isInsideEnum) {
+    return readNameInsideEnum(source, start, line, col, prev);
+  }
+
   const body = source.body;
   const bodyLength = body.length;
   let position = start + 1;
@@ -330,6 +380,69 @@ function readName(
     ++position;
   }
   return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
+}
+
+/**
+ * Reads Name token inside Enum context
+ *
+ */
+function readNameInsideEnum(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token | null,
+): Token {
+  const body = source.body;
+  const bodyLength = body.length;
+  let position = start;
+  let parenthesisCount = 0;
+  let code = 0;
+
+  while (
+    position !== bodyLength &&
+    !isNaN((code = body.charCodeAt(position))) &&
+    (code === 95 || // _
+      code === 45 || // -
+      (code >= 48 && code <= 57) || // 0-9
+      (code >= 65 && code <= 90) || // A-Z
+      (code >= 97 && code <= 122) || // a-z
+      code === 32 || //  <space>
+      code === 44 || //  ,
+      code === 33 || //  !
+      code === 36 || //  $
+      code === 38 || //  &
+      code === 39 || // '
+      code === 40 || // (
+      code === 41 || // )
+      code === 46 || //  .
+      code === 47 || // /
+      code === 34 || // "
+      code === 43) // +
+  ) {
+    if (code === 41 && parenthesisCount === 0) {
+      break;
+    }
+
+    if (code === 40) {
+      parenthesisCount++;
+    }
+
+    if (code === 41) {
+      parenthesisCount--;
+    }
+
+    ++position;
+  }
+
+  if (parenthesisCount !== 0) {
+    // no unbalanced parenthesis
+    throw syntaxError(source, position, 'parenthesis should be balanced inside enum definition');
+  }
+
+  const value = body.slice(start, position).trim();
+
+  return new Token(TokenKind.NAME, start, position, line, col, prev, value);
 }
 
 function readModelDescription(
