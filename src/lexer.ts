@@ -437,7 +437,7 @@ function readNameInsideEnum(
 
   if (parenthesisCount !== 0) {
     // no unbalanced parenthesis
-    throw syntaxError(source, position, 'unbalanced parenthesis inside unum definition');
+    throw syntaxError(source, position, 'unbalanced parenthesis inside enum definition');
   }
 
   const value = body.slice(start, position).trim();

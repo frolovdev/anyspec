@@ -569,8 +569,6 @@ describe('isPunctuatorTokenKind', () => {
 });
 
 describe('lexer understands enums', () => {
-
-
   it('lexer understand normal enum', () => {
     const enumString = new Source(`A (f | b)`);
 
@@ -669,7 +667,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
+      'Syntax Error: unbalanced parenthesis inside enum definition',
     );
   });
 
@@ -680,7 +678,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
+      'Syntax Error: unbalanced parenthesis inside enum definition',
     );
   });
 
@@ -691,7 +689,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
+      'Syntax Error: unbalanced parenthesis inside enum definition',
     );
   });
 
@@ -702,7 +700,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
+      'Syntax Error: unbalanced parenthesis inside enum definition',
     );
   });
 
@@ -713,7 +711,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
+      'Syntax Error: unbalanced parenthesis inside enum definition',
     );
   });
 });

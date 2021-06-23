@@ -1127,6 +1127,8 @@ describe(__filename, () => {
           )
 
           MyModel {color: A}
+
+          B (c | d)
         `;
       const EnumA: EnumTypeDefinitionNode = {
         values: [
@@ -1148,6 +1150,30 @@ describe(__filename, () => {
         name: {
           kind: ASTNodeKind.NAME,
           value: 'A',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const EnumB: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'c',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'd',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'B',
         },
         kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
       };
@@ -1184,7 +1210,7 @@ describe(__filename, () => {
       const ast = parse(model);
       expect(toJSONDeep(ast)).toEqual({
         kind: ASTNodeKind.DOCUMENT,
-        definitions: [EnumA, MyModel],
+        definitions: [EnumA, MyModel, EnumB],
       });
     });
 
@@ -1460,6 +1486,8 @@ describe(__filename, () => {
       )
       
       Model {}
+
+      A (b | c)
       `;
 
       expect(() => parse(enumString)).toThrow();
@@ -1509,6 +1537,76 @@ describe(__filename, () => {
       `;
 
       expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 6', () => {
+      const enumString = `CompanyType (
+        Limited Partnership (LP)( |
+        exempt-private
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+    });
+
+    it('unbalanced parenthesis not allowed 7', () => {
+      const enumString = `CompanyType (
+        (Limited Partnership |
+        exempt-private
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+    });
+
+
+    it('unbalanced parenthesis not allowed 8', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        exempt-private(
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+    });
+
+    it('unbalanced parenthesis not allowed 9', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        exempt-private( |
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+    });
+
+    it('unbalanced parenthesis not allowed 10', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        (exempt-private( 
+      )
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
     });
   });
 });
