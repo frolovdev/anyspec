@@ -16,6 +16,19 @@ function lexSecond(str: string) {
   return lexer.advance();
 }
 
+const getFullTokenList = (source: Source) => {
+  const lexer = new Lexer(source);
+
+  let tokenList = [];
+
+  while (lexer.lookahead().kind !== TokenKind.EOF) {
+    let current = lexer.advance();
+    tokenList.push(current.kind === TokenKind.NAME ? current.value : current.kind);
+  }
+
+  return tokenList;
+};
+
 function expectSyntaxErrorFirst(text: string, expectedError: any) {
   let error = null;
   try {
@@ -556,18 +569,7 @@ describe('isPunctuatorTokenKind', () => {
 });
 
 describe('lexer understands enums', () => {
-  const getFullTokenList = (source: Source) => {
-    const lexer = new Lexer(source);
 
-    let tokenList = [];
-
-    while (lexer.lookahead().kind !== TokenKind.EOF) {
-      let current = lexer.advance();
-      tokenList.push(current.kind === TokenKind.NAME ? current.value : current.kind);
-    }
-
-    return tokenList;
-  };
 
   it('lexer understand normal enum', () => {
     const enumString = new Source(`A (f | b)`);
@@ -657,21 +659,10 @@ describe('lexer understands enums', () => {
 
     expect(tokens).toEqual(['CompanyType', '(', 'b-office-singapore', '|', 'exempt-private', ')']);
   });
+});
 
-  it.only('unbalanced parenthesis not allowed', () => {
-    const enumString = new Source(`CompanyType (
-      Limited Partnership (LP)) |
-      exempt-private |
-    )`);
-
-    console.log(getFullTokenList(enumString))
-
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
-    );
-  });
-
-  it('unbalanced parenthesis not allowed 2', () => {
+describe('lexer can catch some parenthesis errors inside enums', () => {
+  it('unbalanced parenthesis not allowed 1', () => {
     const enumString = new Source(`CompanyType (
       Limited Partnership (LP)( |
       exempt-private
@@ -682,7 +673,7 @@ describe('lexer understands enums', () => {
     );
   });
 
-  it('unbalanced parenthesis not allowed 3', () => {
+  it('unbalanced parenthesis not allowed 2', () => {
     const enumString = new Source(`CompanyType (
       (Limited Partnership |
       exempt-private
@@ -693,54 +684,7 @@ describe('lexer understands enums', () => {
     );
   });
 
-  it('unbalanced parenthesis not allowed 4', () => {
-    const enumString = new Source(`CompanyType (
-      )Limited Partnership |
-      exempt-private
-    )`);
-
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
-    );
-  });
-
-
-  it('unbalanced parenthesis not allowed 5', () => {
-    const enumString = new Source(`CompanyType (
-      )Limited Partnership( |
-      exempt-private
-    )`);
-
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
-    );
-  });
-
-  it('unbalanced parenthesis not allowed 6', () => {
-    const enumString = new Source(`CompanyType (
-      Limited Partnership |
-      exempt-private) |
-    )`);
-
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
-    );
-  });
-
-
-  it('unbalanced parenthesis not allowed 7', () => {
-    const enumString = new Source(`CompanyType (
-      Limited Partnership |
-      exempt-private)
-    )`);
-
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
-    );
-  });
-
-
-  it('unbalanced parenthesis not allowed 8', () => {
+  it('unbalanced parenthesis not allowed 3', () => {
     const enumString = new Source(`CompanyType (
       Limited Partnership |
       exempt-private(
@@ -751,8 +695,7 @@ describe('lexer understands enums', () => {
     );
   });
 
-
-  it('unbalanced parenthesis not allowed 9', () => {
+  it('unbalanced parenthesis not allowed 4', () => {
     const enumString = new Source(`CompanyType (
       Limited Partnership |
       exempt-private( |
@@ -763,19 +706,7 @@ describe('lexer understands enums', () => {
     );
   });
 
-
-  it('unbalanced parenthesis not allowed 9', () => {
-    const enumString = new Source(`CompanyType (
-      Limited Partnership |
-      )exempt-private( |
-    )`);
-
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside unum definition',
-    );
-  });
-
-  it('unbalanced parenthesis not allowed 10', () => {
+  it('unbalanced parenthesis not allowed 5', () => {
     const enumString = new Source(`CompanyType (
       Limited Partnership |
       (exempt-private( 

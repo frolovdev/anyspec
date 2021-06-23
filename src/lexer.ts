@@ -395,7 +395,7 @@ function readNameInsideEnum(
 ): Token {
   const body = source.body;
   const bodyLength = body.length;
-  let position = start + 1;
+  let position = start;
   let parenthesisCount = 0;
   let code = 0;
 
@@ -421,11 +421,7 @@ function readNameInsideEnum(
   ) {
 
     if (code === 41 && parenthesisCount === 0) {
-      break
-    }
-
-    if (code === 124 && parenthesisCount !== 0) {
-      throw syntaxError(source, position, 'unbalanced parenthesis inside unum definition');
+      break;
     }
 
     if (code === 40) {

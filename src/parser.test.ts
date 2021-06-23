@@ -1449,4 +1449,66 @@ describe(__filename, () => {
       });
     });
   });
+
+  describe('enum with parenthesis errors', () => {
+    // We cant cath all parenthesis errors in Lexer, so some cases can leaks to parser
+
+    it('unbalanced parenthesis not allowed', () => {
+      const enumString = `CompanyType (
+        Limited Partnership (LP)) |
+        exempt-private |
+      )
+      
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 2', () => {
+      const enumString = `CompanyType (
+        )Limited Partnership |
+        exempt-private
+      )
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 3', () => {
+      const enumString = `CompanyType (
+        )Limited Partnership( |
+        exempt-private
+      )
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 4', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        exempt-private) |
+      )
+      
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 5', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        )exempt-private( |
+      )
+      
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+  });
 });
