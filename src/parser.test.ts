@@ -1,4 +1,4 @@
-import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode  } from './language';
+import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
 import { AnySpecError } from './error/AnySpecError';
 import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
@@ -1122,10 +1122,13 @@ describe(__filename, () => {
     it('correctly parse model that uses named enum', () => {
       const model = `
           A (
-            f | b | 
+            f |
+            b
           )
 
           MyModel {color: A}
+
+          B (c | d)
         `;
       const EnumA: EnumTypeDefinitionNode = {
         values: [
@@ -1147,6 +1150,30 @@ describe(__filename, () => {
         name: {
           kind: ASTNodeKind.NAME,
           value: 'A',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const EnumB: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'c',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'd',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'B',
         },
         kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
       };
@@ -1183,8 +1210,403 @@ describe(__filename, () => {
       const ast = parse(model);
       expect(toJSONDeep(ast)).toEqual({
         kind: ASTNodeKind.DOCUMENT,
-        definitions: [EnumA, MyModel],
+        definitions: [EnumA, MyModel, EnumB],
       });
+    });
+
+    it('correctly parse model with named with complicated values', () => {
+      const model = `
+          CompanyType (
+            Branch Office Singapore |
+            Private Company 'Limited' by Shares (Pte. Ltd.) |
+            + amount | 
+            b-office-singapore
+          )
+        `;
+
+      const EnumA: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'Branch Office Singapore',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: "Private Company 'Limited' by Shares (Pte. Ltd.)",
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: '+ amount',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b-office-singapore',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'CompanyType',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA],
+      });
+    });
+
+    it('correctly parse model with complicated inline enums', () => {
+      const model = `
+          AcDocument < Kek, Lel !{
+            -name?: s[],
+            type?: ( + amount | - amount | summ + | Private Company 'Limited' by Shares (Pte. Ltd.) ),
+            kek: { conversationId: i, users: { id: i, nickname, avatar? }[] },
+            surname: b[],
+          }
+    
+        `;
+
+      const Model: ModelTypeDefinitionNode = {
+        fields: [
+          {
+            omitted: true,
+            optional: true,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'name',
+            },
+            type: {
+              kind: ASTNodeKind.LIST_TYPE,
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 's',
+                },
+              },
+            },
+          },
+          {
+            omitted: false,
+            optional: true,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'type',
+            },
+            type: {
+              kind: ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION,
+              values: [
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: { kind: ASTNodeKind.NAME, value: '+ amount' },
+                },
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: { kind: ASTNodeKind.NAME, value: '- amount' },
+                },
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: { kind: ASTNodeKind.NAME, value: 'summ +' },
+                },
+                {
+                  kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: "Private Company 'Limited' by Shares (Pte. Ltd.)",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            omitted: false,
+            optional: false,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'kek',
+            },
+            type: {
+              kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+              fields: [
+                {
+                  kind: ASTNodeKind.FIELD_DEFINITION,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: 'conversationId',
+                  },
+                  omitted: false,
+                  optional: false,
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'i',
+                    },
+                  },
+                },
+                {
+                  kind: ASTNodeKind.FIELD_DEFINITION,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: 'users',
+                  },
+                  omitted: false,
+                  optional: false,
+                  type: {
+                    kind: ASTNodeKind.LIST_TYPE,
+                    type: {
+                      kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                      fields: [
+                        {
+                          kind: ASTNodeKind.FIELD_DEFINITION,
+                          name: {
+                            kind: ASTNodeKind.NAME,
+                            value: 'id',
+                          },
+                          omitted: false,
+                          optional: false,
+                          type: {
+                            kind: ASTNodeKind.NAMED_TYPE,
+                            name: {
+                              kind: ASTNodeKind.NAME,
+                              value: 'i',
+                            },
+                          },
+                        },
+                        {
+                          kind: ASTNodeKind.FIELD_DEFINITION,
+                          name: {
+                            kind: ASTNodeKind.NAME,
+                            value: 'nickname',
+                          },
+                          omitted: false,
+                          optional: false,
+                          type: {
+                            kind: ASTNodeKind.NAMED_TYPE,
+                            name: {
+                              kind: ASTNodeKind.NAME,
+                              value: undefined,
+                            },
+                          },
+                        },
+                        {
+                          kind: ASTNodeKind.FIELD_DEFINITION,
+                          name: {
+                            kind: ASTNodeKind.NAME,
+                            value: 'avatar',
+                          },
+                          omitted: false,
+                          optional: true,
+                          type: {
+                            kind: ASTNodeKind.NAMED_TYPE,
+                            name: {
+                              kind: ASTNodeKind.NAME,
+                              value: undefined,
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            omitted: false,
+            optional: false,
+            kind: ASTNodeKind.FIELD_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'surname',
+            },
+            type: {
+              kind: ASTNodeKind.LIST_TYPE,
+              type: {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 'b',
+                },
+              },
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'AcDocument',
+        },
+        extendsModels: [
+          {
+            kind: ASTNodeKind.NAMED_TYPE,
+            name: { kind: ASTNodeKind.NAME, value: 'Kek' },
+          },
+          {
+            kind: ASTNodeKind.NAMED_TYPE,
+            name: { kind: ASTNodeKind.NAME, value: 'Lel' },
+          },
+        ],
+        kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+        strict: true,
+        description: undefined,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [Model],
+      });
+    });
+  });
+
+  describe('enum with parenthesis errors', () => {
+    // We cant cath all parenthesis errors in Lexer, so some cases can leaks to parser
+
+    it('unbalanced parenthesis not allowed', () => {
+      const enumString = `CompanyType (
+        Limited Partnership (LP)) |
+        exempt-private |
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 2', () => {
+      const enumString = `CompanyType (
+        )Limited Partnership |
+        exempt-private
+      )
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 3', () => {
+      const enumString = `CompanyType (
+        )Limited Partnership( |
+        exempt-private
+      )
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 4', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        exempt-private) |
+      )
+      
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 5', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        )exempt-private( |
+      )
+      
+      Model {}
+      `;
+
+      expect(() => parse(enumString)).toThrow();
+    });
+
+    it('unbalanced parenthesis not allowed 6', () => {
+      const enumString = `CompanyType (
+        Limited Partnership (LP)( |
+        exempt-private
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+    });
+
+    it('unbalanced parenthesis not allowed 7', () => {
+      const enumString = `CompanyType (
+        (Limited Partnership |
+        exempt-private
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+    });
+
+
+    it('unbalanced parenthesis not allowed 8', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        exempt-private(
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+    });
+
+    it('unbalanced parenthesis not allowed 9', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        exempt-private( |
+      )
+      
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+    });
+
+    it('unbalanced parenthesis not allowed 10', () => {
+      const enumString = `CompanyType (
+        Limited Partnership |
+        (exempt-private( 
+      )
+      Model {}
+
+      A (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
     });
   });
 });
