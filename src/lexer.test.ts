@@ -670,7 +670,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside enum definition',
+      'Syntax Error: parenthesis should be balanced inside enum definition',
     );
   });
 
@@ -681,7 +681,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside enum definition',
+      'Syntax Error: parenthesis should be balanced inside enum definition',
     );
   });
 
@@ -692,7 +692,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside enum definition',
+      'Syntax Error: parenthesis should be balanced inside enum definition',
     );
   });
 
@@ -703,7 +703,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside enum definition',
+      'Syntax Error: parenthesis should be balanced inside enum definition',
     );
   });
 
@@ -714,7 +714,7 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     )`);
 
     expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: unbalanced parenthesis inside enum definition',
+      'Syntax Error: parenthesis should be balanced inside enum definition',
     );
   });
 });

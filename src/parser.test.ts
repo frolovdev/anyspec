@@ -1550,7 +1550,7 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
     });
 
     it('unbalanced parenthesis not allowed 7', () => {
@@ -1564,7 +1564,7 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
     });
 
 
@@ -1579,7 +1579,7 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
     });
 
     it('unbalanced parenthesis not allowed 9', () => {
@@ -1593,7 +1593,7 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
     });
 
     it('unbalanced parenthesis not allowed 10', () => {
@@ -1606,7 +1606,7 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: unbalanced parenthesis inside enum definition");
+      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
     });
   });
 });
