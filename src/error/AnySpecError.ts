@@ -176,7 +176,6 @@ export class AnySpecError extends Error {
       return;
     }
 
-    // istanbul ignore next (See: 'https://github.com/graphql/graphql-js/issues/2317')
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, AnySpecError);
     } else {
@@ -192,7 +191,6 @@ export class AnySpecError extends Error {
     return printError(this);
   }
 
-  // FIXME: workaround to not break chai comparisons, should be remove in v16
   get [Symbol.toStringTag](): string {
     return 'Object';
   }
