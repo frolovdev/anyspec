@@ -236,7 +236,11 @@ function readToken(lexer: Lexer, prev: Token): Token {
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
         break;
       case 47: // /
-        return readModelDescription(source, pos, line, col, prev);
+        if (body.charCodeAt(pos + 1) === 47) {
+          return readModelDescription(source, pos, line, col, prev);
+        }
+
+        return readNameAfterSlash(source, pos, line, col, prev);
       case 58: //  :
         if (lexer.isInsideEnum) {
           return readName(source, pos, line, col, prev, lexer.isInsideEnum);
