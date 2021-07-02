@@ -723,15 +723,15 @@ describe('lexer can understand endpoints', () => {
   it.only('lexer can understand endpoints', () => {
     const enumString = new Source(
       `
-    \`/analytics_events\`:
-      // **Create**
-      @token POST /analytics_events AnalyticsEventNewRequest
-          => AnalyticsEventNewResponse
-
-      // **Send**
-      @token POST /analytics_events/:id:i/complete AnalyticsEventComplete
-          => { event: AnalyticsEvent }
-    `,
+      \`/analytics_events\`:
+          // **Create**
+          @token POST /analytics_events AnalyticsEventNewRequest
+              => AnalyticsEventNewResponse
+      
+          // **Send**
+          @token POST /analytics_events/:id:i/complete AnalyticsEventComplete
+              => { event: AnalyticsEvent }
+      `,
       'Tinyspec endpoints code',
       { line: 1, column: 1 },
       'endpoints',

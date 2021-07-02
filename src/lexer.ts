@@ -48,6 +48,8 @@ class IndentReader {
       ++position;
     }
 
+    console.log("spaceCount", spaceCount)
+
     if (spaceCount > this.level) {
       this.levels.push(spaceCount);
       return new Token(
@@ -167,23 +169,24 @@ function readToken(lexer: Lexer, prev: Token): Token {
     switch (code) {
       case 0xfeff: // <BOM> Short for byte order mark, BOM
       case 9: //   \t
-      case 32: //  <space>
+      case 32: {
+        if (body.charCodeAt(pos - 1) === 10) {
+          const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev)
+          if (token) {
+            return token
+          }
+        }
+      } //  <space>
       case 44: //  ,
         ++pos;
         continue;
-      case 10: {
+      case 10:
         //  \n
-        if (body.charCodeAt(pos + 1) === 30 /* space */) {
-          const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev);
-          if (token) {
-            return token;
-          }
-        }
+
         ++pos;
         ++lexer.line;
         lexer.lineStart = pos;
         continue;
-      }
 
       case 13: //  \r
         // \n
@@ -247,6 +250,10 @@ function readToken(lexer: Lexer, prev: Token): Token {
         }
         return new Token(TokenKind.COLON, pos, pos + 1, line, col, prev);
       case 61: //  =
+        if (body.charCodeAt(pos + 1) === 62) {
+          // =>
+          return new Token(TokenKind.RETURN, pos, pos + 2, line, col, prev);
+        }
         return new Token(TokenKind.EQUALS, pos, pos + 1, line, col, prev);
       case 64: //  @
         return new Token(TokenKind.AT, pos, pos + 1, line, col, prev);
