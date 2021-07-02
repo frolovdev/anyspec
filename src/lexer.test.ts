@@ -718,3 +718,29 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
     );
   });
 });
+
+describe('lexer can understand endpoints', () => {
+  it.only('lexer can understand endpoints', () => {
+    const enumString = new Source(
+      `
+    \`/analytics_events\`:
+      // **Create**
+      @token POST /analytics_events AnalyticsEventNewRequest
+          => AnalyticsEventNewResponse
+
+      // **Send**
+      @token POST /analytics_events/:id:i/complete AnalyticsEventComplete
+          => { event: AnalyticsEvent }
+    `,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    console.log(getFullTokenList(enumString));
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: parenthesis should be balanced inside enum definition',
+    );
+  });
+});

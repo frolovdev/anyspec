@@ -2,6 +2,37 @@ import { Token, TokenKind, TokenKindEnum } from './token';
 import { Source } from './source';
 import { syntaxError } from './error/syntaxError';
 
+
+// level = 0
+// levels = []
+// for c = getc():
+//     if c=='\n':
+//         emit('\n')
+//         n = 0
+//         while (c=getc())==' ':
+//             n += 1
+//         if n > level:
+//             emit(indent)
+//             push(levels,n)
+//         while n < level:
+//             emit(dedent)
+//             level = pop(levels)
+//             if level < n:
+//                 error tokenize
+//         # fall through
+//     emit(c) #lazy example
+
+
+class IndentsReader {
+  level = 0;
+  levels = [];
+
+  spaceCount = 0;
+
+
+}
+
+
 export class Lexer {
   source: Source;
 
