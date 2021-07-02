@@ -25,7 +25,13 @@ class IndentReader {
   level: number = 0;
   levels: number[] = [];
 
-  readIndent(source: Source, start: number, line: number, col: number, prev: Token | null): Token {
+  readInsideIndent(
+    source: Source,
+    start: number,
+    line: number,
+    col: number,
+    prev: Token | null,
+  ): Token | null {
     const body = source.body;
     const bodyLength = body.length;
     let position = start + 1;
@@ -33,28 +39,47 @@ class IndentReader {
     let code = 0;
     let spaceCount = 0;
 
-    while (position !== bodyLength && !isNaN((code = body.charCodeAt(position))) && code === 30 /* <space> */) {
+    while (
+      position !== bodyLength &&
+      !isNaN((code = body.charCodeAt(position))) &&
+      code === 30 /* <space> */
+    ) {
       spaceCount += 1;
       ++position;
     }
 
     if (spaceCount > this.level) {
-      this.levels.push(spaceCount)
-      return new Token(TokenKind.INDENT, start, position, line, col, prev, body.slice(start, position));
+      this.levels.push(spaceCount);
+      return new Token(
+        TokenKind.INDENT,
+        start,
+        position,
+        line,
+        col,
+        prev,
+        body.slice(start, position),
+      );
     }
 
     if (spaceCount < this.level) {
-      this.level = this.levels.pop() ?? 0
+      this.level = this.levels.pop() ?? 0;
 
       if (this.level < spaceCount) {
-        throw syntaxError(source, position, "incorrect indentation");
+        throw syntaxError(source, position, 'incorrect indentation');
       }
 
-      return new Token(TokenKind.DE_INDENT, start, position, line, col, prev, body.slice(start, position));
+      return new Token(
+        TokenKind.DE_INDENT,
+        start,
+        position,
+        line,
+        col,
+        prev,
+        body.slice(start, position),
+      );
     }
 
-    throw syntaxError(source, position, "incorrect indentation v2");
-
+    return null; // same indentation level
   }
 }
 
@@ -85,6 +110,8 @@ export class Lexer {
    * is Lexer read insides of Enum?.
    */
   isInsideEnum = false;
+
+  indentReader = new IndentReader();
 
   constructor(source: Source) {
     const startOfFileToken = new Token(TokenKind.SOF, 0, 0, 0, 0, null);
@@ -144,11 +171,20 @@ function readToken(lexer: Lexer, prev: Token): Token {
       case 44: //  ,
         ++pos;
         continue;
-      case 10: //  \n
+      case 10: {
+        //  \n
+        if (body.charCodeAt(pos + 1) === 30 /* space */) {
+          const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev);
+          if (token) {
+            return token;
+          }
+        }
         ++pos;
         ++lexer.line;
         lexer.lineStart = pos;
         continue;
+      }
+
       case 13: //  \r
         // \n
         if (body.charCodeAt(pos + 1) === 10) {
@@ -501,12 +537,11 @@ function readNameInsideEnum(
   return new Token(TokenKind.NAME, start, position, line, col, prev, value);
 }
 
-
 /**
  * Reads an any symbol inside `...` name from the source.
  *
  */
- function readNameWithGraveAccentMarks(
+function readNameWithGraveAccentMarks(
   source: Source,
   start: number,
   line: number,
@@ -562,7 +597,6 @@ function readNameAfterSlash(
   }
   return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
 }
-
 
 function readModelDescription(
   source: Source,
