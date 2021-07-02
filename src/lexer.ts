@@ -278,6 +278,9 @@ function readToken(lexer: Lexer, prev: Token): Token {
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
       }
 
+      case 96: // `
+        return readNameWithGraveAccentMarks(source, pos, line, col, prev);
+
       case 45: //  - for now we allow dashes to in words
         return readName(source, pos, line, col, prev, lexer.isInsideEnum);
       case 48: //  0
