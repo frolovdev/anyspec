@@ -2,7 +2,6 @@ import { Token, TokenKind, TokenKindEnum } from './token';
 import { Source } from './source';
 import { syntaxError } from './error/syntaxError';
 
-
 // level = 0
 // levels = []
 // for c = getc():
@@ -22,16 +21,42 @@ import { syntaxError } from './error/syntaxError';
 //         # fall through
 //     emit(c) #lazy example
 
+class IndentReader {
+  level: number = 0;
+  levels: number[] = [];
 
-class IndentsReader {
-  level = 0;
-  levels = [];
+  readIndent(source: Source, start: number, line: number, col: number, prev: Token | null): Token {
+    const body = source.body;
+    const bodyLength = body.length;
+    let position = start + 1;
 
-  spaceCount = 0;
+    let code = 0;
+    let spaceCount = 0;
 
+    while (position !== bodyLength && !isNaN((code = body.charCodeAt(position))) && code === 30 /* <space> */) {
+      spaceCount += 1;
+      ++position;
+    }
 
+    if (spaceCount > this.level) {
+      this.levels.push(spaceCount)
+      return new Token(TokenKind.INDENT, start, position, line, col, prev, body.slice(start, position));
+    }
+
+    if (spaceCount < this.level) {
+      this.level = this.levels.pop() ?? 0
+
+      if (this.level < spaceCount) {
+        throw syntaxError(source, position, "incorrect indentation");
+      }
+
+      return new Token(TokenKind.DE_INDENT, start, position, line, col, prev, body.slice(start, position));
+    }
+
+    throw syntaxError(source, position, "incorrect indentation v2");
+
+  }
 }
-
 
 export class Lexer {
   source: Source;
