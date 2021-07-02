@@ -501,6 +501,69 @@ function readNameInsideEnum(
   return new Token(TokenKind.NAME, start, position, line, col, prev, value);
 }
 
+
+/**
+ * Reads an any symbol inside `...` name from the source.
+ *
+ */
+ function readNameWithGraveAccentMarks(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token | null,
+) {
+  const body = source.body;
+  const bodyLength = body.length;
+  let position = start + 1;
+
+  let code = 0;
+  while (
+    position !== bodyLength &&
+    !isNaN((code = body.charCodeAt(position))) &&
+    code !== 96 // `
+  ) {
+    ++position;
+  }
+  return new Token(
+    TokenKind.NAME,
+    start,
+    position + 1,
+    line,
+    col,
+    prev,
+    body.slice(start + 1, position),
+  );
+}
+
+/**
+ * Reads an any symbol after '/' from the source.
+ *
+ */
+function readNameAfterSlash(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token | null,
+) {
+  const body = source.body;
+  const bodyLength = body.length;
+  let position = start + 1;
+
+  let code = 0;
+
+  while (
+    position !== bodyLength &&
+    !isNaN((code = body.charCodeAt(position))) &&
+    !(code === 32 || code === (10 as number))
+  ) {
+    ++position;
+  }
+  return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
+}
+
+
 function readModelDescription(
   source: Source,
   start: number,
