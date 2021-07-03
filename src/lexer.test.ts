@@ -720,27 +720,183 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
 });
 
 describe('lexer can understand endpoints', () => {
-  it.only('lexer can understand endpoints', () => {
+  it('lexer can understand endpoints basic', () => {
+    const sourceString = `
+\`/analytics_events\`:
+  // **Create**
+  @token POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+  POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+`;
     const enumString = new Source(
-      `
-      \`/analytics_events\`:
-          // **Create**
-          @token POST /analytics_events AnalyticsEventNewRequest
-              => AnalyticsEventNewResponse
-      
-          // **Send**
-          @token POST /analytics_events/:id:i/complete AnalyticsEventComplete
-              => { event: AnalyticsEvent }
-      `,
+      sourceString,
       'Tinyspec endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
 
-    console.log(getFullTokenList(enumString));
+    const expectedTokens = [
+      '/analytics_events',
+      ':',
+      '<INDENT>',
+      'Description',
+      '@',
+      'token',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      '<DEDENT>',
+    ];
 
-    expect(() => getFullTokenList(enumString)).toThrow(
-      'Syntax Error: parenthesis should be balanced inside enum definition',
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+
+  it('lexer can understand endpoints basic, should ignore empty lines', () => {
+    const sourceString = `
+\`/analytics_events\`:
+  // **Create**
+  @token POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+              
+
+
+  POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
     );
+
+    const expectedTokens = [
+      '/analytics_events',
+      ':',
+      '<INDENT>',
+      'Description',
+      '@',
+      'token',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+
+  it('lexer can understand endpoints basic v2', () => {
+    const sourceString = `
+\`/analytics_events\`:
+  // **Create**
+  @token POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+    
+POST /analytics_events AnalyticsEventNewRequest
+  => AnalyticsEventNewResponse
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    const expectedTokens = [
+      '/analytics_events',
+      ':',
+      '<INDENT>',
+      'Description',
+      '@',
+      'token',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      '<DEDENT>',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+
+  it('lexer can understand endpoints basic v3', () => {
+    const sourceString = `
+GET /hero/exchangeRates?HrGetExchangeRateRequestQuery
+  => HrGetExchangeRateListResponse
+  
+  
+\`/roles\`:
+  @token $CRUDL /roles
+  
+HEAD /pechkin/mandrill/event
+  => {}
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    const expectedTokens = [
+      'GET',
+      '/hero/exchangeRates?HrGetExchangeRateRequestQuery',
+      '<INDENT>',
+      '=>',
+      'HrGetExchangeRateListResponse',
+      '<DEDENT>',
+      '/roles',
+      ':',
+      '<INDENT>',
+      '@',
+      'token',
+      '$',
+      'CRUDL',
+      '/roles',
+      '<DEDENT>',
+      'HEAD',
+      '/pechkin/mandrill/event',
+      '<INDENT>',
+      '=>',
+      '{',
+      '}',
+      '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
   });
 });

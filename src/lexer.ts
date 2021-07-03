@@ -1,29 +1,14 @@
 import { Token, TokenKind, TokenKindEnum } from './token';
 import { Source } from './source';
 import { syntaxError } from './error/syntaxError';
-
-// level = 0
-// levels = []
-// for c = getc():
-//     if c=='\n':
-//         emit('\n')
-//         n = 0
-//         while (c=getc())==' ':
-//             n += 1
-//         if n > level:
-//             emit(indent)
-//             push(levels,n)
-//         while n < level:
-//             emit(dedent)
-//             level = pop(levels)
-//             if level < n:
-//                 error tokenize
-//         # fall through
-//     emit(c) #lazy example
-
 class IndentReader {
-  level: number = 0;
-  levels: number[] = [];
+  indents: number[] = [0];
+
+  private isEnabled: boolean;
+
+  constructor({ isEnabled }: { isEnabled: boolean }) {
+    this.isEnabled = isEnabled;
+  }
 
   readInsideIndent(
     source: Source,
@@ -31,27 +16,52 @@ class IndentReader {
     line: number,
     col: number,
     prev: Token | null,
-  ): Token | null {
+  ): Token | Token[] | null {
+    if (!this.isEnabled) {
+      return null;
+    }
+
     const body = source.body;
     const bodyLength = body.length;
     let position = start + 1;
 
     let code = 0;
-    let spaceCount = 0;
+    let column = 0;
 
     while (
       position !== bodyLength &&
       !isNaN((code = body.charCodeAt(position))) &&
-      code === 30 /* <space> */
+      code === 32 /* <space> */
     ) {
-      spaceCount += 1;
+      column += 1;
       ++position;
     }
 
-    console.log("spaceCount", spaceCount)
+    // ignore line with only spaces
+    if (body.charCodeAt(position) === 10) {
+      return null;
+    }
 
-    if (spaceCount > this.level) {
-      this.levels.push(spaceCount);
+    // if (column === 0 && this.indents.length > 1) {
+    //   let tokens: Token[] = [];
+    //   while (this.indents.length > 1) {
+    //     this.indents.pop();
+    //     tokens.push(
+    //       new Token(
+    //         TokenKind.DEDENT,
+    //         start,
+    //         position,
+    //         line,
+    //         col,
+    //         prev,
+    //         body.slice(start, position),
+    //       ),
+    //     );
+    //   }
+    // }
+
+    if (column > this.indents[this.indents.length - 1]) {
+      this.indents.push(column);
       return new Token(
         TokenKind.INDENT,
         start,
@@ -62,16 +72,29 @@ class IndentReader {
         body.slice(start, position),
       );
     }
+    let tokens: Token[] = [];
 
-    if (spaceCount < this.level) {
-      this.level = this.levels.pop() ?? 0;
-
-      if (this.level < spaceCount) {
-        throw syntaxError(source, position, 'incorrect indentation');
+    while (column < this.indents[this.indents.length - 1]) {
+     
+      if (!this.indents.includes(column)) {
+        throw syntaxError(source, position, 'unindent does not match any outer indentation level');
       }
 
+      this.indents.pop();
+
+      tokens.push(
+        new Token(TokenKind.DEDENT, start, position, line, col, prev, body.slice(start, position)),
+      );
+    }
+
+    if (tokens.length > 0) {
+      return tokens
+    }
+
+    if (column === 0 && this.indents.length > 1) {
+      this.indents.pop();
       return new Token(
-        TokenKind.DE_INDENT,
+        TokenKind.DEDENT,
         start,
         position,
         line,
@@ -113,7 +136,9 @@ export class Lexer {
    */
   isInsideEnum = false;
 
-  indentReader = new IndentReader();
+  indentReader: IndentReader;
+
+  remaining: Token[] = [];
 
   constructor(source: Source) {
     const startOfFileToken = new Token(TokenKind.SOF, 0, 0, 0, 0, null);
@@ -123,6 +148,7 @@ export class Lexer {
     this.token = startOfFileToken;
     this.line = 1;
     this.lineStart = 0;
+    this.indentReader = new IndentReader({ isEnabled: source.sourceType === 'endpoints' });
   }
 
   /**
@@ -140,24 +166,35 @@ export class Lexer {
    */
   lookahead(): Token {
     let token = this.token;
+
     if (token.kind !== TokenKind.EOF) {
       do {
         // @ts-expect-error next is only mutable during parsing, so we cast to allow this.
-        token = token.next ?? (token.next = readToken(this, token));
+        token = token.next ?? (token.next = readToken(this, token, this.remaining));
       } while (token.kind === TokenKind.COMMENT);
     }
+
     return token;
   }
 }
 
 // private
 
-function readToken(lexer: Lexer, prev: Token): Token {
+function readToken(lexer: Lexer, prev: Token, remaining: Token[]): Token {
   const source = lexer.source;
   const body = source.body;
   const bodyLength = body.length;
 
   let pos = prev.end;
+
+  if (remaining?.length > 0) {
+    const t = lexer.remaining.pop();
+
+    if (t) {
+      return t;
+    }
+  }
+
   while (pos < bodyLength) {
     // getting char code
     const code = body.charCodeAt(pos);
@@ -169,23 +206,32 @@ function readToken(lexer: Lexer, prev: Token): Token {
     switch (code) {
       case 0xfeff: // <BOM> Short for byte order mark, BOM
       case 9: //   \t
-      case 32: {
-        if (body.charCodeAt(pos - 1) === 10) {
-          const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev)
-          if (token) {
-            return token
-          }
-        }
-      } //  <space>
+      case 32: //  <space>
       case 44: //  ,
         ++pos;
         continue;
       case 10:
         //  \n
 
+        const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev);
+
+        if (Array.isArray(token)) {
+          lexer.remaining = token;
+          const t = lexer.remaining.pop();
+
+          if (t) {
+            return t;
+          }
+        }
+
+        if (token) {
+          return token as Token;
+        }
+
         ++pos;
         ++lexer.line;
         lexer.lineStart = pos;
+
         continue;
 
       case 13: //  \r
@@ -242,8 +288,10 @@ function readToken(lexer: Lexer, prev: Token): Token {
         if (body.charCodeAt(pos + 1) === 47) {
           return readModelDescription(source, pos, line, col, prev);
         }
+        if (lexer.source.sourceType === 'endpoints') {
+          return readNameAfterSlash(source, pos, line, col, prev);
+        }
 
-        return readNameAfterSlash(source, pos, line, col, prev);
       case 58: //  :
         if (lexer.isInsideEnum) {
           return readName(source, pos, line, col, prev, lexer.isInsideEnum);
@@ -289,8 +337,13 @@ function readToken(lexer: Lexer, prev: Token): Token {
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
       }
 
-      case 96: // `
-        return readNameWithGraveAccentMarks(source, pos, line, col, prev);
+      case 96: {
+        // `
+        if (lexer.source.sourceType === 'endpoints') {
+          return readNameWithGraveAccentMarks(source, pos, line, col, prev);
+        }
+        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+      }
 
       case 45: //  - for now we allow dashes to in words
         return readName(source, pos, line, col, prev, lexer.isInsideEnum);
@@ -377,6 +430,12 @@ function readToken(lexer: Lexer, prev: Token): Token {
 
   const line = lexer.line;
   const col = 1 + pos - lexer.lineStart;
+
+  // emit <DEDENT> tokens at end of file before emit <EOF>
+  if (lexer.source.sourceType === 'endpoints' && lexer.indentReader.indents.length > 1) {
+    lexer.indentReader.indents.pop();
+    return new Token(TokenKind.DEDENT, bodyLength, bodyLength, line, col, prev);
+  }
 
   return new Token(TokenKind.EOF, bodyLength, bodyLength, line, col, prev);
 }
