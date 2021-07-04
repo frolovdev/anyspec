@@ -3,11 +3,9 @@ import { Source } from './source';
 import { syntaxError } from './error/syntaxError';
 
 class IndentReader {
-  indents: number[] = [0];
-
+  private indents: number[] = [0];
   private isEnabled: boolean;
-
-  remaining: Token[] = [];
+  private remaining: Token[] = [];
 
   constructor({ isEnabled }: { isEnabled: boolean }) {
     this.isEnabled = isEnabled;
@@ -16,7 +14,7 @@ class IndentReader {
   readRemaining(): Token | undefined {
     return this.remaining.pop()
   }
-
+  
   readInsideIndent(
     source: Source,
     start: number,
@@ -402,12 +400,6 @@ function readToken(lexer: Lexer, prev: Token): Token {
 
   const line = lexer.line;
   const col = 1 + pos - lexer.lineStart;
-
-  // emit <DEDENT> tokens at end of file before emit <EOF>
-  if (lexer.source.sourceType === 'endpoints' && lexer.indentReader.indents.length > 1) {
-    lexer.indentReader.indents.pop();
-    return new Token(TokenKind.DEDENT, bodyLength, bodyLength, line, col, prev);
-  }
 
   return new Token(TokenKind.EOF, bodyLength, bodyLength, line, col, prev);
 }
