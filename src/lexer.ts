@@ -78,8 +78,7 @@ class IndentReader {
     // store remaining tokens and return first
     if (tokens.length > 0) {
       this.remaining = tokens;
-      const tok = this.remaining.pop();
-      return tok;
+      return this.remaining.pop();
     }
 
     return; // same indentation level
