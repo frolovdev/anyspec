@@ -107,7 +107,8 @@ export const TokenKind = {
   DESCRIPTION: 'Description',
   RETURN: '=>',
   INDENT: '<INDENT>',
-  DEDENT: '<DEDENT>'
+  DEDENT: '<DEDENT>',
+  NUMBER: 'Number'
 } as const;
 
 /**

@@ -23,7 +23,11 @@ const getFullTokenList = (source: Source) => {
 
   while (lexer.lookahead().kind !== TokenKind.EOF) {
     let current = lexer.advance();
-    tokenList.push(current.kind === TokenKind.NAME ? current.value : current.kind);
+    tokenList.push(
+      current.kind === TokenKind.NAME || current.kind === TokenKind.NUMBER
+        ? current.value
+        : current.kind,
+    );
   }
 
   return tokenList;
@@ -723,11 +727,11 @@ describe('lexer can understand endpoints', () => {
   it('lexer can understand endpoints basic', () => {
     const sourceString = `
 \`/analytics_events\`:
-  // **Create**
-  @token POST /analytics_events AnalyticsEventNewRequest
-    => AnalyticsEventNewResponse
-  POST /analytics_events AnalyticsEventNewRequest
-    => AnalyticsEventNewResponse
+    // **Create**
+    @token POST /analytics_events AnalyticsEventNewRequest
+      => AnalyticsEventNewResponse
+    POST /analytics_events AnalyticsEventNewRequest
+      => AnalyticsEventNewResponse
 `;
     const enumString = new Source(
       sourceString,
@@ -898,5 +902,166 @@ HEAD /pechkin/mandrill/event
     ];
 
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+  it('lexer can understand endpoints basic v4', () => {
+    const sourceString = `
+
+HEAD /pechkin/mandrill/event
+    => {}
+  
+// **Delete**
+      // Permissions: \`companies:write\`
+      @token DELETE /accounting/bank_accounts/:id:i
+          => 204
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    const expectedTokens = [
+      'HEAD',
+      '/pechkin/mandrill/event',
+      '<INDENT>',
+      '=>',
+      '{',
+      '}',
+      '<DEDENT>',
+      'Description',
+      '<INDENT>',
+      'Description',
+      '@',
+      'token',
+      'DELETE',
+      '/accounting/bank_accounts/:id:i',
+      '<INDENT>',
+      '=>',
+      '204',
+      '<DEDENT>',
+      '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+  it('lexer can understand endpoints complex', () => {
+    const sourceString = `
+
+HEAD /pechkin/mandrill/event {messageSenderId?: i, conversationId?: i, ticketId?: i, taskId?: i, isNewTicketRequired?: b }
+    => {tigerDocument: TigerDocument, pandaDocument: PandaDocument, messageIds: i[]}
+  
+// **Delete**
+      // Permissions: \`companies:write\`
+      @token DELETE /accounting/bank_accounts/:id:i
+          => 204
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    const expectedTokens = [
+      'HEAD',
+      '/pechkin/mandrill/event',
+      '{',
+      'messageSenderId',
+      '?',
+      ':',
+      'i',
+      'conversationId',
+      '?',
+      ':',
+      'i',
+      'ticketId',
+      '?',
+      ':',
+      'i',
+      'taskId',
+      '?',
+      ':',
+      'i',
+      'isNewTicketRequired',
+      '?',
+      ':',
+      'b',
+      '}',
+      '<INDENT>',
+      '=>',
+      '{',
+      'tigerDocument',
+      ':',
+      'TigerDocument',
+      'pandaDocument',
+      ':',
+      'PandaDocument',
+      'messageIds',
+      ':',
+      'i',
+      '[',
+      ']',
+      '}',
+      '<DEDENT>',
+      'Description',
+      '<INDENT>',
+      'Description',
+      '@',
+      'token',
+      'DELETE',
+      '/accounting/bank_accounts/:id:i',
+      '<INDENT>',
+      '=>',
+      '204',
+      '<DEDENT>',
+      '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+});
+
+describe('lexer can catch errors in endpoints', () => {
+  it('unbalanced indentation not allowed', () => {
+    const sourceString = `
+  \`/analytics_events\`:
+  // **Create**
+ @token POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+     POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unindent does not match any outer indentation level',
+    );
+  });
+  it('unbalanced indentation not allowed 1', () => {
+    const sourceString = `
+  \`/analytics_events\`:
+  // **Create**
+  @token POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+
+   POST /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    expect(() => getFullTokenList(enumString)).toThrow(
+      'Syntax Error: unindent does not match any outer indentation level',
+    );
   });
 });

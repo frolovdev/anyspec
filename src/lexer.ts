@@ -12,9 +12,9 @@ class IndentReader {
   }
 
   readRemaining(): Token | undefined {
-    return this.remaining.pop()
+    return this.remaining.pop();
   }
-  
+
   readInsideIndent(
     source: Source,
     start: number,
@@ -48,8 +48,7 @@ class IndentReader {
       return;
     }
 
-
-    // emit INDENT tokens if spaces at start line more then spaces at prev line 
+    // emit INDENT tokens if spaces at start line more then spaces at prev line
     if (column > this.indents[this.indents.length - 1]) {
       this.indents.push(column);
       return new Token(
@@ -78,11 +77,11 @@ class IndentReader {
 
     // store remaining tokens and return first
     if (tokens.length > 0) {
-      this.remaining = tokens
-      const tok = this.remaining.pop()
-      return tok
+      this.remaining = tokens;
+      const tok = this.remaining.pop();
+      return tok;
     }
-    
+
     return; // same indentation level
   }
 }
@@ -168,10 +167,10 @@ function readToken(lexer: Lexer, prev: Token): Token {
   let pos = prev.end;
 
   // if indentReader has `remaining` we cant advance until we exhaust it
-  const possibleRemaining = lexer.indentReader.readRemaining()
+  const possibleRemaining = lexer.indentReader.readRemaining();
 
   if (possibleRemaining) {
-    return possibleRemaining
+    return possibleRemaining;
   }
 
   while (pos < bodyLength) {
@@ -192,7 +191,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
       case 10:
         //  \n
 
-        const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev)
+        const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev);
 
         if (token) {
           return token;
@@ -327,9 +326,12 @@ function readToken(lexer: Lexer, prev: Token): Token {
       case 55: //  7
       case 56: //  8
       case 57: //  9
-        // we dont support numbers
-        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
-      // return readNumber(source, pos, code, line, col, prev);
+        if (lexer.source.sourceType === 'endpoints') {
+          return readNumber(source, pos, line, col, prev, lexer.isInsideEnum);
+        } else {
+          // we dont support numbers in models files
+          throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+        }
 
       case 60: // <
         return new Token(TokenKind.EXTENDS, pos, pos + 1, line, col, prev);
@@ -509,6 +511,36 @@ function readName(
     ++position;
   }
   return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
+}
+
+/**
+ * Reads an alphanumeric + underscore name from the source.
+ *
+ * [_A-Za-z][_0-9A-Za-z]*
+ */
+function readNumber(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token | null,
+  isInsideEnum?: boolean,
+): Token {
+  const body = source.body;
+  const bodyLength = body.length;
+  let position = start + 1;
+
+  let code = 0;
+  while (
+    position !== bodyLength &&
+    !isNaN((code = body.charCodeAt(position))) &&
+    code >= 48 &&
+    code <= 57
+  ) {
+    // 0-9
+    ++position;
+  }
+  return new Token(TokenKind.NUMBER, start, position, line, col, prev, body.slice(start, position));
 }
 
 /**
