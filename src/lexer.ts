@@ -1,13 +1,20 @@
 import { Token, TokenKind, TokenKindEnum } from './token';
 import { Source } from './source';
 import { syntaxError } from './error/syntaxError';
+
 class IndentReader {
   indents: number[] = [0];
 
   private isEnabled: boolean;
 
+  remaining: Token[] = [];
+
   constructor({ isEnabled }: { isEnabled: boolean }) {
     this.isEnabled = isEnabled;
+  }
+
+  readRemaining(): Token | undefined {
+    return this.remaining.pop()
   }
 
   readInsideIndent(
@@ -16,9 +23,10 @@ class IndentReader {
     line: number,
     col: number,
     prev: Token | null,
-  ): Token | Token[] | null {
+  ): Token | undefined {
+    // return if not endpoints
     if (!this.isEnabled) {
-      return null;
+      return;
     }
 
     const body = source.body;
@@ -39,27 +47,11 @@ class IndentReader {
 
     // ignore line with only spaces
     if (body.charCodeAt(position) === 10) {
-      return null;
+      return;
     }
 
-    // if (column === 0 && this.indents.length > 1) {
-    //   let tokens: Token[] = [];
-    //   while (this.indents.length > 1) {
-    //     this.indents.pop();
-    //     tokens.push(
-    //       new Token(
-    //         TokenKind.DEDENT,
-    //         start,
-    //         position,
-    //         line,
-    //         col,
-    //         prev,
-    //         body.slice(start, position),
-    //       ),
-    //     );
-    //   }
-    // }
 
+    // emit INDENT tokens if spaces at start line more then spaces at prev line 
     if (column > this.indents[this.indents.length - 1]) {
       this.indents.push(column);
       return new Token(
@@ -74,12 +66,11 @@ class IndentReader {
     }
     let tokens: Token[] = [];
 
+    // if spaces at start line less then prev line create array of all DEDENT tokens
     while (column < this.indents[this.indents.length - 1]) {
-     
       if (!this.indents.includes(column)) {
         throw syntaxError(source, position, 'unindent does not match any outer indentation level');
       }
-
       this.indents.pop();
 
       tokens.push(
@@ -87,24 +78,14 @@ class IndentReader {
       );
     }
 
+    // store remaining tokens and return first
     if (tokens.length > 0) {
-      return tokens
+      this.remaining = tokens
+      const tok = this.remaining.pop()
+      return tok
     }
-
-    if (column === 0 && this.indents.length > 1) {
-      this.indents.pop();
-      return new Token(
-        TokenKind.DEDENT,
-        start,
-        position,
-        line,
-        col,
-        prev,
-        body.slice(start, position),
-      );
-    }
-
-    return null; // same indentation level
+    
+    return; // same indentation level
   }
 }
 
@@ -136,9 +117,10 @@ export class Lexer {
    */
   isInsideEnum = false;
 
+  /**
+   * for endpoints only
+   */
   indentReader: IndentReader;
-
-  remaining: Token[] = [];
 
   constructor(source: Source) {
     const startOfFileToken = new Token(TokenKind.SOF, 0, 0, 0, 0, null);
@@ -170,7 +152,7 @@ export class Lexer {
     if (token.kind !== TokenKind.EOF) {
       do {
         // @ts-expect-error next is only mutable during parsing, so we cast to allow this.
-        token = token.next ?? (token.next = readToken(this, token, this.remaining));
+        token = token.next ?? (token.next = readToken(this, token));
       } while (token.kind === TokenKind.COMMENT);
     }
 
@@ -180,19 +162,18 @@ export class Lexer {
 
 // private
 
-function readToken(lexer: Lexer, prev: Token, remaining: Token[]): Token {
+function readToken(lexer: Lexer, prev: Token): Token {
   const source = lexer.source;
   const body = source.body;
   const bodyLength = body.length;
 
   let pos = prev.end;
 
-  if (remaining?.length > 0) {
-    const t = lexer.remaining.pop();
+  // if indentReader has `remaining` we cant advance until we exhaust it
+  const possibleRemaining = lexer.indentReader.readRemaining()
 
-    if (t) {
-      return t;
-    }
+  if (possibleRemaining) {
+    return possibleRemaining
   }
 
   while (pos < bodyLength) {
@@ -213,19 +194,10 @@ function readToken(lexer: Lexer, prev: Token, remaining: Token[]): Token {
       case 10:
         //  \n
 
-        const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev);
-
-        if (Array.isArray(token)) {
-          lexer.remaining = token;
-          const t = lexer.remaining.pop();
-
-          if (t) {
-            return t;
-          }
-        }
+        const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev)
 
         if (token) {
-          return token as Token;
+          return token;
         }
 
         ++pos;
