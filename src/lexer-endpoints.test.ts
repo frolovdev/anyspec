@@ -2,6 +2,47 @@ import { Source } from './source';
 import { getFullTokenList } from 'lexer-models.test';
 
 describe('lexer can understand endpoints', () => {
+  it('lexer can understand endpoints with sudden EOF', () => {
+    const sourceString = `
+\`/analytics_events\`:
+    // **Create**
+    @token POST /analytics_events AnalyticsEventNewRequest
+        => AnalyticsEventNewResponse
+    POST /analytics_events AnalyticsEventNewRequest
+        => AnalyticsEventNewResponse`;
+
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    const expectedTokens = [
+      '/analytics_events',
+      ':',
+      '<INDENT>',
+      'Description',
+      '@',
+      'token',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      'POST',
+      '/analytics_events',
+      'AnalyticsEventNewRequest',
+      '<INDENT>',
+      '=>',
+      'AnalyticsEventNewResponse',
+      '<DEDENT>',
+      '<DEDENT>',
+    ];
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
   it('lexer can understand endpoints basic', () => {
     const sourceString = `
 \`/analytics_events\`:
@@ -286,8 +327,7 @@ HEAD /pechkin/mandrill/event {messageSenderId?: i, conversationId?: i, ticketId?
 // **Delete**
     // Permissions: \`companies:write\`
     @token DELETE /accounting/bank_accounts/:id:i
-        => 204
-`;
+        => 204`;
     const enumString = new Source(
       sourceString,
       'Tinyspec endpoints code',
@@ -359,11 +399,11 @@ describe('lexer can catch errors in endpoints', () => {
     const sourceString = `
 \`/analytics_events\`:
     // **Create**
-    @token POST /analytics_events AnalyticsEventNewRequest
+     @token POST /analytics_events AnalyticsEventNewRequest
+         => AnalyticsEventNewResponse
+      POST /analytics_events AnalyticsEventNewRequest
         => AnalyticsEventNewResponse
-    POST /analytics_events AnalyticsEventNewRequest
-      => AnalyticsEventNewResponse
-  `;
+`;
     const enumString = new Source(
       sourceString,
       'Tinyspec endpoints code',
@@ -377,14 +417,14 @@ describe('lexer can catch errors in endpoints', () => {
   });
   it('unbalanced indentation not allowed 1', () => {
     const sourceString = `
-    \`/analytics_events\`:
+\`/analytics_events\`:
     // **Create**
     @token POST /analytics_events AnalyticsEventNewRequest
       => AnalyticsEventNewResponse
   
      POST /analytics_events AnalyticsEventNewRequest
       => AnalyticsEventNewResponse
-  `;
+`;
     const enumString = new Source(
       sourceString,
       'Tinyspec endpoints code',
