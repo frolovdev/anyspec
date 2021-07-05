@@ -61,3 +61,7 @@ delete $TSFixMe
 delete $Maybe
 
 Allow to describe lambdas
+
+
+
+https://swagger.io/docs/specification/2-0/describing-parameters/
