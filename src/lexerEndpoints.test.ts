@@ -1,5 +1,24 @@
+import { TokenKind } from './token';
+import { Lexer } from 'lexer';
 import { Source } from './source';
-import { getFullTokenList } from 'lexerModels.test';
+
+
+const getFullTokenList = (source: Source) => {
+  const lexer = new Lexer(source);
+
+  let tokenList = [];
+
+  while (lexer.lookahead().kind !== TokenKind.EOF) {
+    let current = lexer.advance();
+    tokenList.push(
+      current.kind === TokenKind.NAME || current.kind === TokenKind.NUMBER
+        ? current.value
+        : current.kind,
+    );
+  }
+
+  return tokenList;
+};
 
 describe('lexer can understand endpoints', () => {
   it('lexer can understand endpoints with sudden EOF', () => {

@@ -15,7 +15,7 @@ function lexSecond(str: string) {
   return lexer.advance();
 }
 
-export const getFullTokenList = (source: Source) => {
+const getFullTokenList = (source: Source) => {
   const lexer = new Lexer(source);
 
   let tokenList = [];
@@ -31,6 +31,7 @@ export const getFullTokenList = (source: Source) => {
 
   return tokenList;
 };
+
 
 
 function expectSyntaxErrorFirst(text: string, expectedError: any) {
