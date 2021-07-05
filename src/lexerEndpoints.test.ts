@@ -1,5 +1,5 @@
 import { Source } from './source';
-import { getFullTokenList } from 'lexer-models.test';
+import { getFullTokenList } from 'lexerModels.test';
 
 describe('lexer can understand endpoints', () => {
   it('lexer can understand endpoints with sudden EOF', () => {
@@ -186,8 +186,8 @@ GET /hero/exchangeRates?HrGetExchangeRateRequestQuery
     @token $CRUDL /roles
     
 HEAD /pechkin/mandrill/event
-    => {}
-`;
+    => {}`;
+
     const enumString = new Source(
       sourceString,
       'Tinyspec endpoints code',
@@ -314,6 +314,34 @@ HEAD /pechkin/mandrill/event
       ')',
       '<DEDENT>',
       '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(enumString)).toEqual(expectedTokens);
+  });
+
+  it('lexer can understand endpoints with odd syntax', () => {
+    const sourceString = `
+\`/industries\`:
+  $L /industries ?branch?
+`;
+    const enumString = new Source(
+      sourceString,
+      'Tinyspec endpoints code',
+      { line: 1, column: 1 },
+      'endpoints',
+    );
+
+    const expectedTokens = [
+      '/industries',
+      ':',
+      '<INDENT>',
+      '$',
+      'L',
+      '/industries',
+      '?',
+      'branch',
+      '?',
+      '<DEDENT>'
     ];
 
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);

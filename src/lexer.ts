@@ -15,6 +15,14 @@ class IndentReader {
     return this.remaining.pop();
   }
 
+  // we need this to emit remaining DEDENT at EOF
+  eofHandler(source: Source, start: number, line: number, col: number, prev: Token | null) {
+    while (this.indents.length > 1) {
+      this.remaining.push(new Token(TokenKind.DEDENT, start, start + 1, line, col, prev));
+      this.indents.pop()
+    }
+  }
+
   readInsideIndent(
     source: Source,
     start: number,
@@ -51,15 +59,7 @@ class IndentReader {
     // emit INDENT tokens if spaces at start line more then spaces at prev line
     if (column > this.indents[this.indents.length - 1]) {
       this.indents.push(column);
-      return new Token(
-        TokenKind.INDENT,
-        start,
-        position,
-        line,
-        col,
-        prev,
-        body.slice(start, position),
-      );
+      return new Token(TokenKind.INDENT, start, position, line, col, prev);
     }
     let tokens: Token[] = [];
 
@@ -70,9 +70,7 @@ class IndentReader {
       }
       this.indents.pop();
 
-      tokens.push(
-        new Token(TokenKind.DEDENT, start, position, line, col, prev, body.slice(start, position)),
-      );
+      tokens.push(new Token(TokenKind.DEDENT, start, position, line, col, prev));
     }
 
     // store remaining tokens and return first
@@ -326,7 +324,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
       case 56: //  8
       case 57: //  9
         if (lexer.source.sourceType === 'endpoints') {
-          return readNumber(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readNumber(source, pos, line, col, prev);
         } else {
           // we dont support numbers in models files
           throw syntaxError(source, pos, unexpectedCharacterMessage(code));
@@ -401,6 +399,15 @@ function readToken(lexer: Lexer, prev: Token): Token {
 
   const line = lexer.line;
   const col = 1 + pos - lexer.lineStart;
+
+
+  // at EOF before we emit <EOF> we need to check if indentReader have non empty stack
+  // and create DEDENT tokens if need to
+  lexer.indentReader.eofHandler(source, pos, line, col, prev)
+  const dedentToken = lexer.indentReader.readRemaining();
+  if (dedentToken) {
+    return dedentToken;
+  }
 
   return new Token(TokenKind.EOF, bodyLength, bodyLength, line, col, prev);
 }
@@ -513,17 +520,14 @@ function readName(
 }
 
 /**
- * Reads an alphanumeric + underscore name from the source.
- *
- * [_A-Za-z][_0-9A-Za-z]*
+ * Reads a number.
  */
 function readNumber(
   source: Source,
   start: number,
   line: number,
   col: number,
-  prev: Token | null,
-  isInsideEnum?: boolean,
+  prev: Token | null
 ): Token {
   const body = source.body;
   const bodyLength = body.length;
@@ -544,7 +548,6 @@ function readNumber(
 
 /**
  * Reads Name token inside Enum context
- *
  */
 function readNameInsideEnum(
   source: Source,
