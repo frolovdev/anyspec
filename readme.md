@@ -2,7 +2,7 @@
 
 ## WIP, I call you when we are be ready 
 
-[https://excalidraw.com/#json=4790454524575744,zoP_ISTzjIbi1HhB6ErtWw](Main link)
+[Main link](https://excalidraw.com/#json=4790454524575744,zoP_ISTzjIbi1HhB6ErtWw)
 
 ## TODO
 
