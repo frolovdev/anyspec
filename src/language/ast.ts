@@ -67,7 +67,7 @@ export type ASTNode =
   | EndpointTypeDefinitionNode
   | EndpointVerbNode
   | EndpointUrlNode
-  | EndpointResponseNode
+  | EndpointResponseNode;
 
 export interface ASTKindToNode {
   Document: DocumentNode;
@@ -87,6 +87,7 @@ export interface ASTKindToNode {
   EndpointUrl: EndpointUrlNode;
   EndpointTypeDefinition: EndpointTypeDefinitionNode;
   EndpointResponse: EndpointResponseNode;
+  SecurityDefinition: SecurityDefinitionNode;
 }
 
 export interface DocumentNode {
@@ -102,40 +103,54 @@ export type TypeDefinitionNode =
 
 export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';
+  readonly tag?: NameNode;
+  readonly description?: ModelDescriptionNode;
   readonly endpoints?: ReadonlyArray<EndpointTypeDefinitionNode>;
+  readonly loc?: Location;
 }
 
 export interface EndpointVerbNode {
   readonly kind: 'EndpointVerb';
   readonly name?: NameNode;
+  readonly loc?: Location;
 }
 
-export interface EndpointsParameterModelNode {
+export interface EndpointsParameterNode {
   readonly kind: 'EndpointParameter';
-  readonly type: {
-    readonly kind: 'ObjectTypeDefinition';
-    readonly name: NameNode;
-  };
+  readonly type: TypeNode;
+  readonly loc?: Location;
 }
 export interface EndpointUrlNode {
   readonly kind: 'EndpointUrl';
   readonly name?: NameNode;
-  readonly parameters?: ReadonlyArray<EndpointsParameterModelNode>;
+  readonly parameters?: ReadonlyArray<EndpointsParameterNode>;
 }
 
+export interface EndpointStatusCodeNode {
+  readonly kind: 'EndpointStatusCode';
+  readonly name: NameNode;
+  readonly loc?: Location;
+}
 export interface EndpointResponseNode {
-  readonly kind: 'EndpointResponse'
-  readonly type: {
-    readonly kind: 'EndpointParameterBody';
-    readonly name?: NameNode
-  }
+  readonly kind: 'EndpointResponse';
+  readonly type: TypeNode | EndpointStatusCodeNode;
+  readonly loc?: Location;
+}
+
+export interface SecurityDefinitionNode {
+  readonly kind: 'EndpointSecurityDefinition';
+  readonly name?: NameNode;
+  readonly loc?: Location;
 }
 
 export interface EndpointTypeDefinitionNode {
   readonly kind: 'EndpointTypeDefinition';
   readonly verb: EndpointVerbNode;
   readonly url: EndpointUrlNode;
+  readonly description?: ModelDescriptionNode;
+  readonly securityDefinition?: SecurityDefinitionNode;
   readonly responses?: ReadonlyArray<EndpointResponseNode>;
+  readonly loc?: Location;
 }
 
 export interface ModelTypeDefinitionNode {

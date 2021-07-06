@@ -1,3 +1,12 @@
+import {
+  EndpointNamespaceTypeDefinitionNode,
+  EndpointResponseNode,
+  EndpointsParameterNode,
+  EndpointStatusCodeNode,
+  EndpointTypeDefinitionNode,
+  EndpointVerbNode,
+  SecurityDefinitionNode,
+} from './language/ast';
 import { syntaxError } from './error/syntaxError';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
 import { TokenKindEnum, Token, TokenKind } from './token';
@@ -30,9 +39,9 @@ export interface ParseOptions {
   noLocation?: boolean;
 }
 
-class Parser {
+export class Parser {
   private options: $Maybe<ParseOptions>;
-  private lexer: Lexer;
+  protected lexer: Lexer;
 
   constructor(source: string | Source, options?: ParseOptions) {
     const sourceObj = isSource(source) ? source : new Source(source);
@@ -438,6 +447,14 @@ class Parser {
     });
   }
 
+  parseNumber(): NameNode {
+    const token = this.expectToken(TokenKind.NUMBER);
+    return this.node<NameNode>(token, {
+      kind: ASTNodeKind.NAME,
+      value: token.value,
+    });
+  }
+
   // FIXME: in futrue
   // becuase of tinyspec allows to use syntatic sugar around string
 
@@ -450,6 +467,145 @@ class Parser {
       kind: ASTNodeKind.NAME,
       value: undefined,
     });
+  }
+}
+
+export class EndpointsParser extends Parser {
+  /**
+   * Document : Definition+
+   * to Parser Common
+   */
+  parseDocument(): DocumentNode {
+    return this.node<DocumentNode>(this.lexer.token, {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: this.many(TokenKind.SOF, this.parseDefinition, TokenKind.EOF),
+    });
+  }
+
+  parseEndpointResponses(): EndpointResponseNode[] {
+    return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
+  }
+
+  parseEndpointStatusCode(): EndpointStatusCodeNode {
+    return this.node<EndpointStatusCodeNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+      name: this.parseNumber(),
+    });
+  }
+
+  parseEndpointResponseNode(): EndpointResponseNode {
+    if (this.peek(TokenKind.RETURN)) {
+      this.lexer.advance();
+
+      if (this.peek(TokenKind.NUMBER)) {
+        return this.node<EndpointResponseNode>(this.lexer.token, {
+          kind: ASTNodeKind.ENDPOINT_RESPONSE,
+          type: this.parseEndpointStatusCode(),
+        });
+      }
+
+      const type = this.parseTypeReference();
+
+      return this.node<EndpointResponseNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_RESPONSE,
+        type,
+      });
+    }
+
+    throw this.unexpected();
+  }
+
+  parseEndpointParameterNode(): EndpointsParameterNode | undefined {
+    if (this.peek(TokenKind.INDENT)) {
+      return;
+    }
+    const type = this.parseTypeReference();
+    return this.node<EndpointsParameterNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+      type,
+    });
+  }
+
+  parseSecurityDefinition(): SecurityDefinitionNode | undefined {
+    if (this.peek(TokenKind.AT)) {
+      this.lexer.advance();
+      return this.node<SecurityDefinitionNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_SECURITY_DEFINITION,
+        name: this.parseName(),
+      });
+    }
+  }
+
+  parseEndpointVerb(): EndpointVerbNode {
+    return this.node<EndpointVerbNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_VERB,
+      name: this.parseName(),
+    });
+  }
+
+  parseEndpointNamespaceTypeDefinitionNode(description?: ModelDescriptionNode): EndpointTypeDefinitionNode {
+    const optionalDescription = this.parseModelDescription()
+
+    const securityDefinition = this.parseSecurityDefinition();
+    const verb = this.parseEndpointVerb();
+    const name = this.parseName();
+    const parameter = this.parseEndpointParameterNode();
+
+    const url = {
+      // TODO: handle url parsing
+      kind: ASTNodeKind.ENDPOINT_URL,
+      name,
+      parameters: parameter ? [parameter] : undefined,
+    };
+
+    const responses = this.parseEndpointResponses();
+
+    return this.node<EndpointTypeDefinitionNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+      verb,
+      description: optionalDescription ?? description,
+      securityDefinition,
+      url,
+      responses,
+    });
+  }
+
+  parseEndpointNamespaceTypeDefinition(description?: ModelDescriptionNode): EndpointNamespaceTypeDefinitionNode {
+    const start = this.lexer.token;
+    const nextToken = this.lexer.lookahead();
+
+    if (nextToken.kind === TokenKind.COLON) {
+      const tag = this.parseName();
+      this.lexer.advance()
+      const endpoints = this.many(
+        TokenKind.INDENT,
+        this.parseEndpointNamespaceTypeDefinitionNode,
+        TokenKind.DEDENT,
+      );
+
+      return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
+        kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+        tag, 
+        endpoints,
+      });
+    }
+
+    const endpoints = [this.parseEndpointNamespaceTypeDefinitionNode(description)];
+    return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
+      kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+      endpoints,
+    });
+  }
+
+  parseDefinition(): TypeDefinitionNode {
+
+    const optionalDescription = this.parseModelDescription()
+
+    if (this.peek(TokenKind.NAME) || this.peek(TokenKind.AT)) {
+      return this.parseEndpointNamespaceTypeDefinition(optionalDescription);
+    }
+
+    throw this.unexpected();
   }
 }
 
@@ -475,5 +631,9 @@ function getTokenKindDesc(kind: TokenKindEnum): string {
 export function parse(source: string | Source, options?: ParseOptions): DocumentNode {
   /// DocumentNode
   const parser = new Parser(source, options);
+  const endpointParser = new EndpointsParser(source, options);
+  if (typeof source !== 'string' && source.sourceType === 'endpoints') {
+    return endpointParser.parseDocument();
+  }
   return parser.parseDocument();
 }
