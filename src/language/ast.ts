@@ -62,7 +62,12 @@ export type ASTNode =
   | EnumValueDefinitionNode
   | ModelDescriptionNode
   | NameNode
-  | OptionalNameNode;
+  | OptionalNameNode
+  | EndpointNamespaceTypeDefinitionNode
+  | EndpointTypeDefinitionNode
+  | EndpointVerbNode
+  | EndpointUrlNode
+  | EndpointResponseNode
 
 export interface ASTKindToNode {
   Document: DocumentNode;
@@ -80,6 +85,8 @@ export interface ASTKindToNode {
   EndpointNamespaceTypeDefinition: EndpointNamespaceTypeDefinitionNode;
   EndpointVerb: EndpointVerbNode;
   EndpointUrl: EndpointUrlNode;
+  EndpointTypeDefinition: EndpointTypeDefinitionNode;
+  EndpointResponse: EndpointResponseNode;
 }
 
 export interface DocumentNode {
@@ -106,36 +113,29 @@ export interface EndpointVerbNode {
 export interface EndpointsParameterModelNode {
   readonly kind: 'EndpointParameter';
   readonly type: {
-    kind: 'ObjectTypeDefinition';
+    readonly kind: 'ObjectTypeDefinition';
+    readonly name: NameNode;
   };
-  readonly name: NameNode;
 }
-
-export type EndpointsParametersNode = EndpointsParameterModelNode;
-
 export interface EndpointUrlNode {
   readonly kind: 'EndpointUrl';
   readonly name?: NameNode;
-  readonly parameters?: ReadonlyArray<EndpointsParametersNode>;
+  readonly parameters?: ReadonlyArray<EndpointsParameterModelNode>;
 }
 
-export interface EndpointsResponseBodyNode {
-  kind: 'EndpointParameterBody'
+export interface EndpointResponseNode {
+  readonly kind: 'EndpointResponse'
+  readonly type: {
+    readonly kind: 'EndpointParameterBody';
+    readonly name?: NameNode
+  }
 }
-
-export type EndpointsResponsesNode = EndpointsResponseBodyNode;
-
-export interface EndpointsResponseNode {
-  readonly kind: 'EndpointResponse';
-  readonly type: EndpointsResponsesNode;
-}
-
 
 export interface EndpointTypeDefinitionNode {
   readonly kind: 'EndpointTypeDefinition';
   readonly verb: EndpointVerbNode;
   readonly url: EndpointUrlNode;
-  readonly responses?: ReadonlyArray<EndpointsResponsesNode>;
+  readonly responses?: ReadonlyArray<EndpointResponseNode>;
 }
 
 export interface ModelTypeDefinitionNode {

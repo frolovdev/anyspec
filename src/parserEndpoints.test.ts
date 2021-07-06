@@ -65,10 +65,10 @@ POST /endpoint RequestModel
         'endpoints',
       );
 
-      const ast = () => parse(source);
+      const ast = parse(source);
 
-      console.log(ast());
-      expect(ast).toThrowError(AnySpecError);
+      console.log(ast);
+      expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
   });
 });
