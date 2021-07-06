@@ -26,6 +26,20 @@ export const ASTNodeKind = {
   ENUM_INLINE_TYPE_DEFINITION: 'EnumInlineTypeDefinition',
   OBJECT_TYPE_DEFINITION: 'ObjectTypeDefinition',
   ENUM_TYPE_DEFINITION: 'EnumTypeDefinition',
+
+  ENDPOINT_NAMESPACE_TYPE_DEFINITION: 'EndpointNamespaceTypeDefinition',
+  ENDPOINT_TYPE_DEFINITION: 'EndpointTypeDefinition',
+  ENDPOINT_DESCRIPTION: 'EndpointDescription',
+  ENDPOINT_VERB: 'EndpointVerb',
+  ENDPOINT_SECURITY_DEFINITION: 'EndpointSecurityDefinition',
+  ENDPOINT_URL: 'EndpointUrl',
+  ENDPOINT_PARAMETER: 'EndpointParameter',
+  ENDPOINT_PARAMETER_PATH: 'EndpointParameterPath',
+  ENDPOINT_PARAMETER_PATH_TYPE: 'EndpointParameterPathType',
+  ENDPOINT_PARAMETER_QUERY: 'EndpointParameterQuery',
+  ENDPOINT_PARAMETER_BODY: 'EndpointParameterBody',
+  ENDPOINT_RESPONSE: 'EndpointResponse',
+  ENDPOINT_STATUS_CODE: 'EndpointStatusCode',
 } as const;
 
 /**
@@ -63,6 +77,9 @@ export interface ASTKindToNode {
   ModelDescription: ModelDescriptionNode;
   Name: NameNode;
   OptionalName: OptionalNameNode;
+  EndpointNamespaceTypeDefinition: EndpointNamespaceTypeDefinitionNode;
+  EndpointVerb: EndpointVerbNode;
+  EndpointUrl: EndpointUrlNode;
 }
 
 export interface DocumentNode {
@@ -71,7 +88,55 @@ export interface DocumentNode {
   readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
-export type TypeDefinitionNode = ModelTypeDefinitionNode | EnumTypeDefinitionNode;
+export type TypeDefinitionNode =
+  | ModelTypeDefinitionNode
+  | EnumTypeDefinitionNode
+  | EndpointNamespaceTypeDefinitionNode;
+
+export interface EndpointNamespaceTypeDefinitionNode {
+  readonly kind: 'EndpointNamespaceTypeDefinition';
+  readonly endpoints?: ReadonlyArray<EndpointTypeDefinitionNode>;
+}
+
+export interface EndpointVerbNode {
+  readonly kind: 'EndpointVerb';
+  readonly name?: NameNode;
+}
+
+export interface EndpointsParameterModelNode {
+  readonly kind: 'EndpointParameter';
+  readonly type: {
+    kind: 'ObjectTypeDefinition';
+  };
+  readonly name: NameNode;
+}
+
+export type EndpointsParametersNode = EndpointsParameterModelNode;
+
+export interface EndpointUrlNode {
+  readonly kind: 'EndpointUrl';
+  readonly name?: NameNode;
+  readonly parameters?: ReadonlyArray<EndpointsParametersNode>;
+}
+
+export interface EndpointsResponseBodyNode {
+  kind: 'EndpointParameterBody'
+}
+
+export type EndpointsResponsesNode = EndpointsResponseBodyNode;
+
+export interface EndpointsResponseNode {
+  readonly kind: 'EndpointResponse';
+  readonly type: EndpointsResponsesNode;
+}
+
+
+export interface EndpointTypeDefinitionNode {
+  readonly kind: 'EndpointTypeDefinition';
+  readonly verb: EndpointVerbNode;
+  readonly url: EndpointUrlNode;
+  readonly responses?: ReadonlyArray<EndpointsResponsesNode>;
+}
 
 export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';
