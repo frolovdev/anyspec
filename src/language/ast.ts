@@ -59,6 +59,7 @@ export interface ASTKindToNode {
   ModelTypeDefinition: ModelTypeDefinitionNode;
   EnumInlineTypeDefinition: EnumInlineTypeDefinitionNode;
   EnumValueDefinition: EnumValueDefinitionNode;
+  EnumTypeDefinition: EnumTypeDefinitionNode;
   ModelDescription: ModelDescriptionNode;
   Name: NameNode;
   OptionalName: OptionalNameNode;

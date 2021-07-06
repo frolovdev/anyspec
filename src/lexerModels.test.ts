@@ -3,7 +3,6 @@ import { Lexer, isPunctuatorTokenKind } from './lexer';
 import { Token, TokenKind } from './token';
 import { inspect } from 'util';
 import { dedent } from './__testsUtils__/dedent';
-import { AnySpecError } from './error/AnySpecError';
 
 function lexFirst(str: string) {
   const lexer = new Lexer(new Source(str));
@@ -23,11 +22,17 @@ const getFullTokenList = (source: Source) => {
 
   while (lexer.lookahead().kind !== TokenKind.EOF) {
     let current = lexer.advance();
-    tokenList.push(current.kind === TokenKind.NAME ? current.value : current.kind);
+    tokenList.push(
+      current.kind === TokenKind.NAME || current.kind === TokenKind.NUMBER
+        ? current.value
+        : current.kind,
+    );
   }
 
   return tokenList;
 };
+
+
 
 function expectSyntaxErrorFirst(text: string, expectedError: any) {
   let error = null;

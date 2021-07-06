@@ -105,6 +105,10 @@ export const TokenKind = {
   EXTENDS: '<',
   QUESTION_MARK: '?',
   DESCRIPTION: 'Description',
+  RETURN: '=>',
+  INDENT: '<INDENT>',
+  DEDENT: '<DEDENT>',
+  NUMBER: 'Number'
 } as const;
 
 /**
