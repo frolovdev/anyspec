@@ -7,6 +7,100 @@ import { Source } from 'source';
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
 describe(__filename, () => {
+  describe('describ', () => {
+    it('succes', () => {
+      /*
+          `/analytics_events`:
+            @token GET /conversations/:entryType:i?ConversationUpdateRequest { kek: AcDocuemnt }
+                => ConversationResponse
+                => 204
+      */
+
+      const a = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: {
+          kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+          tag: { kind: ASTNodeKind.NAME, value: '/analytics_events' },
+          endpoints: [
+            {
+              kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+              description: { kind: ASTNodeKind.ENDPOINT_DESCRIPTION, value: 'лул\nkek' },
+              verb: { kind: ASTNodeKind.ENDPOINT_VERB, name: { ASTNodeKind.NAME, value: 'GET' }  },
+              // https://github.com/Ajaxy/tinyspec#authorization
+              securityDefinition: {
+                kind: ASTNodeKind.ENDPOINT_SECURITY_DEFINITION,
+                name: { kind: ASTNodeKind.NAME, value: 'token' },
+              },
+              url: {
+                kind: ASTNodeKind.ENDPOINT_URL,
+                parameters: [
+                  {
+                    kind: ENDPOINT_PARAMETER,
+                    type: {
+                      kind: ENDPOINT_PARAMETER_PATH,
+                      type: {
+                        kind: ENDPOINT_PARAMETER_PATH_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'i' },
+                      }
+                    },
+                    name: { kind: ASTNodeKind.NAME, value: 'entryType' },
+                  },
+                  {
+                    kind: ENDPOINT_PARAMETER,
+                    type: {
+                      kind: ENDPOINT_PARAMETER_QUERY,
+                    },
+                    name: { kind: ASTNodeKind.NAME, value: 'ConversationUpdateRequest' },
+                  },
+                  {
+                    kind: ENDPOINT_PARAMETER,
+                    type: {
+                      kind: ENDPOINT_PARAMETER_BODY,
+                      type: {
+                        kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                      }
+                    },
+                    
+                  },
+                ],
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: '/conversations/:entryType:i',
+                },
+                responses: [
+                  {
+                    kind: ASTNodeKind.ENDPOINT_RESPONSE, 
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: ConversationResponse,
+                      },
+                    }
+                  
+                  },
+                  {
+                    kind: ASTNodeKind.ENDPOINT_RESPONSE, 
+                    type: {
+                      kind: ASTNodeKind.STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: 204,
+                      },
+                    }
+                  
+                  }
+                ]
+              },
+            },
+          ],
+        },
+      };
+
+      console.log('a', a);
+    });
+  });
+
   describe('model', () => {
     it('throws an error when parse oneline description without model', () => {
       const description = `
@@ -1550,7 +1644,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
 
     it('unbalanced parenthesis not allowed 7', () => {
@@ -1564,9 +1660,10 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
-
 
     it('unbalanced parenthesis not allowed 8', () => {
       const enumString = `CompanyType (
@@ -1579,7 +1676,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
 
     it('unbalanced parenthesis not allowed 9', () => {
@@ -1593,7 +1692,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
 
     it('unbalanced parenthesis not allowed 10', () => {
@@ -1606,7 +1707,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
   });
 });
