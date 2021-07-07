@@ -10,8 +10,9 @@
     "debug:tests": "NODE_PATH=./src STAGE=test node --inspect-brk ./node_modules/.bin/jest",
     "run:cli": "TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true NODE_PATH=./src node -r ts-node/register src/cli/bin.ts src/cli/examples/kek.models.tinyspec -o ./ ",
     "clean": "rm -rf src/cli/dist",
-    "prepublish:cli": "npm run clean && tsc --outDir src/cli/dist",
-    "publish:cli": "npm publish ./src/cli"
+    "prepublish:cli": "cd src/cli && npm install && cd .. && npm run clean && tsc --outDir src/cli/dist",
+    "publish:cli": "npm publish ./src/cli",
+    "test:integration:cli": "anyspec src/cli/examples/kek.models.tinyspec -o ./"
   },
   "author": "",
   "license": "ISC",

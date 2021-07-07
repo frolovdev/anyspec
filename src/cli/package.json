@@ -1,6 +1,6 @@
 {
   "name": "@anyspec/cli",
-  "version": "0.0.1-rc.3",
+  "version": "0.0.1-rc.4",
   "author": {
     "name": "frolovdev",
     "url": "https://github.com/frolovdev"
@@ -43,7 +43,8 @@
   "files": [
     "/README.md",
     "/package.json",
-    "/dist"
+    "/dist",
+    "/node_modules"
   ],
   "keywords": [
     "api",

@@ -5,16 +5,17 @@
     "lib": ["es2020"],
     "strict": true,
     "moduleResolution": "node",
+    "module": "commonjs",
     "esModuleInterop": true,
     "baseUrl": "src",
     "outDir": "dist",
     "typeRoots": ["./node_modules/@types", "./src/types"],
   },
   "exclude": [
-    "node_modules/**/*",
-    ".serverless/**/*",
-    ".webpack/**/*",
-    "_warmup/**/*",
-    ".vscode/**/*"
+    "node_modules",
+    "dist",
+    "__tests__",
+    "**/*.test*",
+    "**/*.spec*"
   ],
 }
