@@ -1,8 +1,10 @@
-  
 {
   "name": "@anyspec/cli",
-  "version": "0.0.1-rc.1",
-  "author": "Whispers12",
+  "version": "0.0.1-rc.2",
+  "author": {
+    "name": "frolovdev",
+    "url": "https://github.com/frolovdev"
+  },
   "bin": {
     "anyspec": "./dist/index.js"
   },
@@ -10,6 +12,12 @@
     {
       "name": "Whispers12",
       "email": "githubFrolov@yandex.ru"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Andrey Lukin",
+      "url": "https://github.com/aimmlegate"
     }
   ],
   "repository": {
