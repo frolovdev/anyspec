@@ -1,12 +1,12 @@
 {
   "name": "@anyspec/cli",
-  "version": "0.0.1-rc.2",
+  "version": "0.0.1-rc.3",
   "author": {
     "name": "frolovdev",
     "url": "https://github.com/frolovdev"
   },
   "bin": {
-    "anyspec": "./dist/index.js"
+    "anyspec": "./dist/cli/bin.js"
   },
   "maintainers": [
     {
