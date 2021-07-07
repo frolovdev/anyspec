@@ -56,4 +56,49 @@ describe(__filename, () => {
       },
     ]);
   });
+
+  it('unknown model type definition is invalid', () => {
+    const errors = getErrors(`
+      AcDocument {
+        industry: Industry
+      }
+    
+    `);
+
+    expect(toJSONDeep(errors)).toMatchObject([
+      {
+        locations: [{ line: 3, column: 19 }],
+        message: 'Unknown type "Industry".',
+      },
+    ]);
+  });
+
+  it('known model type definitoon is valid', () => {
+    expectValid(`
+
+
+      AcDocument {
+        industry: {name: Industry}
+      }
+
+      Industry {}
+    
+    `);
+  });
+
+  it('extends unknown model type definition', () => {
+    const errors = getErrors(`
+    AcDocument < Document {
+      
+    }
+  
+  `);
+
+    expect(toJSONDeep(errors)).toMatchObject([
+      {
+        locations: [{ line: 2, column: 18 }],
+        message: 'Unknown type "Document". Did you mean "AcDocument"?',
+      },
+    ]);
+  });
 });

@@ -32,6 +32,7 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
       const typeName = defaultNamedTypeCast(node);
       if (!existingTypesMap[typeName] && !definedTypes[typeName]) {
         const definitionNode = ancestors[2] ?? parent;
+
         const isSDL = definitionNode != null && isSDLNode(definitionNode);
         if (isSDL && standardTypeNames.includes(typeName)) {
           return;

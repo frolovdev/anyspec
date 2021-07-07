@@ -23,7 +23,7 @@ export class Source {
 
   constructor(
     body: string,
-    name: string = 'Tinyspec code',
+    name: string = 'Anyspec code',
     locationOffset: Location = { line: 1, column: 1 },
     sourceType = "models" as SourceType
   ) {
