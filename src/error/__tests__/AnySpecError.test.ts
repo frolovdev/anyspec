@@ -116,7 +116,7 @@ describe(__filename, () => {
   });
 });
 
-describe.skip('printError', () => {
+describe('printError', () => {
   it('prints an error without location', () => {
     const error = new AnySpecError('Error without location');
     expect(printError(error)).toEqual('Error without location');
@@ -125,7 +125,7 @@ describe.skip('printError', () => {
   it('prints an error using node without location', () => {
     const error = new AnySpecError(
       'Error attached to node without location',
-      parse('{ foo }', { noLocation: true }),
+      parse('AcDocument { foo }', { noLocation: true }),
     );
     expect(printError(error)).toEqual('Error attached to node without location');
   });
@@ -134,8 +134,8 @@ describe.skip('printError', () => {
     const docA = parse(
       new Source(
         dedent`
-          type Foo {
-            field: String
+          Foo {
+            field: s
           }
         `,
         'SourceA',
@@ -148,8 +148,8 @@ describe.skip('printError', () => {
     const docB = parse(
       new Source(
         dedent`
-          type Foo {
-            field: Int
+          Foo {
+            field: i
           }
         `,
         'SourceB',
@@ -165,14 +165,14 @@ describe.skip('printError', () => {
       Example error with two nodes
 
       SourceA:2:10
-      1 | type Foo {
-      2 |   field: String
+      1 | Foo {
+      2 |   field: s
         |          ^
       3 | }
 
       SourceB:2:10
-      1 | type Foo {
-      2 |   field: Int
+      1 | Foo {
+      2 |   field: i
         |          ^
       3 | }
     `);
