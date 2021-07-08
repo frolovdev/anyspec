@@ -93,13 +93,12 @@ export interface ASTKindToNode {
 export interface DocumentNode {
   readonly kind: 'Document';
   readonly loc?: Location;
-  readonly definitions: ReadonlyArray<TypeDefinitionNode>;
+  readonly definitions: ReadonlyArray<TypeDefinitionNode | EndpointNamespaceTypeDefinitionNode>;
 }
 
 export type TypeDefinitionNode =
   | ModelTypeDefinitionNode
   | EnumTypeDefinitionNode
-  | EndpointNamespaceTypeDefinitionNode;
 
 export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';
@@ -115,15 +114,37 @@ export interface EndpointVerbNode {
   readonly loc?: Location;
 }
 
+
+export interface EndpointsParameterQueryNode {
+  readonly kind: 'EndpointParameterQuery';
+  readonly name?: NameNode;
+  readonly loc?: Location;
+}
+
+
+export interface EndpointParameterPathTypeNode {
+  readonly kind: 'EndpointParameterPathType',
+  readonly name: NameNode;
+  readonly loc?: Location;
+}
+
+export interface EndpointParameterPathNode {
+  readonly kind: 'EndpointParameterPath';
+  readonly name?: NameNode;
+  readonly loc?: Location;
+  readonly type?: EndpointParameterPathTypeNode
+}
+
 export interface EndpointsParameterNode {
   readonly kind: 'EndpointParameter';
-  readonly type: TypeNode;
+  readonly type: TypeNode | EndpointsParameterQueryNode | EndpointParameterPathNode;
   readonly loc?: Location;
 }
 export interface EndpointUrlNode {
   readonly kind: 'EndpointUrl';
   readonly name?: NameNode;
   readonly parameters?: ReadonlyArray<EndpointsParameterNode>;
+  readonly loc?: Location;
 }
 
 export interface EndpointStatusCodeNode {

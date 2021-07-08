@@ -1173,7 +1173,68 @@ POST /endpoint RequestModel
 
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
+    it('can parse basic endpoint with description v2', () => {
+      const sourceString = `
+// lol
+POST /endpoint RequestModel
+    => ResponseModel
+`;
 
+      const expectedAST: ASTNode = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+            endpoints: [
+              {
+                kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+                verb: {
+                  kind: ASTNodeKind.ENDPOINT_VERB,
+                  name: { kind: ASTNodeKind.NAME, value: 'POST' },
+                },
+                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol' },
+                url: {
+                  kind: ASTNodeKind.ENDPOINT_URL,
+                  name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                  parameters: [
+                    {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      },
+                    },
+                  ],
+                },
+                responses: [
+                  {
+                    kind: ASTNodeKind.ENDPOINT_RESPONSE,
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: 'ResponseModel',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const source = new Source(
+        sourceString,
+        'Tinyspec endpoints code',
+        { line: 1, column: 1 },
+        'endpoints',
+      );
+
+      const ast = parse(source);
+
+      expect(toJSONDeep(ast)).toEqual(expectedAST);
+    });
     it('can parse multiple descriptions', () => {
       const sourceString = `
 \`/analytics_events\`:
@@ -1183,6 +1244,7 @@ POST /endpoint RequestModel
   
 \`/conversations\`:
     // lol
+    // kek
     HEAD /pechkin/mandrill/event
         => {}
 `;
@@ -1242,7 +1304,7 @@ POST /endpoint RequestModel
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/pechkin/mandrill/event' },
                 },
-                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol' },
+                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol\nkek' },
                 responses: [
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,

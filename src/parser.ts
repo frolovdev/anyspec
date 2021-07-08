@@ -1,9 +1,13 @@
 import {
   EndpointNamespaceTypeDefinitionNode,
+  EndpointParameterPathNode,
+  EndpointParameterPathTypeNode,
   EndpointResponseNode,
   EndpointsParameterNode,
+  EndpointsParameterQueryNode,
   EndpointStatusCodeNode,
   EndpointTypeDefinitionNode,
+  EndpointUrlNode,
   EndpointVerbNode,
   SecurityDefinitionNode,
 } from './language/ast';
@@ -471,16 +475,7 @@ export class Parser {
 }
 
 export class EndpointsParser extends Parser {
-  /**
-   * Document : Definition+
-   * to Parser Common
-   */
-  parseDocument(): DocumentNode {
-    return this.node<DocumentNode>(this.lexer.token, {
-      kind: ASTNodeKind.DOCUMENT,
-      definitions: this.many(TokenKind.SOF, this.parseDefinition, TokenKind.EOF),
-    });
-  }
+
 
   parseEndpointResponses(): EndpointResponseNode[] {
     return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
@@ -515,7 +510,7 @@ export class EndpointsParser extends Parser {
     throw this.unexpected();
   }
 
-  parseEndpointParameterNode(): EndpointsParameterNode | undefined {
+  parseEndpointParameterRequestNode(): EndpointsParameterNode | undefined {
     if (this.peek(TokenKind.INDENT)) {
       return;
     }
@@ -543,69 +538,139 @@ export class EndpointsParser extends Parser {
     });
   }
 
-  parseEndpointNamespaceTypeDefinitionNode(description?: ModelDescriptionNode): EndpointTypeDefinitionNode {
-    const optionalDescription = this.parseModelDescription()
+  parseUrlParametersNode(url: NameNode): [NameNode, EndpointsParameterNode[]] {
+    const [baseWithoutQuery, ...queries] = url.value.split('?');
+
+    const paths = baseWithoutQuery
+      .split('/')
+      .filter((str) => str.startsWith(':'))
+      .map((a) => a.substring(1))
+      .map((a) => a.split(':'));
+
+    const pathsNodes = paths.map(([path, type]) =>
+      this.node<EndpointParameterPathNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
+        type: type
+          ? this.node<EndpointParameterPathTypeNode>(this.lexer.token, {
+              kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+              name: this.node<NameNode>(this.lexer.token, {
+                kind: ASTNodeKind.NAME,
+                value: type,
+              }),
+            })
+          : undefined,
+        name: this.node<NameNode>(this.lexer.token, {
+          kind: ASTNodeKind.NAME,
+          value: path,
+        }),
+      }),
+    );
+
+    const queryNodes = queries.map((q) =>
+      this.node<EndpointsParameterQueryNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
+        name: this.node<NameNode>(this.lexer.token, {
+          kind: ASTNodeKind.NAME,
+          value: q,
+        }),
+      }),
+    );
+
+    return [
+      this.node<NameNode>(this.lexer.token, {
+        kind: ASTNodeKind.NAME,
+        value: baseWithoutQuery,
+      }),
+      [...queryNodes, ...pathsNodes].map((typeNode) =>
+        this.node<EndpointsParameterNode>(this.lexer.token, {
+          kind: ASTNodeKind.ENDPOINT_PARAMETER,
+          type: typeNode,
+        }),
+      ),
+    ];
+  }
+
+  parseUrlTypeDefinitionNode(): EndpointUrlNode {
+    const name = this.parseName();
+    const request = this.parseEndpointParameterRequestNode();
+    const [cleanedName, parameters] = this.parseUrlParametersNode(name);
+
+    const params = request ? [request, ...parameters] : parameters;
+
+    return this.node<EndpointUrlNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_URL,
+      name: cleanedName,
+      parameters: params.length > 0 ? params : undefined,
+    });
+  }
+
+  parseEndpointNamespaceTypeDefinitionNode(): EndpointTypeDefinitionNode {
+    const optionalDescription = this.parseModelDescription();
 
     const securityDefinition = this.parseSecurityDefinition();
     const verb = this.parseEndpointVerb();
-    const name = this.parseName();
-    const parameter = this.parseEndpointParameterNode();
-
-    const url = {
-      // TODO: handle url parsing
-      kind: ASTNodeKind.ENDPOINT_URL,
-      name,
-      parameters: parameter ? [parameter] : undefined,
-    };
-
+    const url = this.parseUrlTypeDefinitionNode();
     const responses = this.parseEndpointResponses();
 
     return this.node<EndpointTypeDefinitionNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
       verb,
-      description: optionalDescription ?? description,
+      description: optionalDescription,
       securityDefinition,
       url,
       responses,
     });
   }
 
-  parseEndpointNamespaceTypeDefinition(description?: ModelDescriptionNode): EndpointNamespaceTypeDefinitionNode {
+  parseEndpointNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
-    const nextToken = this.lexer.lookahead();
+    const tag = this.parseName();
+    this.lexer.advance();
+    const endpoints = this.many(
+      TokenKind.INDENT,
+      this.parseEndpointNamespaceTypeDefinitionNode,
+      TokenKind.DEDENT,
+    );
 
-    if (nextToken.kind === TokenKind.COLON) {
-      const tag = this.parseName();
-      this.lexer.advance()
-      const endpoints = this.many(
-        TokenKind.INDENT,
-        this.parseEndpointNamespaceTypeDefinitionNode,
-        TokenKind.DEDENT,
-      );
-
-      return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
-        kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
-        tag, 
-        endpoints,
-      });
-    }
-
-    const endpoints = [this.parseEndpointNamespaceTypeDefinitionNode(description)];
     return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
       kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+      tag,
       endpoints,
     });
   }
 
-  parseDefinition(): TypeDefinitionNode {
+  parseEndpointWithoutNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
+    const start = this.lexer.token;
 
-    const optionalDescription = this.parseModelDescription()
+    const endpoint = this.parseEndpointNamespaceTypeDefinitionNode();
+    return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
+      kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+      endpoints: [endpoint],
+    });
+  }
 
-    if (this.peek(TokenKind.NAME) || this.peek(TokenKind.AT)) {
-      return this.parseEndpointNamespaceTypeDefinition(optionalDescription);
+  parseNamespaceDefinition(): EndpointNamespaceTypeDefinitionNode {
+    const nextToken = this.lexer.lookahead();
+    if (this.peek(TokenKind.NAME) && nextToken.kind === TokenKind.COLON) {
+      return this.parseEndpointNamespaceTypeDefinition();
+    }
+
+    if (this.peek(TokenKind.NAME) || this.peek(TokenKind.AT) || this.peek(TokenKind.DESCRIPTION)) {
+      return this.parseEndpointWithoutNamespaceTypeDefinition();
     }
 
     throw this.unexpected();
+  }
+
+
+  /**
+   * Document : Definition+
+   */
+   parseDocument(): DocumentNode {
+    return this.node<DocumentNode>(this.lexer.token, {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: this.many(TokenKind.SOF, this.parseNamespaceDefinition, TokenKind.EOF),
+    });
   }
 }
 
