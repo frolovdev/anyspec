@@ -475,10 +475,10 @@ export class Parser {
 }
 
 export class EndpointsParser extends Parser {
-
-
-  parseEndpointResponses(): EndpointResponseNode[] {
-    return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
+  parseEndpointResponses(): EndpointResponseNode[] | undefined {
+    if (this.peek(TokenKind.INDENT)) {
+      return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
+    }
   }
 
   parseEndpointStatusCode(): EndpointStatusCodeNode {
@@ -489,25 +489,25 @@ export class EndpointsParser extends Parser {
   }
 
   parseEndpointResponseNode(): EndpointResponseNode {
-    if (this.peek(TokenKind.RETURN)) {
-      this.lexer.advance();
+    this.expectToken(TokenKind.RETURN);
 
-      if (this.peek(TokenKind.NUMBER)) {
-        return this.node<EndpointResponseNode>(this.lexer.token, {
-          kind: ASTNodeKind.ENDPOINT_RESPONSE,
-          type: this.parseEndpointStatusCode(),
-        });
-      }
+    if (this.peek(TokenKind.DEDENT) || this.peek(TokenKind.INDENT)) {
+      throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or empty response`);
+    }
 
-      const type = this.parseTypeReference();
-
+    if (this.peek(TokenKind.NUMBER)) {
       return this.node<EndpointResponseNode>(this.lexer.token, {
         kind: ASTNodeKind.ENDPOINT_RESPONSE,
-        type,
+        type: this.parseEndpointStatusCode(),
       });
     }
 
-    throw this.unexpected();
+    const type = this.parseTypeReference();
+
+    return this.node<EndpointResponseNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_RESPONSE,
+      type,
+    });
   }
 
   parseEndpointParameterRequestNode(): EndpointsParameterNode | undefined {
@@ -540,6 +540,10 @@ export class EndpointsParser extends Parser {
 
   parseUrlParametersNode(url: NameNode): [NameNode, EndpointsParameterNode[]] {
     const [baseWithoutQuery, ...queries] = url.value.split('?');
+
+    if (!url.value.startsWith('/')) {
+      throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or missed url`);
+    }
 
     const paths = baseWithoutQuery
       .split('/')
@@ -608,6 +612,11 @@ export class EndpointsParser extends Parser {
     const optionalDescription = this.parseModelDescription();
 
     const securityDefinition = this.parseSecurityDefinition();
+
+    if (this.peek(TokenKind.DOLLAR)) {
+      throw this.throwNoCrudl();
+    }
+    
     const verb = this.parseEndpointVerb();
     const url = this.parseUrlTypeDefinitionNode();
     const responses = this.parseEndpointResponses();
@@ -618,14 +627,21 @@ export class EndpointsParser extends Parser {
       description: optionalDescription,
       securityDefinition,
       url,
-      responses,
+      responses: responses ? responses : undefined,
     });
   }
 
   parseEndpointNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
     const tag = this.parseName();
-    this.lexer.advance();
+    this.expectToken(TokenKind.COLON);
+
+    const nextToken = this.lexer.lookahead();
+
+    if (this.lexer.token.kind !== TokenKind.INDENT) {
+      throw syntaxError(this.lexer.source, nextToken.start, `expect <INDENT> after tag name`);
+    }
+
     const endpoints = this.many(
       TokenKind.INDENT,
       this.parseEndpointNamespaceTypeDefinitionNode,
@@ -641,6 +657,15 @@ export class EndpointsParser extends Parser {
 
   parseEndpointWithoutNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
+    const nextToken = this.lexer.lookahead();
+    if (nextToken.kind === TokenKind.INDENT) {
+      throw syntaxError(
+        this.lexer.source,
+        nextToken.start,
+        `you probably missed ':' after tag name`,
+      );
+    }
+
 
     const endpoint = this.parseEndpointNamespaceTypeDefinitionNode();
     return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
@@ -651,6 +676,11 @@ export class EndpointsParser extends Parser {
 
   parseNamespaceDefinition(): EndpointNamespaceTypeDefinitionNode {
     const nextToken = this.lexer.lookahead();
+
+    if (this.peek(TokenKind.DOLLAR)) {
+      throw this.throwNoCrudl();
+    }
+
     if (this.peek(TokenKind.NAME) && nextToken.kind === TokenKind.COLON) {
       return this.parseEndpointNamespaceTypeDefinition();
     }
@@ -662,11 +692,15 @@ export class EndpointsParser extends Parser {
     throw this.unexpected();
   }
 
+  throwNoCrudl(atToken?: $Maybe<Token>): Error {
+    const token = atToken ?? this.lexer.token;
+    return syntaxError(this.lexer.source, token.start, `Not supported $CRUDL definition`);
+  }
 
   /**
    * Document : Definition+
    */
-   parseDocument(): DocumentNode {
+  parseDocument(): DocumentNode {
     return this.node<DocumentNode>(this.lexer.token, {
       kind: ASTNodeKind.DOCUMENT,
       definitions: this.many(TokenKind.SOF, this.parseNamespaceDefinition, TokenKind.EOF),

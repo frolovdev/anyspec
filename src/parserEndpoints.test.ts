@@ -9,6 +9,53 @@ const parse = (source: string | Source) => defaultParse(source, { noLocation: tr
 
 describe(__filename, () => {
   describe('endpoints', () => {
+    it('can parse basic endpoint with no response', () => {
+      const sourceString = `
+POST /endpoint RequestModel
+`;
+
+      const expectedAST: ASTNode = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+            endpoints: [
+              {
+                kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+                verb: {
+                  kind: ASTNodeKind.ENDPOINT_VERB,
+                  name: { kind: ASTNodeKind.NAME, value: 'POST' },
+                },
+                url: {
+                  kind: ASTNodeKind.ENDPOINT_URL,
+                  name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                  parameters: [
+                    {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+      };
+
+      const source = new Source(
+        sourceString,
+        'Tinyspec endpoints code',
+        { line: 1, column: 1 },
+        'endpoints',
+      );
+
+      const ast = parse(source);
+
+      expect(toJSONDeep(ast)).toEqual(expectedAST);
+    });
     it('can parse basic endpoint', () => {
       const sourceString = `
 POST /endpoint RequestModel
