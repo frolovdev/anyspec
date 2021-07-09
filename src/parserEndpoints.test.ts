@@ -137,6 +137,7 @@ GET /endpoint
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                  parameters: [],
                 },
                 responses: [
                   {
@@ -944,6 +945,7 @@ POST /endpoint RequestModel
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                  parameters: [],
                 },
                 responses: [
                   {
@@ -1039,6 +1041,7 @@ POST /endpoint RequestModel
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/pechkin/mandrill/event' },
+                  parameters: [],
                 },
                 responses: [
                   {
@@ -1129,6 +1132,7 @@ HEAD /pechkin/mandrill/event
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/pechkin/mandrill/event' },
+                  parameters: [],
                 },
                 responses: [
                   {
@@ -1350,6 +1354,7 @@ POST /endpoint RequestModel
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/pechkin/mandrill/event' },
+                  parameters: [],
                 },
                 description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol\nkek' },
                 responses: [

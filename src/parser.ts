@@ -597,14 +597,14 @@ export class EndpointsParser extends Parser {
   parseUrlTypeDefinitionNode(): EndpointUrlNode {
     const name = this.parseName();
     const request = this.parseEndpointParameterRequestNode();
-    const [cleanedName, parameters] = this.parseUrlParametersNode(name);
+    const [cleanedName, params] = this.parseUrlParametersNode(name);
 
-    const params = request ? [request, ...parameters] : parameters;
+    const parameters = request ? [request, ...params] : params;
 
     return this.node<EndpointUrlNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_URL,
       name: cleanedName,
-      parameters: params.length > 0 ? params : undefined,
+      parameters: parameters,
     });
   }
 

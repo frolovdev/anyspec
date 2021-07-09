@@ -136,15 +136,16 @@ export interface EndpointParameterPathNode {
   readonly type?: EndpointParameterPathTypeNode
 }
 
+export type EndpointsParameterType = TypeNode | EndpointsParameterQueryNode | EndpointParameterPathNode;
 export interface EndpointsParameterNode {
   readonly kind: 'EndpointParameter';
-  readonly type: TypeNode | EndpointsParameterQueryNode | EndpointParameterPathNode;
+  readonly type: EndpointsParameterType;
   readonly loc?: Location;
 }
 export interface EndpointUrlNode {
   readonly kind: 'EndpointUrl';
-  readonly name?: NameNode;
-  readonly parameters?: ReadonlyArray<EndpointsParameterNode>;
+  readonly name: NameNode;
+  readonly parameters: ReadonlyArray<EndpointsParameterNode>;
   readonly loc?: Location;
 }
 
