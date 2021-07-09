@@ -82,6 +82,7 @@ export interface ASTKindToNode {
   ModelDescription: ModelDescriptionNode;
   Name: NameNode;
   OptionalName: OptionalNameNode;
+  // Endpoints types
   EndpointNamespaceTypeDefinition: EndpointNamespaceTypeDefinitionNode;
   EndpointVerb: EndpointVerbNode;
   EndpointUrl: EndpointUrlNode;
@@ -110,14 +111,14 @@ export interface EndpointNamespaceTypeDefinitionNode {
 
 export interface EndpointVerbNode {
   readonly kind: 'EndpointVerb';
-  readonly name?: NameNode;
+  readonly name: NameNode;
   readonly loc?: Location;
 }
 
 
 export interface EndpointsParameterQueryNode {
   readonly kind: 'EndpointParameterQuery';
-  readonly name?: NameNode;
+  readonly name: NameNode;
   readonly loc?: Location;
 }
 
