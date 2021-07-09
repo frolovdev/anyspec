@@ -558,8 +558,9 @@ export class EndpointsParser extends Parser {
   }
 
   /**
-   * parse url string to tuple of url name (url string without query string)
+   * split url string to tuple of url name (url string without query string)
    * and array of EndpointsParameterNodes
+   * doesn't interact with lexer and parser state
    */
   parseUrlParametersNode(url: NameNode): [NameNode, EndpointsParameterNode[]] {
     const [baseWithoutQuery, ...queries] = url.value.split('?');
