@@ -5,11 +5,17 @@ import { parse } from 'parser';
 import { AnySpecSchema } from 'runtypes';
 import { validate } from 'validation/validate';
 import { baseRules } from 'validation/baseRules';
+import { printError } from 'error/AnySpecError';
 
-const program = new Command();
+async function main() {
+  const program = new Command();
+  program
+    .requiredOption('-o, --out-dir <dir>', 'path to a directory for a generated SDK')
+    .arguments('<specFiles...>');
 
-async function main(opts: OptionValues, args: string[]) {
-  console.log('argsargs', opts, args);
+  program.parse();
+
+  const { args } = program;
 
   const specFiles = args.map((arg) => path.resolve(process.cwd(), arg));
 
@@ -20,16 +26,7 @@ async function main(opts: OptionValues, args: string[]) {
   const schema = new AnySpecSchema({ ast: doc });
   const errors = validate(schema, doc, baseRules);
 
-  console.log(errors)
+  errors.forEach((e) => console.log(printError(e)));
 }
 
-program
-  .requiredOption('-o, --outDir <dir>', 'path to a directory for a generated SDK')
-  .arguments('<specFiles...>');
-
-program.parse(process.argv);
-
-main(program.opts(), program.args).catch((err) => {
-  console.error(err.message);
-  process.exit(1);
-});
+main();
