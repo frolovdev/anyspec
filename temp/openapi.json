@@ -1,0 +1,66 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API",
+    "version": "{{version}}"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "token": {
+      "name": "X-Access-Token",
+      "type": "apiKey",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/industries": {
+      "get": {
+        "summary": "**List** _industries_",
+        "description": "**List** _industries_",
+        "operationId": "GET--industries",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "industries": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Industry"
+                  }
+                }
+              },
+              "required": [
+                "industries"
+              ]
+            }
+          }
+        },
+        "tags": [
+          "`/industries`"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "`/industries`"
+    }
+  ],
+  "definitions": {
+    "Document": {
+      "type": "object"
+    }
+  }
+}
