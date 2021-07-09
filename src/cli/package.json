@@ -1,0 +1,63 @@
+{
+  "name": "@anyspec/cli",
+  "version": "0.0.1-rc.4",
+  "author": {
+    "name": "frolovdev",
+    "url": "https://github.com/frolovdev"
+  },
+  "bin": {
+    "anyspec": "./dist/cli/bin.js"
+  },
+  "maintainers": [
+    {
+      "name": "Whispers12",
+      "email": "githubFrolov@yandex.ru"
+    }
+  ],
+  "contributors": [
+    {
+      "name": "Andrey Lukin",
+      "url": "https://github.com/aimmlegate"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frolovdev/anyspec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frolovdev/anyspec/issues"
+  },
+  "homepage": "https://github.com/frolovdev/anyspec#readme",
+  "license": "MIT",
+  "description": "Your best friend to deal with api spec",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "dependencies": {
+    "commander": "^7.2.0"
+  },
+  "engines": {
+    "node": ">=10.8.x"
+  },
+  "files": [
+    "/README.md",
+    "/package.json",
+    "/dist",
+    "/node_modules"
+  ],
+  "keywords": [
+    "api",
+    "spec",
+    "rest",
+    "anyspec",
+    "openapi",
+    "swagger",
+    "specification",
+    "documentation",
+    "models",
+    "definitions",
+    "endpoints",
+    "paths"
+  ]
+}
