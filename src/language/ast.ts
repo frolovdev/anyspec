@@ -172,7 +172,7 @@ export interface EndpointTypeDefinitionNode {
   readonly url: EndpointUrlNode;
   readonly description?: ModelDescriptionNode;
   readonly securityDefinition?: EndpointSecurityDefinitionNode;
-  readonly responses?: ReadonlyArray<EndpointResponseNode>;
+  readonly responses: ReadonlyArray<EndpointResponseNode>;
   readonly loc?: Location;
 }
 

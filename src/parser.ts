@@ -475,10 +475,11 @@ export class Parser {
 }
 
 export class EndpointsParser extends Parser {
-  parseEndpointResponses(): EndpointResponseNode[] | undefined {
+  parseEndpointResponses(): EndpointResponseNode[] {
     if (this.peek(TokenKind.INDENT)) {
       return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
     }
+    return []
   }
 
   parseEndpointStatusCode(): EndpointStatusCodeNode {
@@ -627,7 +628,7 @@ export class EndpointsParser extends Parser {
       description: optionalDescription,
       securityDefinition,
       url,
-      responses: responses ? responses : undefined,
+      responses: responses,
     });
   }
 
