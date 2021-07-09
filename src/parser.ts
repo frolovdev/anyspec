@@ -475,6 +475,10 @@ export class Parser {
 }
 
 export class EndpointsParser extends Parser {
+
+  /**
+   * parse multiple endpoint responses (model or names after multiple => at same indent lvls)
+   */
   parseEndpointResponses(): EndpointResponseNode[] {
     if (this.peek(TokenKind.INDENT)) {
       return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
@@ -482,6 +486,9 @@ export class EndpointsParser extends Parser {
     return []
   }
 
+  /**
+   * parse status code (404, 202, etc)
+   */
   parseEndpointStatusCode(): EndpointStatusCodeNode {
     return this.node<EndpointStatusCodeNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
@@ -489,6 +496,9 @@ export class EndpointsParser extends Parser {
     });
   }
 
+  /**
+   * parse endpoint response (model or name after =>)
+   */
   parseEndpointResponseNode(): EndpointResponseNode {
     this.expectToken(TokenKind.RETURN);
 
@@ -511,6 +521,9 @@ export class EndpointsParser extends Parser {
     });
   }
 
+  /**
+   * parse endpoint request (model or name after url string)
+   */
   parseEndpointParameterRequestNode(): EndpointsParameterNode | undefined {
     if (this.peek(TokenKind.INDENT)) {
       return;
@@ -522,6 +535,9 @@ export class EndpointsParser extends Parser {
     });
   }
 
+  /**
+   * parse endpoint security tag (@tag)
+   */
   parseSecurityDefinition(): EndpointSecurityDefinitionNode | undefined {
     if (this.peek(TokenKind.AT)) {
       this.lexer.advance();
@@ -531,7 +547,9 @@ export class EndpointsParser extends Parser {
       });
     }
   }
-
+  /**
+   * parse endpoint verb (GET/POST etc)
+   */
   parseEndpointVerb(): EndpointVerbNode {
     return this.node<EndpointVerbNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_VERB,
@@ -539,6 +557,10 @@ export class EndpointsParser extends Parser {
     });
   }
 
+  /**
+   * parse url string to tuple of url name (url string without query string)
+   * and array of EndpointsParameterNodes
+   */
   parseUrlParametersNode(url: NameNode): [NameNode, EndpointsParameterNode[]] {
     const [baseWithoutQuery, ...queries] = url.value.split('?');
 
@@ -595,6 +617,9 @@ export class EndpointsParser extends Parser {
     ];
   }
 
+  /**
+   * parse url 
+   */
   parseUrlTypeDefinitionNode(): EndpointUrlNode {
     const name = this.parseName();
     const request = this.parseEndpointParameterRequestNode();
@@ -609,6 +634,9 @@ export class EndpointsParser extends Parser {
     });
   }
 
+  /**
+   * parse single endpoint definition
+   */
   parseEndpointNamespaceTypeDefinitionNode(): EndpointTypeDefinitionNode {
     const optionalDescription = this.parseModelDescription();
 
@@ -632,6 +660,10 @@ export class EndpointsParser extends Parser {
     });
   }
 
+
+  /**
+   * parse all endpoints inside `tag`
+   */
   parseEndpointNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
     const tag = this.parseName();
@@ -656,6 +688,10 @@ export class EndpointsParser extends Parser {
     });
   }
 
+  /**
+   * parse standalone endpoint at top level without `tag`
+   * 
+   */
   parseEndpointWithoutNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
     const nextToken = this.lexer.lookahead();
@@ -675,6 +711,7 @@ export class EndpointsParser extends Parser {
     });
   }
 
+
   parseNamespaceDefinition(): EndpointNamespaceTypeDefinitionNode {
     const nextToken = this.lexer.lookahead();
 
@@ -693,6 +730,9 @@ export class EndpointsParser extends Parser {
     throw this.unexpected();
   }
 
+  /**
+   * throw error when see $ Token
+   */
   throwNoCrudl(atToken?: $Maybe<Token>): Error {
     const token = atToken ?? this.lexer.token;
     return syntaxError(this.lexer.source, token.start, `Not supported $CRUDL definition`);
