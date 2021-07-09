@@ -9,7 +9,7 @@ import {
   EndpointTypeDefinitionNode,
   EndpointUrlNode,
   EndpointVerbNode,
-  SecurityDefinitionNode,
+  EndpointSecurityDefinitionNode,
 } from './language/ast';
 import { syntaxError } from './error/syntaxError';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
@@ -521,10 +521,10 @@ export class EndpointsParser extends Parser {
     });
   }
 
-  parseSecurityDefinition(): SecurityDefinitionNode | undefined {
+  parseSecurityDefinition(): EndpointSecurityDefinitionNode | undefined {
     if (this.peek(TokenKind.AT)) {
       this.lexer.advance();
-      return this.node<SecurityDefinitionNode>(this.lexer.token, {
+      return this.node<EndpointSecurityDefinitionNode>(this.lexer.token, {
         kind: ASTNodeKind.ENDPOINT_SECURITY_DEFINITION,
         name: this.parseName(),
       });

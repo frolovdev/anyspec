@@ -88,7 +88,7 @@ export interface ASTKindToNode {
   EndpointUrl: EndpointUrlNode;
   EndpointTypeDefinition: EndpointTypeDefinitionNode;
   EndpointResponse: EndpointResponseNode;
-  SecurityDefinition: SecurityDefinitionNode;
+  EndpointSecurityDefinition: EndpointSecurityDefinitionNode;
 }
 
 export interface DocumentNode {
@@ -159,7 +159,7 @@ export interface EndpointResponseNode {
   readonly loc?: Location;
 }
 
-export interface SecurityDefinitionNode {
+export interface EndpointSecurityDefinitionNode {
   readonly kind: 'EndpointSecurityDefinition';
   readonly name?: NameNode;
   readonly loc?: Location;
@@ -170,7 +170,7 @@ export interface EndpointTypeDefinitionNode {
   readonly verb: EndpointVerbNode;
   readonly url: EndpointUrlNode;
   readonly description?: ModelDescriptionNode;
-  readonly securityDefinition?: SecurityDefinitionNode;
+  readonly securityDefinition?: EndpointSecurityDefinitionNode;
   readonly responses?: ReadonlyArray<EndpointResponseNode>;
   readonly loc?: Location;
 }
