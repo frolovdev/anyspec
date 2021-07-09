@@ -113,5 +113,22 @@ $CRUDL /roles
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported $CRUDL definition');
     });
+    it('endpoint with broken indentations', () => {
+      const sourceString = `
+\`/analytics_events\`:
+    POST /endpoint RequestModel
+        => ResponseModel
+    => ResponseModel
+`;
+
+      const source = new Source(
+        sourceString,
+        'Tinyspec endpoints code',
+        { line: 1, column: 1 },
+        'endpoints',
+      );
+
+      expect(() => parse(source)).toThrow("Syntax Error: Expected Name, found =>.");
+    });
   });
 });
