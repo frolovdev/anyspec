@@ -87,3 +87,5 @@ A ( "a" | "b" )
 A ( "a" | "b" |  )
 
 ```
+
+To much dsl like $CRUDL
