@@ -67,7 +67,7 @@ Allow to describe lambdas
 https://swagger.io/docs/specification/2-0/describing-parameters/
 
 
-# Why tinyspec bad
+# Why tinyspec is bad
 
 Don't throw an error in this case
 
