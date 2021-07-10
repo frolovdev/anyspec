@@ -1,1 +1,7 @@
 Document {}
+
+PermissionType (
+  "own:companies:write" |
+  own:documents:write |
+  own:conversations:write  |
+)
