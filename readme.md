@@ -76,3 +76,14 @@ Don't throw an error in this case
     $L /industries ?branch?
 
 ```
+
+No consistency in enums
+
+```
+A ( a | b )
+
+A ( "a" | "b" )
+
+A ( "a" | "b" |  )
+
+```
