@@ -224,6 +224,9 @@ POST /endpoint/:entryType
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType' },
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
+                      }
                     },
                   },
                 ],
@@ -284,6 +287,9 @@ POST /endpoint/:entryType/:entryType2
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType' },
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
+                      }
                     },
                   },
                   {
@@ -291,6 +297,9 @@ POST /endpoint/:entryType/:entryType2
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType2' },
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
+                      }
                     },
                   },
                 ],
@@ -351,6 +360,9 @@ POST /endpoint/:entryType/api/v2/:entryType2
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType' },
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
+                      }
                     },
                   },
                   {
@@ -358,6 +370,9 @@ POST /endpoint/:entryType/api/v2/:entryType2
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType2' },
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
+                      }
                     },
                   },
                 ],

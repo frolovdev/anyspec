@@ -11,6 +11,7 @@ import {
   EndpointVerbNode,
   EndpointSecurityDefinitionNode,
   EndpointParameterBodyNode,
+  OptionalEndpointParameterPathTypeNode,
 } from './language/ast';
 import { syntaxError } from './error/syntaxError';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
@@ -476,7 +477,6 @@ export class Parser {
 }
 
 export class EndpointsParser extends Parser {
-
   /**
    * parse multiple endpoint responses (model or names after multiple => at same indent lvls)
    */
@@ -484,7 +484,7 @@ export class EndpointsParser extends Parser {
     if (this.peek(TokenKind.INDENT)) {
       return this.many(TokenKind.INDENT, this.parseEndpointResponse, TokenKind.DEDENT);
     }
-    return []
+    return [];
   }
 
   /**
@@ -534,7 +534,7 @@ export class EndpointsParser extends Parser {
       kind: ASTNodeKind.ENDPOINT_PARAMETER,
       type: this.node<EndpointParameterBodyNode>(this.lexer.token, {
         kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
-        type
+        type,
       }),
     });
   }
@@ -590,7 +590,9 @@ export class EndpointsParser extends Parser {
                 value: type,
               }),
             })
-          : undefined,
+          : this.node<OptionalEndpointParameterPathTypeNode>(this.lexer.token, {
+              kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+            }),
         name: this.node<NameNode>(this.lexer.token, {
           kind: ASTNodeKind.NAME,
           value: path,
@@ -623,7 +625,7 @@ export class EndpointsParser extends Parser {
   }
 
   /**
-   * parse url 
+   * parse url
    */
   parseUrlTypeDefinition(): EndpointUrlNode {
     const name = this.parseName();
@@ -650,7 +652,7 @@ export class EndpointsParser extends Parser {
     if (this.peek(TokenKind.DOLLAR)) {
       throw this.throwNoCrudl();
     }
-    
+
     const verb = this.parseEndpointVerb();
     const url = this.parseUrlTypeDefinition();
     const responses = this.parseEndpointResponses();
@@ -664,7 +666,6 @@ export class EndpointsParser extends Parser {
       responses: responses,
     });
   }
-
 
   /**
    * parse all endpoints inside `tag`
@@ -695,7 +696,7 @@ export class EndpointsParser extends Parser {
 
   /**
    * parse standalone endpoint at top level without `tag`
-   * 
+   *
    */
   parseEndpointWithoutNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
@@ -708,14 +709,12 @@ export class EndpointsParser extends Parser {
       );
     }
 
-
     const endpoint = this.parseEndpointNamespaceTypeDefinition();
     return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
       kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
       endpoints: [endpoint],
     });
   }
-
 
   parseNamespaceDefinition(): EndpointNamespaceTypeDefinitionNode {
     const nextToken = this.lexer.lookahead();

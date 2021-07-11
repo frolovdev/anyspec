@@ -69,7 +69,7 @@ export type ASTNode =
   | EndpointVerbNode
   | EndpointUrlNode
   | EndpointResponseNode
-  | EndpointParameterBodyNode
+  | EndpointParameterBodyNode;
 
 export interface ASTKindToNode {
   Document: DocumentNode;
@@ -103,7 +103,7 @@ export interface DocumentNode {
 export type TypeDefinitionNode =
   | ModelTypeDefinitionNode
   | EnumTypeDefinitionNode
-  | EndpointNamespaceTypeDefinitionNode
+  | EndpointNamespaceTypeDefinitionNode;
 
 export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';
@@ -119,7 +119,6 @@ export interface EndpointVerbNode {
   readonly loc?: Location;
 }
 
-
 export interface EndpointParameterQueryNode {
   readonly kind: 'EndpointParameterQuery';
   readonly name: NameNode;
@@ -133,19 +132,31 @@ export interface EndpointParameterBodyNode {
 }
 
 export interface EndpointParameterPathTypeNode {
-  readonly kind: 'EndpointParameterPathType',
+  readonly kind: 'EndpointParameterPathType';
   readonly name: NameNode;
   readonly loc?: Location;
 }
+
+export interface OptionalEndpointParameterPathTypeNode {
+  readonly kind: 'EndpointParameterPathType';
+  readonly loc?: Location;
+}
+
+export type EndpointPathParameterType =
+  | EndpointParameterPathTypeNode
+  | OptionalEndpointParameterPathTypeNode;
 
 export interface EndpointParameterPathNode {
   readonly kind: 'EndpointParameterPath';
   readonly name?: NameNode;
   readonly loc?: Location;
-  readonly type?: EndpointParameterPathTypeNode
+  readonly type: EndpointPathParameterType;
 }
 
-export type EndpointParameterType = EndpointParameterBodyNode | EndpointParameterQueryNode | EndpointParameterPathNode;
+export type EndpointParameterType =
+  | EndpointParameterBodyNode
+  | EndpointParameterQueryNode
+  | EndpointParameterPathNode;
 export interface EndpointParameterNode {
   readonly kind: 'EndpointParameter';
   readonly type: EndpointParameterType;
