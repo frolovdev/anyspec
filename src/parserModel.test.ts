@@ -2,7 +2,7 @@ import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './
 import { AnySpecError } from './error/AnySpecError';
 import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
-import { Source } from 'source';
+import { Source } from './source';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 

@@ -1,5 +1,5 @@
 import { parse as defaultParse } from './parser';
-import { Source } from 'source';
+import { Source } from './source';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -12,12 +12,12 @@ describe(__filename, () => {
         => ResponseModel
 `;
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow("Syntax Error: you probably missed ':' after tag name");
     });
@@ -28,12 +28,12 @@ describe(__filename, () => {
         => ResponseModel
 `;
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: expect <INDENT> after tag name');
     });
@@ -43,13 +43,12 @@ describe(__filename, () => {
     POST RequestModel
         => ResponseModel
 `;
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: incorrect or missed url');
     });
@@ -59,13 +58,12 @@ describe(__filename, () => {
     POST
         => ResponseModel
 `;
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Expected Name, found <INDENT>.');
     });
@@ -75,13 +73,12 @@ describe(__filename, () => {
     POST /endpoint RequestModel
         => =>
 `;
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: incorrect or empty response');
     });
@@ -89,13 +86,12 @@ describe(__filename, () => {
       const sourceString = `
 $CRUDL /roles
 `;
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported $CRUDL definition');
     });
@@ -104,12 +100,12 @@ $CRUDL /roles
 @token $CRUDL /roles
 `;
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported $CRUDL definition');
     });
@@ -121,12 +117,12 @@ $CRUDL /roles
     => ResponseModel
 `;
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: Expected Name, found =>.');
     });
@@ -137,12 +133,12 @@ GET /examples?sort&limit?:i
   => 404
 `;
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
     });
@@ -153,12 +149,12 @@ GET /examples?sort:i
   => 404
 `;
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
     });

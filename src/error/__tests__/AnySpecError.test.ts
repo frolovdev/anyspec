@@ -1,18 +1,20 @@
-import { dedent } from '__testsUtils__';
+import { dedent } from '../../__testsUtils__';
 
-import { invariant } from 'utils';
+import { invariant } from '../../utils';
 
-import { ASTNodeKind } from 'language';
-import { parse } from 'parser';
-import { Source } from 'source';
+import { ASTNodeKind } from '../../language';
+import { parse } from '../../parser';
+import { Source } from '../../source';
 
 import { AnySpecError, printError } from '../AnySpecError';
 
-const source = new Source(dedent`
+const source = new Source({
+  body: dedent`
   Doc {
     field
   }
-`);
+`,
+});
 const ast = parse(source);
 const operationNode = ast.definitions[0];
 invariant(operationNode.kind === ASTNodeKind.MODEL_TYPE_DEFINITION);
@@ -71,12 +73,11 @@ describe(__filename, () => {
     const e = new AnySpecError('msg', fieldNode); // Non-array value.
     expect(e).toHaveProperty('source', source);
     expect(e).toMatchObject({
-      
       locations: [{ line: 2, column: 3 }],
     });
 
-    expect(e.positions).toEqual([8])
-    expect(e.nodes).toEqual([fieldNode])
+    expect(e.positions).toEqual([8]);
+    expect(e.nodes).toEqual([fieldNode]);
   });
 
   it('converts node with loc.start === 0 to positions and locations', () => {
@@ -132,28 +133,28 @@ describe('printError', () => {
 
   it('prints an error with nodes from different sources', () => {
     const docA = parse(
-      new Source(
-        dedent`
+      new Source({
+        body: dedent`
           Foo {
             field: s
           }
         `,
-        'SourceA',
-      ),
+        name: 'SourceA',
+      }),
     );
     const opA = docA.definitions[0];
     invariant(opA.kind === ASTNodeKind.MODEL_TYPE_DEFINITION && opA.fields);
     const fieldA = opA.fields[0];
 
     const docB = parse(
-      new Source(
-        dedent`
+      new Source({
+        body: dedent`
           Foo {
             field: i
           }
         `,
-        'SourceB',
-      ),
+        name: 'SourceB',
+      }),
     );
     const opB = docB.definitions[0];
     invariant(opB.kind === ASTNodeKind.MODEL_TYPE_DEFINITION && opB.fields);

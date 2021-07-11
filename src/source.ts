@@ -6,7 +6,14 @@ interface Location {
   column: number;
 }
 
-type SourceType = "models" | "endpoints"
+type SourceType = 'models' | 'endpoints';
+
+interface SourceArgs {
+  body: string;
+  name?: string;
+  locationOffset?: Location;
+  sourceType?: SourceType;
+}
 
 /**
  * A representation of source input. The `name` and `locationOffset` parameters are
@@ -19,20 +26,31 @@ export class Source {
   body: string;
   name: string;
   locationOffset: Location;
-  sourceType: SourceType
+  sourceType: SourceType;
 
-  constructor(
-    body: string,
-    name: string = 'Anyspec code',
-    locationOffset: Location = { line: 1, column: 1 },
-    sourceType = "models" as SourceType
-  ) {
-    assert(typeof body === 'string', `Body must be a string. Received: ${inspect(body)}.`);
+  constructor(args: SourceArgs) {
+
+    assert(
+      typeof args?.body === 'string',
+      `Body must be a string. Received: ${inspect(args)}.`,
+    );
+
+    const {
+      body,
+      name = 'source code',
+      locationOffset = { line: 1, column: 1 },
+      sourceType = "models",
+    } = args;
 
     this.body = body;
     this.name = name;
     this.locationOffset = locationOffset;
-    this.sourceType = sourceType
+    this.sourceType = sourceType;
+
+    assert(
+      typeof this.body === 'string',
+      `Body must be a string. Received: ${inspect(this.body)}.`,
+    );
 
     assert(
       this.locationOffset.line > 0,
