@@ -45,7 +45,7 @@ export interface ParseOptions {
   noLocation?: boolean;
 }
 
-export class Parser {
+export class ModelParser {
   private options: $Maybe<ParseOptions>;
   protected lexer: Lexer;
 
@@ -476,7 +476,7 @@ export class Parser {
   }
 }
 
-export class EndpointsParser extends Parser {
+export class EndpointsParser extends ModelParser {
   /**
    * parse multiple endpoint responses (model or names after multiple => at same indent lvls)
    */
@@ -774,7 +774,7 @@ function getTokenKindDesc(kind: TokenKindEnum): string {
  */
 export function parse(source: string | Source, options?: ParseOptions): DocumentNode {
   /// DocumentNode
-  const parser = new Parser(source, options);
+  const parser = new ModelParser(source, options);
   const endpointParser = new EndpointsParser(source, options);
   if (typeof source !== 'string' && source.sourceType === 'endpoints') {
     return endpointParser.parseDocument();
