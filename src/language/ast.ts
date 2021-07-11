@@ -109,7 +109,7 @@ export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';
   readonly tag?: NameNode;
   readonly description?: ModelDescriptionNode;
-  readonly endpoints?: ReadonlyArray<EndpointTypeDefinitionNode>;
+  readonly endpoints: ReadonlyArray<EndpointTypeDefinitionNode>;
   readonly loc?: Location;
 }
 

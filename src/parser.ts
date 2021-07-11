@@ -482,7 +482,7 @@ export class EndpointsParser extends Parser {
    */
   parseEndpointResponses(): EndpointResponseNode[] {
     if (this.peek(TokenKind.INDENT)) {
-      return this.many(TokenKind.INDENT, this.parseEndpointResponseNode, TokenKind.DEDENT);
+      return this.many(TokenKind.INDENT, this.parseEndpointResponse, TokenKind.DEDENT);
     }
     return []
   }
@@ -500,7 +500,7 @@ export class EndpointsParser extends Parser {
   /**
    * parse endpoint response (model or name after =>)
    */
-  parseEndpointResponseNode(): EndpointResponseNode {
+  parseEndpointResponse(): EndpointResponseNode {
     this.expectToken(TokenKind.RETURN);
 
     if (this.peek(TokenKind.DEDENT) || this.peek(TokenKind.INDENT)) {
@@ -525,7 +525,7 @@ export class EndpointsParser extends Parser {
   /**
    * parse endpoint request (model or name after url string)
    */
-  parseEndpointParameterRequestNode(): EndpointParameterNode | undefined {
+  parseEndpointParameterRequest(): EndpointParameterNode | undefined {
     if (this.peek(TokenKind.INDENT)) {
       return;
     }
@@ -566,7 +566,7 @@ export class EndpointsParser extends Parser {
    * and array of EndpointsParameterNodes
    * doesn't interact with lexer and parser state
    */
-  parseUrlParametersNode(url: NameNode): [NameNode, EndpointParameterNode[]] {
+  parseUrlParameters(url: NameNode): [NameNode, EndpointParameterNode[]] {
     const [baseWithoutQuery, ...queries] = url.value.split('?');
 
     if (!url.value.startsWith('/')) {
@@ -625,10 +625,10 @@ export class EndpointsParser extends Parser {
   /**
    * parse url 
    */
-  parseUrlTypeDefinitionNode(): EndpointUrlNode {
+  parseUrlTypeDefinition(): EndpointUrlNode {
     const name = this.parseName();
-    const request = this.parseEndpointParameterRequestNode();
-    const [cleanedName, params] = this.parseUrlParametersNode(name);
+    const request = this.parseEndpointParameterRequest();
+    const [cleanedName, params] = this.parseUrlParameters(name);
 
     const parameters = request ? [request, ...params] : params;
 
@@ -642,7 +642,7 @@ export class EndpointsParser extends Parser {
   /**
    * parse single endpoint definition
    */
-  parseEndpointNamespaceTypeDefinitionNode(): EndpointTypeDefinitionNode {
+  parseEndpointNamespaceTypeDefinition(): EndpointTypeDefinitionNode {
     const optionalDescription = this.parseModelDescription();
 
     const securityDefinition = this.parseSecurityDefinition();
@@ -652,7 +652,7 @@ export class EndpointsParser extends Parser {
     }
     
     const verb = this.parseEndpointVerb();
-    const url = this.parseUrlTypeDefinitionNode();
+    const url = this.parseUrlTypeDefinition();
     const responses = this.parseEndpointResponses();
 
     return this.node<EndpointTypeDefinitionNode>(this.lexer.token, {
@@ -669,7 +669,7 @@ export class EndpointsParser extends Parser {
   /**
    * parse all endpoints inside `tag`
    */
-  parseEndpointNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
+  parseAllEndpointNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
     const tag = this.parseName();
     this.expectToken(TokenKind.COLON);
@@ -682,7 +682,7 @@ export class EndpointsParser extends Parser {
 
     const endpoints = this.many(
       TokenKind.INDENT,
-      this.parseEndpointNamespaceTypeDefinitionNode,
+      this.parseEndpointNamespaceTypeDefinition,
       TokenKind.DEDENT,
     );
 
@@ -709,7 +709,7 @@ export class EndpointsParser extends Parser {
     }
 
 
-    const endpoint = this.parseEndpointNamespaceTypeDefinitionNode();
+    const endpoint = this.parseEndpointNamespaceTypeDefinition();
     return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
       kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
       endpoints: [endpoint],
@@ -725,7 +725,7 @@ export class EndpointsParser extends Parser {
     }
 
     if (this.peek(TokenKind.NAME) && nextToken.kind === TokenKind.COLON) {
-      return this.parseEndpointNamespaceTypeDefinition();
+      return this.parseAllEndpointNamespaceTypeDefinition();
     }
 
     if (this.peek(TokenKind.NAME) || this.peek(TokenKind.AT) || this.peek(TokenKind.DESCRIPTION)) {
