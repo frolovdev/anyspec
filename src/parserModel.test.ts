@@ -1119,6 +1119,45 @@ describe(__filename, () => {
       });
     });
 
+    it('correctly parse model with named enum and  \" \" ', () => {
+      const model = `
+          A (
+            "f" | "b" | 
+          )
+        `;
+
+      const EnumA: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'f',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'A',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA],
+      });
+    });
+
+
     it('correctly parse model that uses named enum', () => {
       const model = `
           A (

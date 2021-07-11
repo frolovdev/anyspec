@@ -61,6 +61,14 @@
   "definitions": {
     "Document": {
       "type": "object"
+    },
+    "PermissionType": {
+      "enum": [
+        "own:companies:write",
+        "own:documents:write",
+        "own:conversations:write",
+        ""
+      ]
     }
   }
 }

@@ -19,7 +19,7 @@ class IndentReader {
   eofHandler(source: Source, start: number, line: number, col: number, prev: Token | null) {
     while (this.indents.length > 1) {
       this.remaining.push(new Token(TokenKind.DEDENT, start, start + 1, line, col, prev));
-      this.indents.pop()
+      this.indents.pop();
     }
   }
 
@@ -242,14 +242,10 @@ function readToken(lexer: Lexer, prev: Token): Token {
 
         return new Token(TokenKind.PAREN_R, pos, pos + 1, line, col, prev);
       case 46: //  .
-        // if (body.charCodeAt(pos + 1) === 46 && body.charCodeAt(pos + 2) === 46) {
-        //   return new Token(TokenKind.SPREAD, pos, pos + 3, line, col, prev);
-        // }
         if (lexer.isInsideEnum) {
           return readName(source, pos, line, col, prev, lexer.isInsideEnum);
         }
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
-        break;
       case 47: // /
         if (body.charCodeAt(pos + 1) === 47) {
           return readModelDescription(source, pos, line, col, prev);
@@ -288,11 +284,12 @@ function readToken(lexer: Lexer, prev: Token): Token {
         // ) {
         //   return readBlockString(source, pos, line, col, prev, lexer);
         // }
-        // return readString(source, pos, line, col, prev);
+
         // for now we dont support strings
         if (lexer.isInsideEnum) {
           return readName(source, pos, line, col, prev, lexer.isInsideEnum);
         }
+
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
 
       case 43: {
@@ -326,7 +323,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
         if (lexer.source.sourceType === 'endpoints') {
           return readNumber(source, pos, line, col, prev);
         } else {
-          // we dont support numbers in models files
+          // we don't support numbers in models files
           throw syntaxError(source, pos, unexpectedCharacterMessage(code));
         }
 
@@ -400,10 +397,9 @@ function readToken(lexer: Lexer, prev: Token): Token {
   const line = lexer.line;
   const col = 1 + pos - lexer.lineStart;
 
-
   // at EOF before we emit <EOF> we need to check if indentReader have non empty stack
   // and create DEDENT tokens if need to
-  lexer.indentReader.eofHandler(source, pos, line, col, prev)
+  lexer.indentReader.eofHandler(source, pos, line, col, prev);
   const dedentToken = lexer.indentReader.readRemaining();
   if (dedentToken) {
     return dedentToken;
@@ -527,7 +523,7 @@ function readNumber(
   start: number,
   line: number,
   col: number,
-  prev: Token | null
+  prev: Token | null,
 ): Token {
   const body = source.body;
   const bodyLength = body.length;
@@ -583,14 +579,17 @@ function readNameInsideEnum(
       code === 34 || // "
       code === 43) // +
   ) {
+    // )
     if (code === 41 && parenthesisCount === 0) {
       break;
     }
 
+    // (
     if (code === 40) {
       parenthesisCount++;
     }
 
+    // )
     if (code === 41) {
       parenthesisCount--;
     }
@@ -603,7 +602,14 @@ function readNameInsideEnum(
     throw syntaxError(source, position, 'parenthesis should be balanced inside enum definition');
   }
 
-  const value = body.slice(start, position).trim();
+  
+  let value = body.slice(start, position).trim();
+
+  // TODO: delete after get rid of this case
+  // for covering "own:companies:write"
+  if (value.charCodeAt(0) === 34 && value.charCodeAt(value.length - 1) === 34) {
+    value = value.substring(1, value.length - 1);
+  }
 
   return new Token(TokenKind.NAME, start, position, line, col, prev, value);
 }
