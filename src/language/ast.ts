@@ -26,7 +26,7 @@ export const ASTNodeKind = {
   ENUM_INLINE_TYPE_DEFINITION: 'EnumInlineTypeDefinition',
   OBJECT_TYPE_DEFINITION: 'ObjectTypeDefinition',
   ENUM_TYPE_DEFINITION: 'EnumTypeDefinition',
-
+  // Endpoints nodes
   ENDPOINT_NAMESPACE_TYPE_DEFINITION: 'EndpointNamespaceTypeDefinition',
   ENDPOINT_TYPE_DEFINITION: 'EndpointTypeDefinition',
   ENDPOINT_DESCRIPTION: 'EndpointDescription',
@@ -63,6 +63,7 @@ export type ASTNode =
   | ModelDescriptionNode
   | NameNode
   | OptionalNameNode
+  // Endpoints nodes
   | EndpointNamespaceTypeDefinitionNode
   | EndpointTypeDefinitionNode
   | EndpointVerbNode
@@ -82,7 +83,7 @@ export interface ASTKindToNode {
   ModelDescription: ModelDescriptionNode;
   Name: NameNode;
   OptionalName: OptionalNameNode;
-  // Endpoints types
+  // Endpoints nodes
   EndpointNamespaceTypeDefinition: EndpointNamespaceTypeDefinitionNode;
   EndpointVerb: EndpointVerbNode;
   EndpointUrl: EndpointUrlNode;
