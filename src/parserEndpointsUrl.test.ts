@@ -92,8 +92,11 @@ POST /endpoint?RequestQuery RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_PARAMETER,
                     type: {
-                      kind: ASTNodeKind.NAMED_TYPE,
-                      name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      },
                     },
                   },
                   {
@@ -494,8 +497,11 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name?RequestQuery RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_PARAMETER,
                     type: {
-                      kind: ASTNodeKind.NAMED_TYPE,
-                      name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      },
                     },
                   },
                   {

@@ -1,6 +1,4 @@
-import { ASTNode } from './language/ast';
-import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
-import { AnySpecError } from './error/AnySpecError';
+import { ASTNode, ASTNodeKind } from './language/ast';
 import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
 import { Source } from 'source';
@@ -34,13 +32,16 @@ POST /endpoint2 RequestModel2
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
                 },
-                responses: []
+                responses: [],
               },
             ],
           },
@@ -60,13 +61,16 @@ POST /endpoint2 RequestModel2
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel2' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel2' },
+                        },
                       },
                     },
                   ],
                 },
-                responses: []
+                responses: [],
               },
             ],
           },
@@ -109,8 +113,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -221,8 +228,11 @@ POST /endpoint {}
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
-                        fields: [],
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                          fields: [],
+                        },
                       },
                     },
                   ],
@@ -281,41 +291,44 @@ POST /endpoint {name: s, surname}
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
-                        fields: [
-                          {
-                            omitted: false,
-                            optional: false,
-                            kind: ASTNodeKind.FIELD_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'name',
-                            },
-                            type: {
-                              kind: ASTNodeKind.NAMED_TYPE,
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                          fields: [
+                            {
+                              omitted: false,
+                              optional: false,
+                              kind: ASTNodeKind.FIELD_DEFINITION,
                               name: {
                                 kind: ASTNodeKind.NAME,
-                                value: 's',
+                                value: 'name',
+                              },
+                              type: {
+                                kind: ASTNodeKind.NAMED_TYPE,
+                                name: {
+                                  kind: ASTNodeKind.NAME,
+                                  value: 's',
+                                },
                               },
                             },
-                          },
-                          {
-                            omitted: false,
-                            optional: false,
-                            kind: ASTNodeKind.FIELD_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'surname',
-                            },
-                            type: {
-                              kind: ASTNodeKind.NAMED_TYPE,
+                            {
+                              omitted: false,
+                              optional: false,
+                              kind: ASTNodeKind.FIELD_DEFINITION,
                               name: {
                                 kind: ASTNodeKind.NAME,
-                                value: undefined,
+                                value: 'surname',
+                              },
+                              type: {
+                                kind: ASTNodeKind.NAMED_TYPE,
+                                name: {
+                                  kind: ASTNodeKind.NAME,
+                                  value: undefined,
+                                },
                               },
                             },
-                          },
-                        ],
+                          ],
+                        },
                       },
                     },
                   ],
@@ -374,23 +387,26 @@ POST /endpoint (f | b |)
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION,
-                        values: [
-                          {
-                            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'f',
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION,
+                          values: [
+                            {
+                              kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                              name: {
+                                kind: ASTNodeKind.NAME,
+                                value: 'f',
+                              },
                             },
-                          },
-                          {
-                            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-                            name: {
-                              kind: ASTNodeKind.NAME,
-                              value: 'b',
+                            {
+                              kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+                              name: {
+                                kind: ASTNodeKind.NAME,
+                                value: 'b',
+                              },
                             },
-                          },
-                        ],
+                          ],
+                        },
                       },
                     },
                   ],
@@ -449,8 +465,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -506,8 +525,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -596,8 +618,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -669,8 +694,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -734,8 +762,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -801,8 +832,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -880,8 +914,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -945,8 +982,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -1035,8 +1075,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -1127,8 +1170,11 @@ HEAD /pechkin/mandrill/event
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -1217,8 +1263,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -1279,8 +1328,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],
@@ -1348,8 +1400,11 @@ POST /endpoint RequestModel
                     {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
                       type: {
-                        kind: ASTNodeKind.NAMED_TYPE,
-                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
                       },
                     },
                   ],

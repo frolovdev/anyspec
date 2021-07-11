@@ -3,13 +3,14 @@ import {
   EndpointParameterPathNode,
   EndpointParameterPathTypeNode,
   EndpointResponseNode,
-  EndpointsParameterNode,
-  EndpointsParameterQueryNode,
+  EndpointParameterNode,
+  EndpointParameterQueryNode,
   EndpointStatusCodeNode,
   EndpointTypeDefinitionNode,
   EndpointUrlNode,
   EndpointVerbNode,
   EndpointSecurityDefinitionNode,
+  EndpointParameterBodyNode,
 } from './language/ast';
 import { syntaxError } from './error/syntaxError';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
@@ -524,14 +525,17 @@ export class EndpointsParser extends Parser {
   /**
    * parse endpoint request (model or name after url string)
    */
-  parseEndpointParameterRequestNode(): EndpointsParameterNode | undefined {
+  parseEndpointParameterRequestNode(): EndpointParameterNode | undefined {
     if (this.peek(TokenKind.INDENT)) {
       return;
     }
     const type = this.parseTypeReference();
-    return this.node<EndpointsParameterNode>(this.lexer.token, {
+    return this.node<EndpointParameterNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_PARAMETER,
-      type,
+      type: this.node<EndpointParameterBodyNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+        type
+      }),
     });
   }
 
@@ -562,7 +566,7 @@ export class EndpointsParser extends Parser {
    * and array of EndpointsParameterNodes
    * doesn't interact with lexer and parser state
    */
-  parseUrlParametersNode(url: NameNode): [NameNode, EndpointsParameterNode[]] {
+  parseUrlParametersNode(url: NameNode): [NameNode, EndpointParameterNode[]] {
     const [baseWithoutQuery, ...queries] = url.value.split('?');
 
     if (!url.value.startsWith('/')) {
@@ -595,7 +599,7 @@ export class EndpointsParser extends Parser {
     );
 
     const queryNodes = queries.map((q) =>
-      this.node<EndpointsParameterQueryNode>(this.lexer.token, {
+      this.node<EndpointParameterQueryNode>(this.lexer.token, {
         kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
         name: this.node<NameNode>(this.lexer.token, {
           kind: ASTNodeKind.NAME,
@@ -610,7 +614,7 @@ export class EndpointsParser extends Parser {
         value: baseWithoutQuery,
       }),
       [...queryNodes, ...pathsNodes].map((typeNode) =>
-        this.node<EndpointsParameterNode>(this.lexer.token, {
+        this.node<EndpointParameterNode>(this.lexer.token, {
           kind: ASTNodeKind.ENDPOINT_PARAMETER,
           type: typeNode,
         }),

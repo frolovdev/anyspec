@@ -68,7 +68,8 @@ export type ASTNode =
   | EndpointTypeDefinitionNode
   | EndpointVerbNode
   | EndpointUrlNode
-  | EndpointResponseNode;
+  | EndpointResponseNode
+  | EndpointParameterBodyNode
 
 export interface ASTKindToNode {
   Document: DocumentNode;
@@ -89,6 +90,7 @@ export interface ASTKindToNode {
   EndpointUrl: EndpointUrlNode;
   EndpointTypeDefinition: EndpointTypeDefinitionNode;
   EndpointResponse: EndpointResponseNode;
+  EndpointParameterBody: EndpointParameterBodyNode;
   EndpointSecurityDefinition: EndpointSecurityDefinitionNode;
 }
 
@@ -118,12 +120,17 @@ export interface EndpointVerbNode {
 }
 
 
-export interface EndpointsParameterQueryNode {
+export interface EndpointParameterQueryNode {
   readonly kind: 'EndpointParameterQuery';
   readonly name: NameNode;
   readonly loc?: Location;
 }
 
+export interface EndpointParameterBodyNode {
+  readonly kind: 'EndpointParameterBody';
+  readonly type: TypeNode;
+  readonly loc?: Location;
+}
 
 export interface EndpointParameterPathTypeNode {
   readonly kind: 'EndpointParameterPathType',
@@ -138,16 +145,16 @@ export interface EndpointParameterPathNode {
   readonly type?: EndpointParameterPathTypeNode
 }
 
-export type EndpointsParameterType = TypeNode | EndpointsParameterQueryNode | EndpointParameterPathNode;
-export interface EndpointsParameterNode {
+export type EndpointParameterType = EndpointParameterBodyNode | EndpointParameterQueryNode | EndpointParameterPathNode;
+export interface EndpointParameterNode {
   readonly kind: 'EndpointParameter';
-  readonly type: EndpointsParameterType;
+  readonly type: EndpointParameterType;
   readonly loc?: Location;
 }
 export interface EndpointUrlNode {
   readonly kind: 'EndpointUrl';
   readonly name: NameNode;
-  readonly parameters: ReadonlyArray<EndpointsParameterNode>;
+  readonly parameters: ReadonlyArray<EndpointParameterNode>;
   readonly loc?: Location;
 }
 
