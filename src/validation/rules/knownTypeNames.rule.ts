@@ -16,6 +16,7 @@ const standardTypeNames = specifiedScalarTypes;
  */
 export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
   // TODO: add logic for all schema (need to find all existed definitions)
+  // TODO: resolve EndpointNamespaceTypeDefinitionNode type
   const existingTypesMap: Record<string, boolean> = {};
 
   const definedTypes: Record<string, boolean> = {};

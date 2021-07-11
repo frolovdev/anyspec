@@ -1,3 +1,18 @@
+import {
+  EndpointNamespaceTypeDefinitionNode,
+  EndpointParameterPathNode,
+  EndpointParameterPathTypeNode,
+  EndpointResponseNode,
+  EndpointParameterNode,
+  EndpointParameterQueryNode,
+  EndpointStatusCodeNode,
+  EndpointTypeDefinitionNode,
+  EndpointUrlNode,
+  EndpointVerbNode,
+  EndpointSecurityDefinitionNode,
+  EndpointParameterBodyNode,
+  OptionalEndpointParameterPathTypeNode,
+} from './language/ast';
 import { syntaxError } from './error/syntaxError';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
 import { TokenKindEnum, Token, TokenKind } from './token';
@@ -30,9 +45,9 @@ export interface ParseOptions {
   noLocation?: boolean;
 }
 
-class Parser {
+export class ModelParser {
   private options: $Maybe<ParseOptions>;
-  private lexer: Lexer;
+  protected lexer: Lexer;
 
   constructor(source: string | Source, options?: ParseOptions) {
     const sourceObj = isSource(source) ? source : new Source(source);
@@ -438,6 +453,14 @@ class Parser {
     });
   }
 
+  parseNumber(): NameNode {
+    const token = this.expectToken(TokenKind.NUMBER);
+    return this.node<NameNode>(token, {
+      kind: ASTNodeKind.NAME,
+      value: token.value,
+    });
+  }
+
   // FIXME: in futrue
   // becuase of tinyspec allows to use syntatic sugar around string
 
@@ -449,6 +472,308 @@ class Parser {
     return this.node<OptionalNameNode>(this.lexer.token, {
       kind: ASTNodeKind.NAME,
       value: undefined,
+    });
+  }
+}
+
+export class EndpointsParser extends ModelParser {
+  /**
+   * parse multiple endpoint responses (model or names after multiple => at same indent lvls)
+   */
+  parseEndpointResponses(): EndpointResponseNode[] {
+    if (this.peek(TokenKind.INDENT)) {
+      return this.many(TokenKind.INDENT, this.parseEndpointResponse, TokenKind.DEDENT);
+    }
+    return [];
+  }
+
+  /**
+   * parse status code (404, 202, etc)
+   */
+  parseEndpointStatusCode(): EndpointStatusCodeNode {
+    return this.node<EndpointStatusCodeNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+      name: this.parseNumber(),
+    });
+  }
+
+  /**
+   * parse endpoint response (model or name after =>)
+   */
+  parseEndpointResponse(): EndpointResponseNode {
+    this.expectToken(TokenKind.RETURN);
+
+    if (this.peek(TokenKind.DEDENT) || this.peek(TokenKind.INDENT)) {
+      throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or empty response`);
+    }
+
+    if (this.peek(TokenKind.NUMBER)) {
+      return this.node<EndpointResponseNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_RESPONSE,
+        type: this.parseEndpointStatusCode(),
+      });
+    }
+
+    const type = this.parseTypeReference();
+
+    return this.node<EndpointResponseNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_RESPONSE,
+      type,
+    });
+  }
+
+  /**
+   * parse endpoint request (model or name after url string)
+   */
+  parseEndpointParameterRequest(): EndpointParameterNode | undefined {
+    if (this.peek(TokenKind.INDENT)) {
+      return;
+    }
+    const type = this.parseTypeReference();
+    return this.node<EndpointParameterNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+      type: this.node<EndpointParameterBodyNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+        type,
+      }),
+    });
+  }
+
+  /**
+   * parse endpoint security tag (@tag)
+   */
+  parseSecurityDefinition(): EndpointSecurityDefinitionNode | undefined {
+    if (this.peek(TokenKind.AT)) {
+      this.lexer.advance();
+      return this.node<EndpointSecurityDefinitionNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_SECURITY_DEFINITION,
+        name: this.parseName(),
+      });
+    }
+  }
+  /**
+   * parse endpoint verb (GET/POST etc)
+   */
+  parseEndpointVerb(): EndpointVerbNode {
+    return this.node<EndpointVerbNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_VERB,
+      name: this.parseName(),
+    });
+  }
+
+  /**
+   * split url string to tuple of url name (url string without query string)
+   * and array of EndpointsParameterNodes
+   * doesn't interact with lexer and parser state
+   */
+  parseUrlParameters(url: NameNode): [NameNode, EndpointParameterNode[]] {
+    const [baseWithoutQuery, ...queries] = url.value.split('?');
+
+    if (!url.value.startsWith('/')) {
+      throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or missed url`);
+    }
+
+    if (url.value.includes('&')) {
+      throw this.throwNoInlineQuery();
+    }
+
+    const paths = baseWithoutQuery
+      .split('/')
+      .filter((str) => str.startsWith(':'))
+      .map((a) => a.substring(1))
+      .map((a) => a.split(':'));
+
+    const pathsNodes = paths.map(([path, type]) =>
+      this.node<EndpointParameterPathNode>(this.lexer.token, {
+        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
+        type: type
+          ? this.node<EndpointParameterPathTypeNode>(this.lexer.token, {
+              kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+              name: this.node<NameNode>(this.lexer.token, {
+                kind: ASTNodeKind.NAME,
+                value: type,
+              }),
+            })
+          : this.node<OptionalEndpointParameterPathTypeNode>(this.lexer.token, {
+              kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+            }),
+        name: this.node<NameNode>(this.lexer.token, {
+          kind: ASTNodeKind.NAME,
+          value: path,
+        }),
+      }),
+    );
+
+    const queryNodes = queries.map((q) =>
+      this.node<EndpointParameterQueryNode>(
+        this.lexer.token,
+        (() => {
+          function isLowerCase(str: string) {
+            return str == str.toLowerCase() && str != str.toUpperCase();
+          }
+
+          if (isLowerCase(q.charAt(0))) {
+            throw this.throwNoInlineQuery();
+          }
+
+          return {
+            kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
+            name: this.node<NameNode>(this.lexer.token, {
+              kind: ASTNodeKind.NAME,
+              value: q,
+            }),
+          };
+        })(),
+      ),
+    );
+
+    return [
+      this.node<NameNode>(this.lexer.token, {
+        kind: ASTNodeKind.NAME,
+        value: baseWithoutQuery,
+      }),
+      [...queryNodes, ...pathsNodes].map((typeNode) =>
+        this.node<EndpointParameterNode>(this.lexer.token, {
+          kind: ASTNodeKind.ENDPOINT_PARAMETER,
+          type: typeNode,
+        }),
+      ),
+    ];
+  }
+
+  /**
+   * parse url
+   */
+  parseUrlTypeDefinition(): EndpointUrlNode {
+    const name = this.parseName();
+    const request = this.parseEndpointParameterRequest();
+    const [cleanedName, params] = this.parseUrlParameters(name);
+
+    const parameters = request ? [request, ...params] : params;
+
+    return this.node<EndpointUrlNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_URL,
+      name: cleanedName,
+      parameters: parameters,
+    });
+  }
+
+  /**
+   * parse single endpoint definition
+   */
+  parseEndpointNamespaceTypeDefinition(): EndpointTypeDefinitionNode {
+    const optionalDescription = this.parseModelDescription();
+
+    const securityDefinition = this.parseSecurityDefinition();
+
+    if (this.peek(TokenKind.DOLLAR)) {
+      throw this.throwNoCrudl();
+    }
+
+    const verb = this.parseEndpointVerb();
+    const url = this.parseUrlTypeDefinition();
+    const responses = this.parseEndpointResponses();
+
+    return this.node<EndpointTypeDefinitionNode>(this.lexer.token, {
+      kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+      verb,
+      description: optionalDescription,
+      securityDefinition,
+      url,
+      responses: responses,
+    });
+  }
+
+  /**
+   * parse all endpoints inside `tag`
+   */
+  parseAllEndpointNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
+    const start = this.lexer.token;
+    const tag = this.parseName();
+    this.expectToken(TokenKind.COLON);
+
+    const nextToken = this.lexer.lookahead();
+
+    if (this.lexer.token.kind !== TokenKind.INDENT) {
+      throw syntaxError(this.lexer.source, nextToken.start, `expect <INDENT> after tag name`);
+    }
+
+    const endpoints = this.many(
+      TokenKind.INDENT,
+      this.parseEndpointNamespaceTypeDefinition,
+      TokenKind.DEDENT,
+    );
+
+    return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
+      kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+      tag,
+      endpoints,
+    });
+  }
+
+  /**
+   * parse standalone endpoint at top level without `tag`
+   *
+   */
+  parseEndpointWithoutNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
+    const start = this.lexer.token;
+    const nextToken = this.lexer.lookahead();
+    if (nextToken.kind === TokenKind.INDENT) {
+      throw syntaxError(
+        this.lexer.source,
+        nextToken.start,
+        `you probably missed ':' after tag name`,
+      );
+    }
+
+    const endpoint = this.parseEndpointNamespaceTypeDefinition();
+    return this.node<EndpointNamespaceTypeDefinitionNode>(start, {
+      kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+      endpoints: [endpoint],
+    });
+  }
+
+  parseNamespaceDefinition(): EndpointNamespaceTypeDefinitionNode {
+    const nextToken = this.lexer.lookahead();
+
+    if (this.peek(TokenKind.DOLLAR)) {
+      throw this.throwNoCrudl();
+    }
+
+    if (this.peek(TokenKind.NAME) && nextToken.kind === TokenKind.COLON) {
+      return this.parseAllEndpointNamespaceTypeDefinition();
+    }
+
+    if (this.peek(TokenKind.NAME) || this.peek(TokenKind.AT) || this.peek(TokenKind.DESCRIPTION)) {
+      return this.parseEndpointWithoutNamespaceTypeDefinition();
+    }
+
+    throw this.unexpected();
+  }
+
+  /**
+   * throw error when see $ Token
+   */
+  throwNoCrudl(atToken?: $Maybe<Token>): Error {
+    const token = atToken ?? this.lexer.token;
+    return syntaxError(this.lexer.source, token.start, `Not supported $CRUDL definition`);
+  }
+
+  /**
+   * throw error when see inline query
+   */
+  throwNoInlineQuery(atToken?: $Maybe<Token>): Error {
+    const token = atToken ?? this.lexer.token;
+    return syntaxError(this.lexer.source, token.start, `Not supported inline query`);
+  }
+
+  /**
+   * Document : Definition+
+   */
+  parseDocument(): DocumentNode {
+    return this.node<DocumentNode>(this.lexer.token, {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: this.many(TokenKind.SOF, this.parseNamespaceDefinition, TokenKind.EOF),
     });
   }
 }
@@ -474,6 +799,10 @@ function getTokenKindDesc(kind: TokenKindEnum): string {
  */
 export function parse(source: string | Source, options?: ParseOptions): DocumentNode {
   /// DocumentNode
-  const parser = new Parser(source, options);
+  const parser = new ModelParser(source, options);
+  const endpointParser = new EndpointsParser(source, options);
+  if (typeof source !== 'string' && source.sourceType === 'endpoints') {
+    return endpointParser.parseDocument();
+  }
   return parser.parseDocument();
 }
