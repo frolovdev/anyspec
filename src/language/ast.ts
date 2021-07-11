@@ -95,12 +95,13 @@ export interface ASTKindToNode {
 export interface DocumentNode {
   readonly kind: 'Document';
   readonly loc?: Location;
-  readonly definitions: ReadonlyArray<TypeDefinitionNode | EndpointNamespaceTypeDefinitionNode>;
+  readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
 export type TypeDefinitionNode =
   | ModelTypeDefinitionNode
   | EnumTypeDefinitionNode
+  | EndpointNamespaceTypeDefinitionNode
 
 export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';
