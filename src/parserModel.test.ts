@@ -47,7 +47,7 @@ describe(__filename, () => {
             },
             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
             strict: false,
-            description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'лул\nkek' },
+            description: { kind: ASTNodeKind.DESCRIPTION, value: 'лул\nkek' },
             extendsModels: [],
           },
         ],
