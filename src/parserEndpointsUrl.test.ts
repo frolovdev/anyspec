@@ -58,7 +58,7 @@ POST /endpoint?RequestQuery
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -128,7 +128,7 @@ POST /endpoint?RequestQuery RequestModel
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -188,7 +188,7 @@ POST /endpoint?RequestQuery
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -248,7 +248,7 @@ POST /endpoint/:entryType
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -315,7 +315,7 @@ POST /endpoint/:entryType/:entryType2
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -382,7 +382,7 @@ POST /endpoint/:entryType/api/v2/:entryType2
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -460,7 +460,7 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -555,7 +555,7 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name?RequestQuery RequestModel
 
     const source = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );

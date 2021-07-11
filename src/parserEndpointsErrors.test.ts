@@ -14,7 +14,7 @@ describe(__filename, () => {
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -30,7 +30,7 @@ describe(__filename, () => {
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -46,7 +46,7 @@ describe(__filename, () => {
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -62,7 +62,7 @@ describe(__filename, () => {
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -78,7 +78,7 @@ describe(__filename, () => {
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -92,7 +92,7 @@ $CRUDL /roles
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -106,7 +106,7 @@ $CRUDL /roles
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -123,7 +123,7 @@ $CRUDL /roles
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );

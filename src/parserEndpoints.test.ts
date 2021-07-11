@@ -79,7 +79,7 @@ POST /endpoint2 RequestModel2
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -142,7 +142,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -194,7 +194,7 @@ GET /endpoint
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -257,7 +257,7 @@ POST /endpoint {}
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -353,7 +353,7 @@ POST /endpoint {name: s, surname}
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -431,7 +431,7 @@ POST /endpoint (f | b |)
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -491,7 +491,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -584,7 +584,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -659,7 +659,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -723,7 +723,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -791,7 +791,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -878,7 +878,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -943,7 +943,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -1035,7 +1035,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -1131,7 +1131,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -1225,7 +1225,7 @@ HEAD /pechkin/mandrill/event
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -1292,7 +1292,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -1357,7 +1357,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );
@@ -1457,7 +1457,7 @@ POST /endpoint RequestModel
 
       const source = new Source(
         sourceString,
-        'Tinyspec endpoints code',
+        'Endpoints code',
         { line: 1, column: 1 },
         'endpoints',
       );

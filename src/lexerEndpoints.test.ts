@@ -32,7 +32,7 @@ describe('lexer can understand endpoints', () => {
 
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -74,7 +74,7 @@ describe('lexer can understand endpoints', () => {
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -119,7 +119,7 @@ describe('lexer can understand endpoints', () => {
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -163,7 +163,7 @@ POST /analytics_events AnalyticsEventNewRequest
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -209,7 +209,7 @@ HEAD /pechkin/mandrill/event
 
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -254,7 +254,7 @@ HEAD /pechkin/mandrill/event
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -297,7 +297,7 @@ HEAD /pechkin/mandrill/event
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -345,7 +345,7 @@ HEAD /pechkin/mandrill/event
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -377,7 +377,7 @@ HEAD /pechkin/mandrill/event {messageSenderId?: i, conversationId?: i, ticketId?
         => 204`;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -453,7 +453,7 @@ describe('lexer can catch errors in endpoints', () => {
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
@@ -474,7 +474,7 @@ describe('lexer can catch errors in endpoints', () => {
 `;
     const enumString = new Source(
       sourceString,
-      'Tinyspec endpoints code',
+      'Endpoints code',
       { line: 1, column: 1 },
       'endpoints',
     );
