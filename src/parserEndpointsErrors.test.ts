@@ -128,7 +128,39 @@ $CRUDL /roles
         'endpoints',
       );
 
-      expect(() => parse(source)).toThrow("Syntax Error: Expected Name, found =>.");
+      expect(() => parse(source)).toThrow('Syntax Error: Expected Name, found =>.');
+    });
+    it('endpoint with inline enums are not supported v2', () => {
+      const sourceString = `
+GET /examples?sort&limit?:i
+  => {examples: Example[], totalCount?: i}
+  => 404
+`;
+
+      const source = new Source(
+        sourceString,
+        'Endpoints code',
+        { line: 1, column: 1 },
+        'endpoints',
+      );
+
+      expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
+    });
+    it('endpoint with inline enums are not supported v1', () => {
+      const sourceString = `
+GET /examples?sort:i
+  => {examples: Example[], totalCount?: i}
+  => 404
+`;
+
+      const source = new Source(
+        sourceString,
+        'Endpoints code',
+        { line: 1, column: 1 },
+        'endpoints',
+      );
+
+      expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
     });
   });
 });

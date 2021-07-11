@@ -573,6 +573,10 @@ export class EndpointsParser extends ModelParser {
       throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or missed url`);
     }
 
+    if (url.value.includes('&')) {
+      throw this.throwNoInlineQuery();
+    }
+
     const paths = baseWithoutQuery
       .split('/')
       .filter((str) => str.startsWith(':'))
@@ -601,13 +605,26 @@ export class EndpointsParser extends ModelParser {
     );
 
     const queryNodes = queries.map((q) =>
-      this.node<EndpointParameterQueryNode>(this.lexer.token, {
-        kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-        name: this.node<NameNode>(this.lexer.token, {
-          kind: ASTNodeKind.NAME,
-          value: q,
-        }),
-      }),
+      this.node<EndpointParameterQueryNode>(
+        this.lexer.token,
+        (() => {
+          function isLowerCase(str: string) {
+            return str == str.toLowerCase() && str != str.toUpperCase();
+          }
+
+          if (isLowerCase(q.charAt(0))) {
+            throw this.throwNoInlineQuery();
+          }
+
+          return {
+            kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
+            name: this.node<NameNode>(this.lexer.token, {
+              kind: ASTNodeKind.NAME,
+              value: q,
+            }),
+          };
+        })(),
+      ),
     );
 
     return [
@@ -740,6 +757,14 @@ export class EndpointsParser extends ModelParser {
   throwNoCrudl(atToken?: $Maybe<Token>): Error {
     const token = atToken ?? this.lexer.token;
     return syntaxError(this.lexer.source, token.start, `Not supported $CRUDL definition`);
+  }
+
+  /**
+   * throw error when see inline query
+   */
+  throwNoInlineQuery(atToken?: $Maybe<Token>): Error {
+    const token = atToken ?? this.lexer.token;
+    return syntaxError(this.lexer.source, token.start, `Not supported inline query`);
   }
 
   /**
