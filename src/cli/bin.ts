@@ -43,11 +43,11 @@ async function main() {
 
   const sources = specFilePaths.map((path, i) => {
     if (isEndpoint(path)) {
-      return new Source({ body: specBodyFiles[i], sourceType: 'endpoints' });
+      return new Source({ body: specBodyFiles[i], sourceType: 'endpoints', name: path });
     }
 
     if (isModel(path)) {
-      return new Source({ body: specBodyFiles[i], sourceType: 'models' });
+      return new Source({ body: specBodyFiles[i], sourceType: 'models', name: path });
     }
 
     throw new Error(`File doesn't contain .endpoints.tinyspec or .models.tinyspec extension`);
