@@ -13,7 +13,7 @@ function expectValid(queryStr: string) {
   expect(errors).toEqual([]);
 }
 
-describe.skip(__filename, () => {
+describe(__filename, () => {
   it('known type names are valid', () => {
     expectValid(`
       Doc {

@@ -1,7 +1,7 @@
 import { didYouMean, suggestionList } from 'utils';
 
 import { AnySpecError } from 'error';
-import { ASTNode, NamedTypeNode, isTypeDefinitionNode } from 'language';
+import { ASTNode, NamedTypeNode, isTypeDefinitionNode, ASTNodeKind } from 'language';
 import { ASTVisitor } from 'visitor';
 import { specifiedScalarTypes } from 'runtypes';
 
@@ -21,7 +21,11 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
 
   const definedTypes: Record<string, boolean> = {};
   for (const def of context.getDocument().definitions) {
-    if (isTypeDefinitionNode(def)) {
+    if (
+      isTypeDefinitionNode(def) &&
+      (def.kind === ASTNodeKind.MODEL_TYPE_DEFINITION ||
+        def.kind === ASTNodeKind.ENUM_TYPE_DEFINITION)
+    ) {
       definedTypes[def.name.value] = true;
     }
   }
