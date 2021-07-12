@@ -69,6 +69,26 @@
         "own:conversations:write",
         ""
       ]
+    },
+    "C": {
+      "type": "object",
+      "properties": {
+        "pathParameters": {
+          "type": "object",
+          "properties": {
+            "a": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "a"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "pathParameters"
+      ]
     }
   }
 }

@@ -5,3 +5,9 @@ PermissionType (
   own:documents:write |
   own:conversations:write  |
 )
+
+C {
+  pathParameters: !{
+    a: string
+  }
+}

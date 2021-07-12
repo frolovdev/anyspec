@@ -15,3 +15,6 @@ coverage
 .huskyrc.local.js
 
 src/cli/spec
+temp/openapi.json
+temp/endpoints
+temp/models
