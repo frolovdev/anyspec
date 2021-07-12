@@ -30,7 +30,7 @@ export class Source {
 
   constructor({
     body,
-    name = 'source code',
+    name = 'Anyspec code',
     locationOffset = { line: 1, column: 1 },
     sourceType = 'models',
   }: SourceArgs) {
