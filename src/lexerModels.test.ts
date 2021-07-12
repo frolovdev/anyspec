@@ -205,7 +205,7 @@ describe(__filename, () => {
     expect(String(caughtError)).toEqual(dedent`
       Syntax Error: Cannot parse the unexpected character ">".
 
-      source code:3:5
+      Anyspec code:3:5
       2 |
       3 |     >
         |     ^
