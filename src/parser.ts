@@ -501,7 +501,7 @@ export class EndpointsParser extends ModelParser {
    * parse endpoint response (model or name after =>)
    */
   parseEndpointResponse(): EndpointResponseNode {
-    const description = this.parseModelDescription();
+    const description = this.parseDescription();
 
     this.expectToken(TokenKind.RETURN);
 

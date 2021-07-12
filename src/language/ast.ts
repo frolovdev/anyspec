@@ -177,7 +177,7 @@ export interface EndpointStatusCodeNode {
 export interface EndpointResponseNode {
   readonly kind: 'EndpointResponse';
   readonly type: TypeNode | EndpointStatusCodeNode;
-  readonly description?: ModelDescriptionNode;
+  readonly description?: DescriptionNode;
   readonly loc?: Location;
 }
 

@@ -1487,7 +1487,7 @@ POST /endpoint RequestModel
                   kind: ASTNodeKind.ENDPOINT_VERB,
                   name: { kind: ASTNodeKind.NAME, value: 'POST' },
                 },
-                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'kek' },
+                description: { kind: ASTNodeKind.DESCRIPTION, value: 'kek' },
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
@@ -1514,7 +1514,7 @@ POST /endpoint RequestModel
                         value: 'ResponseModel',
                       },
                     },
-                    description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol' },
+                    description: { kind: ASTNodeKind.DESCRIPTION, value: 'lol' },
                   },
                 ],
               },
