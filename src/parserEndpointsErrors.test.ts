@@ -14,8 +14,6 @@ describe(__filename, () => {
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -30,8 +28,6 @@ describe(__filename, () => {
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -45,8 +41,6 @@ describe(__filename, () => {
 `;
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -60,8 +54,6 @@ describe(__filename, () => {
 `;
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -75,8 +67,6 @@ describe(__filename, () => {
 `;
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -88,8 +78,6 @@ $CRUDL /roles
 `;
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -102,8 +90,6 @@ $CRUDL /roles
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -119,8 +105,6 @@ $CRUDL /roles
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -135,8 +119,6 @@ GET /examples?sort&limit?:i
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -151,8 +133,6 @@ GET /examples?sort:i
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 

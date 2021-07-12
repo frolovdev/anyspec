@@ -58,8 +58,6 @@ POST /endpoint?RequestQuery
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -128,8 +126,6 @@ POST /endpoint?RequestQuery RequestModel
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -188,8 +184,6 @@ POST /endpoint?RequestQuery
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -251,8 +245,6 @@ POST /endpoint/:entryType
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -324,8 +316,6 @@ POST /endpoint/:entryType/:entryType2
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -397,8 +387,6 @@ POST /endpoint/:entryType/api/v2/:entryType2
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -475,8 +463,6 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -570,8 +556,6 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name?RequestQuery RequestModel
 
     const source = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 

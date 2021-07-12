@@ -79,8 +79,6 @@ POST /endpoint2 RequestModel2
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -142,8 +140,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -194,8 +190,6 @@ GET /endpoint
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -257,8 +251,6 @@ POST /endpoint {}
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -353,8 +345,6 @@ POST /endpoint {name: s, surname}
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -431,8 +421,6 @@ POST /endpoint (f | b |)
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -491,8 +479,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -584,8 +570,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -658,8 +642,6 @@ POST /endpoint RequestModel
       };
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -722,8 +704,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -790,8 +770,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -877,8 +855,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -942,8 +918,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1034,8 +1008,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1129,8 +1101,6 @@ POST /endpoint RequestModel
       };
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1223,8 +1193,6 @@ HEAD /pechkin/mandrill/event
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1290,8 +1258,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1354,8 +1320,6 @@ POST /endpoint RequestModel
       };
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1454,8 +1418,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 
@@ -1522,8 +1484,6 @@ POST /endpoint RequestModel
 
       const source = new Source({
         body: sourceString,
-        name: 'Endpoints code',
-        locationOffset: { line: 1, column: 1 },
         sourceType: 'endpoints',
       });
 

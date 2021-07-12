@@ -31,8 +31,6 @@ describe('lexer can understand endpoints', () => {
 
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -73,9 +71,6 @@ describe('lexer can understand endpoints', () => {
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
-      sourceType: 'endpoints',
     });
     const expectedTokens = [
       '/analytics_events',
@@ -117,8 +112,6 @@ describe('lexer can understand endpoints', () => {
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -161,8 +154,6 @@ POST /analytics_events AnalyticsEventNewRequest
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
     const expectedTokens = [
@@ -206,8 +197,6 @@ HEAD /pechkin/mandrill/event
 
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -251,8 +240,6 @@ HEAD /pechkin/mandrill/event
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -294,8 +281,6 @@ HEAD /pechkin/mandrill/event
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -342,8 +327,6 @@ HEAD /pechkin/mandrill/event
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -374,8 +357,6 @@ HEAD /pechkin/mandrill/event {messageSenderId?: i, conversationId?: i, ticketId?
         => 204`;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -450,8 +431,6 @@ describe('lexer can catch errors in endpoints', () => {
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
 
@@ -471,8 +450,6 @@ describe('lexer can catch errors in endpoints', () => {
 `;
     const enumString = new Source({
       body: sourceString,
-      name: 'Endpoints code',
-      locationOffset: { line: 1, column: 1 },
       sourceType: 'endpoints',
     });
     expect(() => getFullTokenList(enumString)).toThrow(
