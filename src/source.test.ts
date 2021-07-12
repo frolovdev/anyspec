@@ -3,23 +3,25 @@ import { Source } from './source';
 describe('Source', () => {
   it('asserts that a body was provided', () => {
     // @ts-expect-error
-    expect(() => new Source()).toThrow('Body must be a string. Received: undefined.');
+    expect(() => new Source()).toThrow(
+      "Cannot destructure property 'body' of 'undefined' as it is undefined.",
+    );
   });
 
   it('asserts that a valid body was provided', () => {
     // @ts-expect-error
-    expect(() => new Source({})).toThrow('Body must be a string. Received: {}.');
+    expect(() => new Source({})).toThrow('Body must be a string. Received: undefined.');
   });
 
   it('can be Object.toStringified', () => {
-    const source = new Source('');
+    const source = new Source({ body: '' });
 
     expect(Object.prototype.toString.call(source)).toEqual('[object Source]');
   });
 
   it('rejects invalid locationOffset', () => {
     function createSource(locationOffset: { line: number; column: number }) {
-      return new Source('', '', locationOffset);
+      return new Source({ body: '', name: '', locationOffset });
     }
 
     expect(() => createSource({ line: 0, column: 1 })).toThrow(

@@ -1,7 +1,7 @@
 import { ASTNode, ASTNodeKind } from './language/ast';
 import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
-import { Source } from 'source';
+import { Source } from './source';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -77,12 +77,10 @@ POST /endpoint2 RequestModel2
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -140,12 +138,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -192,12 +188,10 @@ GET /endpoint
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -255,12 +249,10 @@ POST /endpoint {}
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -351,12 +343,10 @@ POST /endpoint {name: s, surname}
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -429,12 +419,10 @@ POST /endpoint (f | b |)
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -489,12 +477,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -582,12 +568,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -656,13 +640,10 @@ POST /endpoint RequestModel
           },
         ],
       };
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -721,12 +702,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -789,12 +768,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -876,12 +853,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -941,12 +916,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1033,12 +1006,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1128,13 +1099,10 @@ POST /endpoint RequestModel
           },
         ],
       };
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1223,12 +1191,10 @@ HEAD /pechkin/mandrill/event
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1290,12 +1256,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1354,13 +1318,10 @@ POST /endpoint RequestModel
           },
         ],
       };
-
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1455,12 +1416,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 
@@ -1523,12 +1482,10 @@ POST /endpoint RequestModel
         ],
       };
 
-      const source = new Source(
-        sourceString,
-        'Endpoints code',
-        { line: 1, column: 1 },
-        'endpoints',
-      );
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
 
       const ast = parse(source);
 

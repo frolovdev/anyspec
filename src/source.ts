@@ -8,6 +8,13 @@ interface Location {
 
 type SourceType = 'models' | 'endpoints';
 
+interface SourceArgs {
+  body: string;
+  name?: string;
+  locationOffset?: Location;
+  sourceType?: SourceType;
+}
+
 /**
  * A representation of source input. The `name` and `locationOffset` parameters are
  * optional, but they are useful for clients who store EasySpec documents in source files.
@@ -21,18 +28,23 @@ export class Source {
   locationOffset: Location;
   sourceType: SourceType;
 
-  constructor(
-    body: string,
-    name: string = 'Anyspec code',
-    locationOffset: Location = { line: 1, column: 1 },
-    sourceType = 'models' as SourceType,
-  ) {
+  constructor({
+    body,
+    name = 'Anyspec code',
+    locationOffset = { line: 1, column: 1 },
+    sourceType = 'models',
+  }: SourceArgs) {
     assert(typeof body === 'string', `Body must be a string. Received: ${inspect(body)}.`);
 
     this.body = body;
     this.name = name;
     this.locationOffset = locationOffset;
     this.sourceType = sourceType;
+
+    assert(
+      typeof this.body === 'string',
+      `Body must be a string. Received: ${inspect(this.body)}.`,
+    );
 
     assert(
       this.locationOffset.line > 0,

@@ -50,7 +50,7 @@ export class ModelParser {
   protected lexer: Lexer;
 
   constructor(source: string | Source, options?: ParseOptions) {
-    const sourceObj = isSource(source) ? source : new Source(source);
+    const sourceObj = isSource(source) ? source : new Source({ body: source });
 
     this.lexer = new Lexer(sourceObj);
     this.options = options;
@@ -802,10 +802,12 @@ function getTokenKindDesc(kind: TokenKindEnum): string {
  */
 export function parse(source: string | Source, options?: ParseOptions): DocumentNode {
   /// DocumentNode
-  const parser = new ModelParser(source, options);
-  const endpointParser = new EndpointsParser(source, options);
+
   if (typeof source !== 'string' && source.sourceType === 'endpoints') {
+    const endpointParser = new EndpointsParser(source, options);
     return endpointParser.parseDocument();
+  } else {
+    const parser = new ModelParser(source, options);
+    return parser.parseDocument();
   }
-  return parser.parseDocument();
 }

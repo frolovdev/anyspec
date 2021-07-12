@@ -1,5 +1,5 @@
 import { TokenKind } from './token';
-import { Lexer } from 'lexer';
+import { Lexer } from './lexer';
 import { Source } from './source';
 
 const getFullTokenList = (source: Source) => {
@@ -29,12 +29,10 @@ describe('lexer can understand endpoints', () => {
     POST /analytics_events AnalyticsEventNewRequest
         => AnalyticsEventNewResponse`;
 
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       '/analytics_events',
@@ -71,13 +69,9 @@ describe('lexer can understand endpoints', () => {
         => AnalyticsEventNewResponse
 
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
-
+    const enumString = new Source({
+      body: sourceString,
+    });
     const expectedTokens = [
       '/analytics_events',
       ':',
@@ -116,12 +110,10 @@ describe('lexer can understand endpoints', () => {
     POST /analytics_events AnalyticsEventNewRequest
       => AnalyticsEventNewResponse
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       '/analytics_events',
@@ -160,13 +152,10 @@ describe('lexer can understand endpoints', () => {
 POST /analytics_events AnalyticsEventNewRequest
     => AnalyticsEventNewResponse
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
-
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
     const expectedTokens = [
       '/analytics_events',
       ':',
@@ -206,12 +195,10 @@ GET /hero/exchangeRates?HrGetExchangeRateRequestQuery
 HEAD /pechkin/mandrill/event
     => {}`;
 
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       'GET',
@@ -251,12 +238,10 @@ HEAD /pechkin/mandrill/event
     @token DELETE /accounting/bank_accounts/:id:i
         => 204
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       'HEAD',
@@ -294,12 +279,10 @@ HEAD /pechkin/mandrill/event
     POST /analytics_events AnalyticsEventNewRequest
         => ( a | b | )
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       '/analytics_events',
@@ -342,12 +325,10 @@ HEAD /pechkin/mandrill/event
 \`/industries\`:
   $L /industries ?branch?
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       '/industries',
@@ -374,12 +355,10 @@ HEAD /pechkin/mandrill/event {messageSenderId?: i, conversationId?: i, ticketId?
     // Permissions: \`companies:write\`
     @token DELETE /accounting/bank_accounts/:id:i
         => 204`;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     const expectedTokens = [
       'HEAD',
@@ -450,12 +429,10 @@ describe('lexer can catch errors in endpoints', () => {
       POST /analytics_events AnalyticsEventNewRequest
         => AnalyticsEventNewResponse
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
 
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: unindent does not match any outer indentation level',
@@ -471,13 +448,10 @@ describe('lexer can catch errors in endpoints', () => {
      POST /analytics_events AnalyticsEventNewRequest
       => AnalyticsEventNewResponse
 `;
-    const enumString = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
-
+    const enumString = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: unindent does not match any outer indentation level',
     );

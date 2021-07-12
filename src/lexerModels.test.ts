@@ -5,12 +5,12 @@ import { inspect } from 'util';
 import { dedent } from './__testsUtils__/dedent';
 
 function lexFirst(str: string) {
-  const lexer = new Lexer(new Source(str));
+  const lexer = new Lexer(new Source({ body: str }));
   return lexer.advance();
 }
 
 function lexSecond(str: string) {
-  const lexer = new Lexer(new Source(str));
+  const lexer = new Lexer(new Source({ body: str }));
   lexer.advance();
   return lexer.advance();
 }
@@ -217,7 +217,11 @@ describe(__filename, () => {
     let caughtError;
     try {
       const str = ['', '', '     >', ''].join('\n');
-      const source = new Source(str, 'foo.js', { line: 11, column: 12 });
+      const source = new Source({
+        body: str,
+        name: 'foo.js',
+        locationOffset: { line: 11, column: 12 },
+      });
       new Lexer(source).advance();
     } catch (error) {
       caughtError = error;
@@ -236,7 +240,11 @@ describe(__filename, () => {
   it('updates column numbers in error for file context', () => {
     let caughtError;
     try {
-      const source = new Source('>', 'foo.js', { line: 1, column: 5 });
+      const source = new Source({
+        body: '>',
+        name: 'foo.js',
+        locationOffset: { line: 1, column: 5 },
+      });
       new Lexer(source).advance();
     } catch (error) {
       caughtError = error;
@@ -434,7 +442,7 @@ describe(__filename, () => {
   });
 
   it('lexer respects dashes in names', () => {
-    const source = new Source('a-b');
+    const source = new Source({ body: 'a-b' });
     const lexer = new Lexer(source);
     const firstToken = lexer.advance();
     expect(firstToken.toJSON()).toMatchObject({
@@ -444,7 +452,7 @@ describe(__filename, () => {
       value: 'a-b',
     });
 
-    const source2 = new Source('-a-b');
+    const source2 = new Source({ body: '-a-b' });
     const lexer2 = new Lexer(source2);
     const firstToken2 = lexer2.advance();
     expect(firstToken2.toJSON()).toMatchObject({
@@ -454,7 +462,7 @@ describe(__filename, () => {
       value: '-a-b',
     });
 
-    const source3 = new Source('-5-b');
+    const source3 = new Source({ body: '-5-b' });
     const lexer3 = new Lexer(source3);
     const firstToken3 = lexer3.advance();
     expect(firstToken3.toJSON()).toMatchObject({
@@ -466,12 +474,14 @@ describe(__filename, () => {
   });
 
   it('produces double linked list of tokens, including comments', () => {
-    const source = new Source(`
+    const source = new Source({
+      body: `
       {
         #comment
         field
       }
-    `);
+    `,
+    });
 
     const lexer = new Lexer(source);
     const startToken = lexer.token;
@@ -573,7 +583,7 @@ describe('isPunctuatorTokenKind', () => {
 
 describe('lexer understands enums', () => {
   it('lexer understand normal enum', () => {
-    const enumString = new Source(`A (f | b)`);
+    const enumString = new Source({ body: `A (f | b)` });
 
     const tokens = getFullTokenList(enumString);
 
@@ -581,9 +591,11 @@ describe('lexer understands enums', () => {
   });
 
   it('lexer understand enum with spaces and symbols', () => {
-    const enumString = new Source(`A 
+    const enumString = new Source({
+      body: `A 
       (f f |
-        b (a, d+))`);
+        b (a, d+))`,
+    });
 
     const tokens = getFullTokenList(enumString);
 
@@ -591,7 +603,8 @@ describe('lexer understands enums', () => {
   });
 
   it('lexer understand complex enum with spaces and symbols', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       Branch Office Singapore |
       Exempt Private Company Limited by Shares (Pte. Ltd.) |
       Limited Liability Partnership (LLP) |
@@ -602,7 +615,8 @@ describe('lexer understands enums', () => {
       Converted / closed |
       Protected cell company |
       Assurance company |
-    )`);
+    )`,
+    });
 
     const tokens = getFullTokenList(enumString);
 
@@ -632,11 +646,13 @@ describe('lexer understands enums', () => {
   });
 
   it('lexer understand enum with symbols', () => {
-    const enumString = new Source(`BankAccountStatus (
+    const enumString = new Source({
+      body: `BankAccountStatus (
       -amount |
       amount |
       + amount |
-    )`);
+    )`,
+    });
 
     const tokens = getFullTokenList(enumString);
 
@@ -654,10 +670,12 @@ describe('lexer understands enums', () => {
   });
 
   it('lexer understand enum with dashes', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       b-office-singapore |
       exempt-private
-    )`);
+    )`,
+    });
 
     const tokens = getFullTokenList(enumString);
 
@@ -667,10 +685,12 @@ describe('lexer understands enums', () => {
 
 describe('lexer can catch some parenthesis errors inside enums', () => {
   it('unbalanced parenthesis not allowed 1', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       Limited Partnership (LP)( |
       exempt-private
-    )`);
+    )`,
+    });
 
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: parenthesis should be balanced inside enum definition',
@@ -678,10 +698,12 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
   });
 
   it('unbalanced parenthesis not allowed 2', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       (Limited Partnership |
       exempt-private
-    )`);
+    )`,
+    });
 
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: parenthesis should be balanced inside enum definition',
@@ -689,10 +711,12 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
   });
 
   it('unbalanced parenthesis not allowed 3', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       Limited Partnership |
       exempt-private(
-    )`);
+    )`,
+    });
 
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: parenthesis should be balanced inside enum definition',
@@ -700,10 +724,12 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
   });
 
   it('unbalanced parenthesis not allowed 4', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       Limited Partnership |
       exempt-private( |
-    )`);
+    )`,
+    });
 
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: parenthesis should be balanced inside enum definition',
@@ -711,10 +737,12 @@ describe('lexer can catch some parenthesis errors inside enums', () => {
   });
 
   it('unbalanced parenthesis not allowed 5', () => {
-    const enumString = new Source(`CompanyType (
+    const enumString = new Source({
+      body: `CompanyType (
       Limited Partnership |
       (exempt-private( 
-    )`);
+    )`,
+    });
 
     expect(() => getFullTokenList(enumString)).toThrow(
       'Syntax Error: parenthesis should be balanced inside enum definition',
