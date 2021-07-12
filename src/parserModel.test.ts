@@ -1119,7 +1119,7 @@ describe(__filename, () => {
       });
     });
 
-    it('correctly parse model with named enum and  \" \" ', () => {
+    it('correctly parse model with named enum and  " " ', () => {
       const model = `
           A (
             "f" | "b" | 
@@ -1156,7 +1156,6 @@ describe(__filename, () => {
         definitions: [EnumA],
       });
     });
-
 
     it('correctly parse model that uses named enum', () => {
       const model = `
@@ -1589,7 +1588,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
 
     it('unbalanced parenthesis not allowed 7', () => {
@@ -1603,9 +1604,10 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
-
 
     it('unbalanced parenthesis not allowed 8', () => {
       const enumString = `CompanyType (
@@ -1618,7 +1620,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
 
     it('unbalanced parenthesis not allowed 9', () => {
@@ -1632,7 +1636,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
 
     it('unbalanced parenthesis not allowed 10', () => {
@@ -1645,7 +1651,9 @@ describe(__filename, () => {
       A (b | c)
       `;
 
-      expect(() => parse(enumString)).toThrow("Syntax Error: parenthesis should be balanced inside enum definition");
+      expect(() => parse(enumString)).toThrow(
+        'Syntax Error: parenthesis should be balanced inside enum definition',
+      );
     });
   });
 });

@@ -602,7 +602,6 @@ function readNameInsideEnum(
     throw syntaxError(source, position, 'parenthesis should be balanced inside enum definition');
   }
 
-  
   let value = body.slice(start, position).trim();
 
   // TODO: delete after get rid of this case

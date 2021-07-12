@@ -33,12 +33,11 @@ export function getLocation(source: Source, position: number): SourceLocation {
   return { line, column: position + 1 - lastLineStart };
 }
 
-
 /**
  * Contains a range of UTF-8 character offsets and token references that
  * identify the region of the source from which the AST derived.
  */
- export class Location {
+export class Location {
   /**
    * The character offset at which this Node begins.
    */

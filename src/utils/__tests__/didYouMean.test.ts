@@ -14,9 +14,7 @@ describe('didYouMean', () => {
   });
 
   it('Handles multiple suggestions', () => {
-    expect(didYouMean(['A', 'B', 'C'])).toEqual(
-      ' Did you mean "A", "B", or "C"?',
-    );
+    expect(didYouMean(['A', 'B', 'C'])).toEqual(' Did you mean "A", "B", or "C"?');
   });
 
   it('Limits to five suggestions', () => {
@@ -26,8 +24,6 @@ describe('didYouMean', () => {
   });
 
   it('Adds sub-message', () => {
-    expect(didYouMean('the letter', ['A'])).toEqual(
-      ' Did you mean the letter "A"?',
-    );
+    expect(didYouMean('the letter', ['A'])).toEqual(' Did you mean the letter "A"?');
   });
 });
