@@ -1,5 +1,8 @@
-import { ASTNode, ASTNodeKind, TypeDefinitionNode } from './ast';
+import { ASTNode, ASTNodeKind, ModelDomainTypeDefinitionNode } from './ast';
 
-export function isTypeDefinitionNode(node: ASTNode): node is TypeDefinitionNode {
-  return node.kind === ASTNodeKind.MODEL_TYPE_DEFINITION;
+export function isModelDomainDefinitionNode(node: ASTNode): node is ModelDomainTypeDefinitionNode {
+  return (
+    node.kind === ASTNodeKind.MODEL_TYPE_DEFINITION ||
+    node.kind === ASTNodeKind.ENUM_TYPE_DEFINITION
+  );
 }

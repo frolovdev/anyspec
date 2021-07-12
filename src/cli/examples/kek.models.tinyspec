@@ -1,1 +1,3 @@
-AcDocument < Document {}
+AcDocument < Document {
+  a: s
+}

@@ -1,8 +1,8 @@
 import { AnySpecError } from '../error';
-import { DocumentNode } from 'language';
-import { visit } from 'visitor';
+import { DocumentNode } from '../language';
+import { visit } from '../visitor';
 
-import { AnySpecSchema } from 'runtypes';
+import { AnySpecSchema } from '../runtypes';
 
 import { ValidationRule } from './ValidationContext';
 import { baseRules } from './baseRules';

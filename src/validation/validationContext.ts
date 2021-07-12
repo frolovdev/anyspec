@@ -1,7 +1,7 @@
-import { AnySpecError } from 'error';
-import { ASTVisitor } from 'visitor';
+import { AnySpecError } from '../error';
+import { ASTVisitor } from '../visitor';
 import { DocumentNode } from '../language';
-import { AnySpecSchema } from 'runtypes';
+import { AnySpecSchema } from '../runtypes';
 /**
  * An instance of this class is passed as the "this" context to all validators,
  * allowing access to commonly useful contextual information from within a

@@ -1,9 +1,9 @@
-import { didYouMean, suggestionList } from 'utils';
+import { didYouMean, suggestionList } from '../../utils';
 
-import { AnySpecError } from 'error';
-import { ASTNode, NamedTypeNode, isTypeDefinitionNode, ASTNodeKind } from 'language';
-import { ASTVisitor } from 'visitor';
-import { specifiedScalarTypes } from 'runtypes';
+import { AnySpecError } from '../../error';
+import { ASTNode, NamedTypeNode, isModelDomainDefinitionNode } from '../../language';
+import { ASTVisitor } from '../../visitor';
+import { specifiedScalarTypes } from '../../runtypes';
 
 import { ValidationContext } from '../validationContext';
 
@@ -12,20 +12,14 @@ const standardTypeNames = specifiedScalarTypes;
  * Known type names
  *
  * An AnySpec document is only valid if referenced types (specifically
- * variable definitions and fragment conditions) are defined by the type schema.
+ * variable definitions) are defined by the type schema.
  */
 export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
-  // TODO: add logic for all schema (need to find all existed definitions)
-  // TODO: resolve EndpointNamespaceTypeDefinitionNode type
   const existingTypesMap: Record<string, boolean> = {};
 
   const definedTypes: Record<string, boolean> = {};
   for (const def of context.getDocument().definitions) {
-    if (
-      isTypeDefinitionNode(def) &&
-      (def.kind === ASTNodeKind.MODEL_TYPE_DEFINITION ||
-        def.kind === ASTNodeKind.ENUM_TYPE_DEFINITION)
-    ) {
+    if (isModelDomainDefinitionNode(def)) {
       definedTypes[def.name.value] = true;
     }
   }
@@ -56,10 +50,9 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
 }
 
 function isSDLNode(value: ASTNode | ReadonlyArray<ASTNode>): boolean {
-  return 'kind' in value && isTypeDefinitionNode(value);
+  return 'kind' in value && isModelDomainDefinitionNode(value);
 }
 
-// TODO: do something with it
 function defaultNamedTypeCast(node: NamedTypeNode) {
   return node.name.value ? node.name.value : 'string';
 }

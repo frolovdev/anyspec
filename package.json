@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json --outDir src/cli/dist",
+    "build": "tsc --project tsconfig.build.json --outDir ./src/cli/dist",
     "test": "NODE_PATH=./src STAGE=test jest --maxWorkers=4",
     "test:watch": "NODE_PATH=./src STAGE=test jest --watch",
     "debug:tests": "NODE_PATH=./src STAGE=test node --inspect-brk ./node_modules/.bin/jest",
@@ -12,7 +12,7 @@
     "clean": "rm -rf src/cli/dist",
     "prepublish:cli": "cd src/cli && npm install && cd .. && npm run clean && npm run build",
     "publish:cli": "npm publish ./src/cli",
-    "test:integration:cli": "anyspec src/cli/examples/kek.models.tinyspec -o ./",
+    "test:integration:anyspec:cli": "anyspec src/cli/examples/kek.models.tinyspec -o ./",
     "test:tinyspec:build": "tinyspec --json --add-nulls -s temp/spec/ -o ../",
     "lint": "eslint --max-warnings 0 'src/**/*.ts'",
     "lint:fix": "eslint --fix 'src/**/*.ts'"
@@ -20,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@anyspec/cli": "0.0.1-rc.8",
     "@types/jest": "^26.0.23",
     "@types/node": "^14.14.35",
     "@typescript-eslint/eslint-plugin": "^4.28.2",

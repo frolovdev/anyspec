@@ -101,10 +101,11 @@ export interface DocumentNode {
   readonly definitions: ReadonlyArray<TypeDefinitionNode>;
 }
 
-export type TypeDefinitionNode =
-  | ModelTypeDefinitionNode
-  | EnumTypeDefinitionNode
-  | EndpointNamespaceTypeDefinitionNode;
+export type ModelDomainTypeDefinitionNode = ModelTypeDefinitionNode | EnumTypeDefinitionNode;
+
+export type EndpointDomainTypeDefinitionNode = EndpointNamespaceTypeDefinitionNode;
+
+export type TypeDefinitionNode = ModelDomainTypeDefinitionNode | EndpointDomainTypeDefinitionNode;
 
 export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';

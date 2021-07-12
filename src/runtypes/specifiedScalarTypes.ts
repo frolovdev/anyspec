@@ -1,8 +1,9 @@
+export const stringAliases = ['s', 'string'];
+
 export const specifiedScalarTypes = [
   'i',
   'integer',
-  's',
-  'string',
+  ...stringAliases,
   'b',
   'boolean',
   'o',

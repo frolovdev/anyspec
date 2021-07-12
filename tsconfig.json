@@ -7,9 +7,9 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "esModuleInterop": true,
-    "baseUrl": "src",
     "outDir": "dist",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "skipLibCheck": true,
   },
   "exclude": ["node_modules", "dist"]
 }

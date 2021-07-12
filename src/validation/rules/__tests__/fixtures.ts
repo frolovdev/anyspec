@@ -1,5 +1,5 @@
-import { parse } from 'parser';
-import { AnySpecSchema } from 'runtypes';
+import { parse } from '../../../parser';
+import { AnySpecSchema } from '../../../runtypes';
 import { validate } from '../../validate';
 import { ValidationRule } from '../../validationContext';
 

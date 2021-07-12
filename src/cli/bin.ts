@@ -1,11 +1,12 @@
-import { Command, OptionValues } from 'commander';
+#!/usr/bin/env node
+
+import { Command } from 'commander';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { parse } from 'parser';
-import { AnySpecSchema } from 'runtypes';
-import { validate } from 'validation/validate';
-import { baseRules } from 'validation/baseRules';
-import { printError } from 'error/AnySpecError';
+import { parse } from '../parser';
+import { AnySpecSchema } from '../runtypes';
+import { validate, baseRules } from '../validation';
+import { printError } from '../error';
 
 async function main() {
   const program = new Command();
