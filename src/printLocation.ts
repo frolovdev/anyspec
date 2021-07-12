@@ -7,19 +7,13 @@ import { getLocation } from './location';
  * Render a helpful description of the location in the EasySpec Source document.
  */
 export function printLocation(location: Location): string {
-  return printSourceLocation(
-    location.source,
-    getLocation(location.source, location.start),
-  );
+  return printSourceLocation(location.source, getLocation(location.source, location.start));
 }
 
 /**
  * Render a helpful description of the location in the EasySpec Source document.
  */
-export function printSourceLocation(
-  source: Source,
-  sourceLocation: SourceLocation,
-): string {
+export function printSourceLocation(source: Source, sourceLocation: SourceLocation): string {
   const firstLineColumnOffset = source.locationOffset.column - 1;
   const body = ''.padStart(firstLineColumnOffset) + source.body;
 
@@ -47,9 +41,7 @@ export function printSourceLocation(
       locationStr +
       printPrefixedLines([
         [`${lineNum} |`, subLines[0]],
-        ...subLines
-          .slice(1, subLineIndex + 1)
-          .map((subLine) => ['|', subLine] as const),
+        ...subLines.slice(1, subLineIndex + 1).map((subLine) => ['|', subLine] as const),
         ['|', '^'.padStart(subLineColumnNum)],
         ['|', subLines[subLineIndex + 1]],
       ])
@@ -68,9 +60,7 @@ export function printSourceLocation(
   );
 }
 
-function printPrefixedLines(
-  lines: ReadonlyArray<readonly [string, string]>,
-): string {
+function printPrefixedLines(lines: ReadonlyArray<readonly [string, string]>): string {
   const existingLines = lines.filter(([_, line]) => line !== undefined);
 
   const padLen = Math.max(...existingLines.map(([prefix]) => prefix.length));

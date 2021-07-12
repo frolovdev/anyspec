@@ -26,10 +26,7 @@ export function dedentString(string: string): string {
  * `;
  * str === "{\n  test\n}";
  */
-export function dedent(
-  strings: ReadonlyArray<string>,
-  ...values: ReadonlyArray<string>
-): string {
+export function dedent(strings: ReadonlyArray<string>, ...values: ReadonlyArray<string>): string {
   let str = strings[0];
 
   for (let i = 1; i < strings.length; ++i) {

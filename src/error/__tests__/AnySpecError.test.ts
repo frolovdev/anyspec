@@ -71,12 +71,11 @@ describe(__filename, () => {
     const e = new AnySpecError('msg', fieldNode); // Non-array value.
     expect(e).toHaveProperty('source', source);
     expect(e).toMatchObject({
-      
       locations: [{ line: 2, column: 3 }],
     });
 
-    expect(e.positions).toEqual([8])
-    expect(e.nodes).toEqual([fieldNode])
+    expect(e.positions).toEqual([8]);
+    expect(e.nodes).toEqual([fieldNode]);
   });
 
   it('converts node with loc.start === 0 to positions and locations', () => {

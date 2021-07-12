@@ -1519,7 +1519,7 @@ POST /endpoint RequestModel
                 ],
               },
             ],
-          }
+          },
         ],
       };
 

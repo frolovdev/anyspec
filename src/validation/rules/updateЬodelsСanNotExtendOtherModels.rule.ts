@@ -1,1 +1,1 @@
-`message: 'Update models can not extend other models',`
+`message: 'Update models can not extend other models',`;

@@ -32,8 +32,6 @@ const getFullTokenList = (source: Source) => {
   return tokenList;
 };
 
-
-
 function expectSyntaxErrorFirst(text: string, expectedError: any) {
   let error = null;
   try {

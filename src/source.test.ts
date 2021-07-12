@@ -1,20 +1,14 @@
-
-
 import { Source } from './source';
 
 describe('Source', () => {
   it('asserts that a body was provided', () => {
     // @ts-expect-error
-    expect(() => new Source()).toThrow(
-      'Body must be a string. Received: undefined.',
-    );
+    expect(() => new Source()).toThrow('Body must be a string. Received: undefined.');
   });
 
   it('asserts that a valid body was provided', () => {
     // @ts-expect-error
-    expect(() => new Source({})).toThrow(
-      'Body must be a string. Received: {}.',
-    );
+    expect(() => new Source({})).toThrow('Body must be a string. Received: {}.');
   });
 
   it('can be Object.toStringified', () => {

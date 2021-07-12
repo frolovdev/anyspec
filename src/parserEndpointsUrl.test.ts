@@ -56,12 +56,7 @@ POST /endpoint?RequestQuery
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -126,12 +121,7 @@ POST /endpoint?RequestQuery RequestModel
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -186,12 +176,7 @@ POST /endpoint?RequestQuery
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -225,8 +210,8 @@ POST /endpoint/:entryType
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType' },
                       type: {
-                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
-                      }
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+                      },
                     },
                   },
                 ],
@@ -249,12 +234,7 @@ POST /endpoint/:entryType
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -288,8 +268,8 @@ POST /endpoint/:entryType/:entryType2
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType' },
                       type: {
-                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
-                      }
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+                      },
                     },
                   },
                   {
@@ -298,8 +278,8 @@ POST /endpoint/:entryType/:entryType2
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType2' },
                       type: {
-                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
-                      }
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+                      },
                     },
                   },
                 ],
@@ -322,12 +302,7 @@ POST /endpoint/:entryType/:entryType2
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -361,8 +336,8 @@ POST /endpoint/:entryType/api/v2/:entryType2
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType' },
                       type: {
-                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
-                      }
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+                      },
                     },
                   },
                   {
@@ -371,8 +346,8 @@ POST /endpoint/:entryType/api/v2/:entryType2
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
                       name: { kind: ASTNodeKind.NAME, value: 'entryType2' },
                       type: {
-                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE
-                      }
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+                      },
                     },
                   },
                 ],
@@ -395,12 +370,7 @@ POST /endpoint/:entryType/api/v2/:entryType2
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -473,12 +443,7 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
@@ -568,12 +533,7 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name?RequestQuery RequestModel
       ],
     };
 
-    const source = new Source(
-      sourceString,
-      'Endpoints code',
-      { line: 1, column: 1 },
-      'endpoints',
-    );
+    const source = new Source(sourceString, 'Endpoints code', { line: 1, column: 1 }, 'endpoints');
 
     const ast = parse(source);
 
