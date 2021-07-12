@@ -30,17 +30,11 @@ describe('suggestionList', () => {
 
   it('Returns options with different case', () => {
     // cSpell:ignore verylongstring
-    expectSuggestions('verylongstring', ['VERYLONGSTRING']).toEqual([
-      'VERYLONGSTRING',
-    ]);
+    expectSuggestions('verylongstring', ['VERYLONGSTRING']).toEqual(['VERYLONGSTRING']);
 
-    expectSuggestions('VERYLONGSTRING', ['verylongstring']).toEqual([
-      'verylongstring',
-    ]);
+    expectSuggestions('VERYLONGSTRING', ['verylongstring']).toEqual(['verylongstring']);
 
-    expectSuggestions('VERYLONGSTRING', ['VeryLongString']).toEqual([
-      'VeryLongString',
-    ]);
+    expectSuggestions('VERYLONGSTRING', ['VeryLongString']).toEqual(['VeryLongString']);
   });
 
   it('Returns options with transpositions', () => {
@@ -49,18 +43,10 @@ describe('suggestionList', () => {
   });
 
   it('Returns options sorted based on lexical distance', () => {
-    expectSuggestions('abc', ['a', 'ab', 'abc']).toEqual([
-      'abc',
-      'ab',
-      'a',
-    ]);
+    expectSuggestions('abc', ['a', 'ab', 'abc']).toEqual(['abc', 'ab', 'a']);
   });
 
   it('Returns options with the same lexical distance sorted lexicographically', () => {
-    expectSuggestions('a', ['az', 'ax', 'ay']).toEqual([
-      'ax',
-      'ay',
-      'az',
-    ]);
+    expectSuggestions('a', ['az', 'ax', 'ay']).toEqual(['ax', 'ay', 'az']);
   });
 });

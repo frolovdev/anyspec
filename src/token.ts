@@ -108,7 +108,7 @@ export const TokenKind = {
   RETURN: '=>',
   INDENT: '<INDENT>', // https://riptutorial.com/python/example/8674/how-indentation-is-parsed
   DEDENT: '<DEDENT>', // https://github.com/python/cpython/blob/3.9/Lib/tokenize.py#L507
-  NUMBER: 'Number'
+  NUMBER: 'Number',
 } as const;
 
 /**

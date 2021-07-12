@@ -536,7 +536,7 @@ describe(__filename, () => {
 
   it.skip('correctly visits modelsFile', () => {
     const ast = parse(modelsFile);
-  })
+  });
 });
 
 // private

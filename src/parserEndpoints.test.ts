@@ -1253,7 +1253,7 @@ POST /endpoint RequestModel
                   kind: ASTNodeKind.ENDPOINT_VERB,
                   name: { kind: ASTNodeKind.NAME, value: 'POST' },
                 },
-                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol\nkek' },
+                description: { kind: ASTNodeKind.DESCRIPTION, value: 'lol\nkek' },
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
@@ -1318,7 +1318,7 @@ POST /endpoint RequestModel
                   kind: ASTNodeKind.ENDPOINT_VERB,
                   name: { kind: ASTNodeKind.NAME, value: 'POST' },
                 },
-                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol' },
+                description: { kind: ASTNodeKind.DESCRIPTION, value: 'lol' },
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
@@ -1389,7 +1389,7 @@ POST /endpoint RequestModel
                   kind: ASTNodeKind.ENDPOINT_VERB,
                   name: { kind: ASTNodeKind.NAME, value: 'POST' },
                 },
-                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'kek' },
+                description: { kind: ASTNodeKind.DESCRIPTION, value: 'kek' },
                 url: {
                   kind: ASTNodeKind.ENDPOINT_URL,
                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
@@ -1436,7 +1436,7 @@ POST /endpoint RequestModel
                   name: { kind: ASTNodeKind.NAME, value: '/pechkin/mandrill/event' },
                   parameters: [],
                 },
-                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol\nkek' },
+                description: { kind: ASTNodeKind.DESCRIPTION, value: 'lol\nkek' },
                 responses: [
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
@@ -1444,6 +1444,74 @@ POST /endpoint RequestModel
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [],
                     },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const source = new Source({
+        body: sourceString,
+        name: 'Endpoints code',
+        locationOffset: { line: 1, column: 1 },
+        sourceType: 'endpoints',
+      });
+
+      const ast = parse(source);
+
+      expect(toJSONDeep(ast)).toEqual(expectedAST);
+    });
+    it('can parse response descriptions', () => {
+      const sourceString = `
+\`/analytics_events\`:
+    // kek
+    POST /endpoint RequestModel
+        // lol
+        => ResponseModel
+`;
+      const expectedAST: ASTNode = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+            tag: { kind: ASTNodeKind.NAME, value: '/analytics_events' },
+            endpoints: [
+              {
+                kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+                verb: {
+                  kind: ASTNodeKind.ENDPOINT_VERB,
+                  name: { kind: ASTNodeKind.NAME, value: 'POST' },
+                },
+                description: { kind: ASTNodeKind.DESCRIPTION, value: 'kek' },
+                url: {
+                  kind: ASTNodeKind.ENDPOINT_URL,
+                  name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                  parameters: [
+                    {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
+                      },
+                    },
+                  ],
+                },
+                responses: [
+                  {
+                    kind: ASTNodeKind.ENDPOINT_RESPONSE,
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: 'ResponseModel',
+                      },
+                    },
+                    description: { kind: ASTNodeKind.DESCRIPTION, value: 'lol' },
                   },
                 ],
               },

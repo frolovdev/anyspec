@@ -21,7 +21,7 @@ export const ASTNodeKind = {
 
   /* My easy spec  */
 
-  MODEL_DESCRIPTION: 'ModelDescription',
+  DESCRIPTION: 'Description',
   MODEL_TYPE_DEFINITION: 'ModelTypeDefinition',
   ENUM_INLINE_TYPE_DEFINITION: 'EnumInlineTypeDefinition',
   OBJECT_TYPE_DEFINITION: 'ObjectTypeDefinition',
@@ -60,7 +60,7 @@ export type ASTNode =
   | EnumInlineTypeDefinitionNode
   | EnumTypeDefinitionNode
   | EnumValueDefinitionNode
-  | ModelDescriptionNode
+  | DescriptionNode
   | NameNode
   | OptionalNameNode
   // Endpoints nodes
@@ -82,7 +82,7 @@ export interface ASTKindToNode {
   EnumInlineTypeDefinition: EnumInlineTypeDefinitionNode;
   EnumValueDefinition: EnumValueDefinitionNode;
   EnumTypeDefinition: EnumTypeDefinitionNode;
-  ModelDescription: ModelDescriptionNode;
+  Description: DescriptionNode;
   Name: NameNode;
   OptionalName: OptionalNameNode;
   // Endpoints nodes
@@ -109,7 +109,7 @@ export type TypeDefinitionNode =
 export interface EndpointNamespaceTypeDefinitionNode {
   readonly kind: 'EndpointNamespaceTypeDefinition';
   readonly tag?: NameNode;
-  readonly description?: ModelDescriptionNode;
+  readonly description?: DescriptionNode;
   readonly endpoints: ReadonlyArray<EndpointTypeDefinitionNode>;
   readonly loc?: Location;
 }
@@ -178,6 +178,7 @@ export interface EndpointStatusCodeNode {
 export interface EndpointResponseNode {
   readonly kind: 'EndpointResponse';
   readonly type: TypeNode | EndpointStatusCodeNode;
+  readonly description?: DescriptionNode;
   readonly loc?: Location;
 }
 
@@ -191,7 +192,7 @@ export interface EndpointTypeDefinitionNode {
   readonly kind: 'EndpointTypeDefinition';
   readonly verb: EndpointVerbNode;
   readonly url: EndpointUrlNode;
-  readonly description?: ModelDescriptionNode;
+  readonly description?: DescriptionNode;
   readonly securityDefinition?: EndpointSecurityDefinitionNode;
   readonly responses: ReadonlyArray<EndpointResponseNode>;
   readonly loc?: Location;
@@ -200,7 +201,7 @@ export interface EndpointTypeDefinitionNode {
 export interface ModelTypeDefinitionNode {
   readonly kind: 'ModelTypeDefinition';
   readonly loc?: Location;
-  readonly description?: ModelDescriptionNode;
+  readonly description?: DescriptionNode;
   readonly name: NameNode;
   readonly extendsModels: ReadonlyArray<NamedTypeNode>;
   readonly fields: ReadonlyArray<FieldDefinitionNode>;
@@ -254,8 +255,8 @@ export interface EnumValueDefinitionNode {
   readonly name: NameNode;
 }
 
-export interface ModelDescriptionNode {
-  readonly kind: 'ModelDescription';
+export interface DescriptionNode {
+  readonly kind: 'Description';
   readonly value: string;
   readonly loc?: Location;
 }

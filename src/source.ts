@@ -29,17 +29,13 @@ export class Source {
   sourceType: SourceType;
 
   constructor(args: SourceArgs) {
-
-    assert(
-      typeof args?.body === 'string',
-      `Body must be a string. Received: ${inspect(args)}.`,
-    );
+    assert(typeof args?.body === 'string', `Body must be a string. Received: ${inspect(args)}.`);
 
     const {
       body,
       name = 'source code',
       locationOffset = { line: 1, column: 1 },
-      sourceType = "models",
+      sourceType = 'models',
     } = args;
 
     this.body = body;
