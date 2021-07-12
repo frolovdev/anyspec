@@ -13,3 +13,5 @@ coverage
 **/*.log
 
 .huskyrc.local.js
+
+src/cli/spec
