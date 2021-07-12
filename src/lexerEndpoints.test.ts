@@ -71,6 +71,7 @@ describe('lexer can understand endpoints', () => {
 `;
     const enumString = new Source({
       body: sourceString,
+      sourceType: 'endpoints',
     });
     const expectedTokens = [
       '/analytics_events',
