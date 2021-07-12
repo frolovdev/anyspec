@@ -501,6 +501,8 @@ export class EndpointsParser extends ModelParser {
    * parse endpoint response (model or name after =>)
    */
   parseEndpointResponse(): EndpointResponseNode {
+    const description = this.parseModelDescription();
+
     this.expectToken(TokenKind.RETURN);
 
     if (this.peek(TokenKind.DEDENT) || this.peek(TokenKind.INDENT)) {
@@ -518,6 +520,7 @@ export class EndpointsParser extends ModelParser {
 
     return this.node<EndpointResponseNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_RESPONSE,
+      description,
       type,
     });
   }
