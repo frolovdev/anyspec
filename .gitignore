@@ -16,5 +16,3 @@ coverage
 
 src/cli/spec
 temp/openapi.json
-temp/endpoints
-temp/models
