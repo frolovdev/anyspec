@@ -25,7 +25,7 @@ import {
   EnumValueDefinitionNode,
   FieldDefinitionNode,
   ListTypeNode,
-  ModelDescriptionNode,
+  DescriptionNode,
   ModelTypeDefinitionNode,
   NamedTypeNode,
   NameNode,
@@ -232,7 +232,7 @@ export class ModelParser {
 
   parseModelTypeDefinition(): ModelTypeDefinitionNode {
     const start = this.lexer.token;
-    const description = this.parseModelDescription();
+    const description = this.parseDescription();
     const name = this.parseName();
     const extendsModels = this.parseExtendsModels();
 
@@ -409,7 +409,7 @@ export class ModelParser {
     });
   }
 
-  parseModelDescription(): ModelDescriptionNode | undefined {
+  parseDescription(): DescriptionNode | undefined {
     if (this.peekDescription()) {
       const token = this.lexer.token;
 
@@ -420,8 +420,8 @@ export class ModelParser {
         this.lexer.advance();
       }
 
-      return this.node<ModelDescriptionNode>(token, {
-        kind: ASTNodeKind.MODEL_DESCRIPTION,
+      return this.node<DescriptionNode>(token, {
+        kind: ASTNodeKind.DESCRIPTION,
         value: mergedValue,
       });
     }
@@ -501,7 +501,7 @@ export class EndpointsParser extends ModelParser {
    * parse endpoint response (model or name after =>)
    */
   parseEndpointResponse(): EndpointResponseNode {
-    const description = this.parseModelDescription();
+    const description = this.parseDescription();
 
     this.expectToken(TokenKind.RETURN);
 
@@ -665,7 +665,7 @@ export class EndpointsParser extends ModelParser {
    * parse single endpoint definition
    */
   parseEndpointNamespaceTypeDefinition(): EndpointTypeDefinitionNode {
-    const optionalDescription = this.parseModelDescription();
+    const optionalDescription = this.parseDescription();
 
     const securityDefinition = this.parseSecurityDefinition();
 

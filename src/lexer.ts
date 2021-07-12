@@ -248,7 +248,7 @@ function readToken(lexer: Lexer, prev: Token): Token {
         throw syntaxError(source, pos, unexpectedCharacterMessage(code));
       case 47: // /
         if (body.charCodeAt(pos + 1) === 47) {
-          return readModelDescription(source, pos, line, col, prev);
+          return readDescription(source, pos, line, col, prev);
         }
         if (lexer.source.sourceType === 'endpoints') {
           return readNameAfterSlash(source, pos, line, col, prev);
@@ -674,7 +674,7 @@ function readNameAfterSlash(
   return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
 }
 
-function readModelDescription(
+function readDescription(
   source: Source,
   start: number,
   line: number,

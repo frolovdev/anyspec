@@ -74,7 +74,7 @@ type ReducedField<T, R> = T extends null | undefined
   : R;
 
 const QueryDocumentKeys = {
-  ModelDescription: [],
+  Description: [],
   Name: [],
   OptionalName: [],
   Document: ['definitions'],
