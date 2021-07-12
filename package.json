@@ -13,13 +13,15 @@
     "prepublish:cli": "cd src/cli && npm install && cd .. && npm run clean && tsc --outDir src/cli/dist",
     "publish:cli": "npm publish ./src/cli",
     "test:integration:cli": "anyspec src/cli/examples/kek.models.tinyspec -o ./",
-    "test:tinyspec:build": "tinyspec --json --add-nulls -s temp/spec/ -o ../"
+    "test:tinyspec:build": "tinyspec --json --add-nulls -s temp/spec/ -o ../",
+    "prettier:write": "prettier --write 'src/**/*.{ts,tsx}'"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "@types/node": "^14.14.35",
+    "husky": "^7.0.1",
     "jest": "^26.6.3",
     "prettier": "^2.3.0",
     "tinyspec": "^2.4.9",
