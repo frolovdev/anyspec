@@ -2,7 +2,6 @@ import { TokenKind } from './token';
 import { Lexer } from 'lexer';
 import { Source } from './source';
 
-
 const getFullTokenList = (source: Source) => {
   const lexer = new Lexer(source);
 
@@ -360,7 +359,7 @@ HEAD /pechkin/mandrill/event
       '?',
       'branch',
       '?',
-      '<DEDENT>'
+      '<DEDENT>',
     ];
 
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);

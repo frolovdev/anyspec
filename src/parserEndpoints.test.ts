@@ -1466,5 +1466,73 @@ POST /endpoint RequestModel
 
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
+    it('can parse response descriptions', () => {
+      const sourceString = `
+\`/analytics_events\`:
+    // kek
+    POST /endpoint RequestModel
+        // lol
+        => ResponseModel
+`;
+      const expectedAST: ASTNode = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+            tag: { kind: ASTNodeKind.NAME, value: '/analytics_events' },
+            endpoints: [
+              {
+                kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+                verb: {
+                  kind: ASTNodeKind.ENDPOINT_VERB,
+                  name: { kind: ASTNodeKind.NAME, value: 'POST' },
+                },
+                description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'kek' },
+                url: {
+                  kind: ASTNodeKind.ENDPOINT_URL,
+                  name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                  parameters: [
+                    {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                        type: {
+                          kind: ASTNodeKind.NAMED_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                        },
+                      },
+                    },
+                  ],
+                },
+                responses: [
+                  {
+                    kind: ASTNodeKind.ENDPOINT_RESPONSE,
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: 'ResponseModel',
+                      },
+                    },
+                    description: { kind: ASTNodeKind.MODEL_DESCRIPTION, value: 'lol' },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const source = new Source(
+        sourceString,
+        'Endpoints code',
+        { line: 1, column: 1 },
+        'endpoints',
+      );
+
+      const ast = parse(source);
+
+      expect(toJSONDeep(ast)).toEqual(expectedAST);
+    });
   });
 });
