@@ -72,6 +72,7 @@ export type ASTNode =
   | EndpointVerbNode
   | EndpointUrlNode
   | EndpointResponseNode
+  | EndpointParameterQueryNode
   | EndpointParameterBodyNode
   | EndpointSecurityDefinitionNode;
 
@@ -95,6 +96,7 @@ export interface ASTKindToNode {
   EndpointTypeDefinition: EndpointTypeDefinitionNode;
   EndpointResponse: EndpointResponseNode;
   EndpointParameterBody: EndpointParameterBodyNode;
+  EndpointParameterQuery: EndpointParameterQueryNode;
   EndpointSecurityDefinition: EndpointSecurityDefinitionNode;
 }
 
