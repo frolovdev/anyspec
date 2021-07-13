@@ -1,7 +1,5 @@
-import { ASTNodeKind } from '../language';
+import { ASTNodeKind, parse, ParseOptions, Source } from '../language';
 import { assert } from '../utils';
-import { parse, ParseOptions } from '../parser';
-import { Source } from '../source';
 import { BuildSchemaOptions, AnySpecSchema } from './schema';
 
 /**

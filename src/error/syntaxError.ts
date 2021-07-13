@@ -1,4 +1,4 @@
-import { Source } from '../source';
+import { Source } from '../language';
 
 import { AnySpecError } from './AnySpecError';
 

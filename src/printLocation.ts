@@ -1,7 +1,4 @@
-import { Source } from './source';
-import { Location } from './location';
-import { SourceLocation } from './location';
-import { getLocation } from './location';
+import { Source, Location, SourceLocation, getLocation } from './language';
 
 /**
  * Render a helpful description of the location in the EasySpec Source document.

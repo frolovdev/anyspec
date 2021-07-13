@@ -1,4 +1,4 @@
-import { invariant } from './utils/invariant';
+import { invariant } from '../utils/invariant';
 
 import { Source } from './source';
 import { Token } from './token';

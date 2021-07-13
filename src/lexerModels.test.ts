@@ -1,6 +1,4 @@
-import { Source } from './source';
-import { Lexer, isPunctuatorTokenKind } from './lexer';
-import { Token, TokenKind } from './token';
+import { Source, Lexer, isPunctuatorTokenKind, Token, TokenKind } from './language';
 import { inspect } from 'util';
 import { dedent } from './__testsUtils__/dedent';
 

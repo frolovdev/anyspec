@@ -1,9 +1,6 @@
-import { Source } from '../source';
-import { getLocation, SourceLocation } from '../location';
+import { Source, ASTNode, getLocation, SourceLocation } from '../language';
 import { isObjectLike } from '../utils';
 import { printLocation, printSourceLocation } from '../printLocation';
-import { ASTNode } from '../language';
-
 export class AnySpecError extends Error {
   /**
    * An array of { line, column } locations within the source AnySpec document

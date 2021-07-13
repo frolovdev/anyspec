@@ -2,9 +2,7 @@ import { dedent } from '../../__testsUtils__';
 
 import { invariant } from '../../utils';
 
-import { ASTNodeKind } from '../../language';
-import { parse } from '../../parser';
-import { Source } from '../../source';
+import { ASTNodeKind, parse, Source } from '../../language';
 
 import { AnySpecError, printError } from '../AnySpecError';
 

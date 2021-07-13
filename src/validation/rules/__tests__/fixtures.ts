@@ -1,4 +1,4 @@
-import { parse } from '../../../parser';
+import { parse } from '../../../language';
 import { AnySpecSchema } from '../../../runtypes';
 import { validate } from '../../validate';
 import { ValidationRule } from '../../validationContext';
