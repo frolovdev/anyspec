@@ -13,11 +13,11 @@ import ora from 'ora';
 import { ASTNodeKind, TypeDefinitionNode } from '../language';
 
 function isEndpoint(val: string) {
-  return val.includes('.endpoints.tinyspec');
+  return val.match(/\.endpoints\.tinyspec$/) !== null;
 }
 
 function isModel(val: string) {
-  return val.includes('.models.tinyspec');
+  return val.match(/\.models\.tinyspec$/) !== null;
 }
 
 async function main() {
