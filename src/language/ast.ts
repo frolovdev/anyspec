@@ -212,7 +212,7 @@ export interface ModelTypeDefinitionNode {
 export interface ObjectTypeDefinitionNode {
   readonly kind: 'ObjectTypeDefinition';
   readonly loc?: Location;
-
+  readonly strict: boolean;
   readonly fields: ReadonlyArray<FieldDefinitionNode>;
 }
 

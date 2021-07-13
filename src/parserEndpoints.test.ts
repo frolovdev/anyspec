@@ -224,6 +224,7 @@ POST /endpoint {}
                       type: {
                         kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
                         type: {
+                          strict: false,
                           kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                           fields: [],
                         },
@@ -285,6 +286,7 @@ POST /endpoint {name: s, surname}
                       type: {
                         kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
                         type: {
+                          strict: false,
                           kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                           fields: [
                             {
@@ -466,6 +468,7 @@ POST /endpoint RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [],
                     },
@@ -524,6 +527,7 @@ POST /endpoint RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [
                         {
@@ -842,6 +846,7 @@ POST /endpoint RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [],
                     },
@@ -1089,6 +1094,7 @@ POST /endpoint RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [],
                     },
@@ -1180,6 +1186,7 @@ HEAD /pechkin/mandrill/event
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [],
                     },
@@ -1405,6 +1412,7 @@ POST /endpoint RequestModel
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [],
                     },

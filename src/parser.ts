@@ -352,6 +352,8 @@ export class ModelParser {
       return this.parseEnumInlineTypeDefinition();
     }
 
+    const strict = Boolean(this.expectOptionalToken(TokenKind.BANG));
+
     const fields = this.parseFieldsDefinition();
 
     const bracket = this.expectOptionalToken(TokenKind.BRACKET_L);
@@ -362,6 +364,7 @@ export class ModelParser {
         type: {
           kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
           fields,
+          strict,
         },
       });
     }
@@ -369,6 +372,7 @@ export class ModelParser {
     return this.node<ObjectTypeDefinitionNode>(startToken, {
       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
       fields,
+      strict,
     });
   }
 

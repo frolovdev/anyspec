@@ -1,4 +1,4 @@
-import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
+import { ASTNode, ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
 import { AnySpecError } from './error/AnySpecError';
 import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
@@ -951,6 +951,7 @@ describe(__filename, () => {
                   value: 'kek',
                 },
                 type: {
+                  strict: false,
                   kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                   fields: [
                     {
@@ -980,6 +981,7 @@ describe(__filename, () => {
                       type: {
                         kind: ASTNodeKind.LIST_TYPE,
                         type: {
+                          strict: false,
                           kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                           fields: [
                             {
@@ -1077,6 +1079,74 @@ describe(__filename, () => {
           },
         ],
       });
+    });
+
+    it('should parse strict nested types coorectly', () => {
+      const model = `
+      AcDocument < Kek, Lel !{
+            pathParameters: !{
+              pathParameters: !{}
+            }
+          }
+        `;
+
+      const ast = parse(model);
+
+      const expected: ASTNode = {
+        kind: ASTNodeKind.DOCUMENT,
+
+        definitions: [
+          {
+            fields: [
+              {
+                omitted: false,
+                optional: false,
+                kind: ASTNodeKind.FIELD_DEFINITION,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 'pathParameters',
+                },
+                type: {
+                  strict: true,
+                  kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                  fields: [
+                    {
+                      kind: ASTNodeKind.FIELD_DEFINITION,
+                      omitted: false,
+                      optional: false,
+                      name: { kind: ASTNodeKind.NAME, value: 'pathParameters' },
+                      type: {
+                        strict: true,
+                        kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
+                        fields: [],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+            strict: true,
+            description: undefined,
+            extendsModels: [
+              {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: { kind: ASTNodeKind.NAME, value: 'Kek' },
+              },
+              {
+                kind: ASTNodeKind.NAMED_TYPE,
+                name: { kind: ASTNodeKind.NAME, value: 'Lel' },
+              },
+            ],
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'AcDocument',
+            },
+          },
+        ],
+      };
+
+      expect(toJSONDeep(ast)).toEqual(expected);
     });
   });
 
@@ -1381,6 +1451,7 @@ describe(__filename, () => {
               value: 'kek',
             },
             type: {
+              strict: false,
               kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
               fields: [
                 {
@@ -1410,6 +1481,7 @@ describe(__filename, () => {
                   type: {
                     kind: ASTNodeKind.LIST_TYPE,
                     type: {
+                      strict: false,
                       kind: ASTNodeKind.OBJECT_TYPE_DEFINITION,
                       fields: [
                         {

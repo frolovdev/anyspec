@@ -1,6 +1,8 @@
 module.exports = {
   globals: {
-    'ts-jest': {},
+    'ts-jest': {
+      diagnostics: false,
+    },
   },
   roots: ['<rootDir>/src'],
   transform: { '^.+\\.tsx?$': 'ts-jest' },
