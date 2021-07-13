@@ -8,6 +8,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "outDir": "dist",
+    "noEmitOnError": false,
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "skipLibCheck": true,
   },

@@ -176,6 +176,7 @@ describe(__filename, () => {
               omitted: false,
               type: {
                 kind: 'ObjectTypeDefinition',
+                strict: false,
                 fields: [
                   {
                     kind: 'FieldDefinition',
