@@ -193,7 +193,7 @@ export interface EndpointSecurityDefinitionNode {
 }
 
 export interface EndpointTypeDefinitionNode {
-  readonly kind: `${ASTContextEndpoint}TypeDefinition'`;
+  readonly kind: `${ASTContextEndpoint}TypeDefinition`;
   readonly verb: EndpointVerbNode;
   readonly url: EndpointUrlNode;
   readonly description?: DescriptionNode;

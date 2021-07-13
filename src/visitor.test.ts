@@ -537,6 +537,51 @@ describe(__filename, () => {
   it.skip('correctly visits modelsFile', () => {
     const ast = parse(modelsFile);
   });
+
+  it('visits endpoints', () => {
+    const visited: Array<any> = [];
+
+    const sourceString = `
+POST /endpoint RequestModel
+`;
+
+    const source = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
+
+    const ast = parse(source);
+
+    visit(ast, {
+      Name(node) {
+        checkVisitorFnArgs(ast, arguments);
+        visited.push(['enter', node.kind, getValue(node)]);
+      },
+      ObjectTypeDefinition: {
+        enter(node) {
+          checkVisitorFnArgs(ast, arguments);
+          visited.push(['enter', node.kind, getValue(node)]);
+        },
+        leave(node) {
+          checkVisitorFnArgs(ast, arguments);
+          visited.push(['leave', node.kind, getValue(node)]);
+        },
+      },
+    });
+
+    expect(visited).toEqual([
+      ['enter', 'Name', 'Doc'],
+      ['enter', 'Name', 'a'],
+      ['enter', 'Name', undefined],
+      ['enter', 'Name', 'b'],
+      ['enter', 'ObjectTypeDefinition', undefined],
+      ['enter', 'Name', 'x'],
+      ['enter', 'Name', undefined],
+      ['leave', 'ObjectTypeDefinition', undefined],
+      ['enter', 'Name', 'c'],
+      ['enter', 'Name', undefined],
+    ]);
+  });
 });
 
 // private
