@@ -623,9 +623,12 @@ export class EndpointsParser extends ModelParser {
 
           return {
             kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-            name: this.node<NameNode>(this.lexer.token, {
-              kind: ASTNodeKind.NAME,
-              value: q,
+            type: this.node<NamedTypeNode>(this.lexer.token, {
+              kind: ASTNodeKind.NAMED_TYPE,
+              name: this.node<NameNode>(this.lexer.token, {
+                kind: ASTNodeKind.NAME,
+                value: q,
+              }),
             }),
           };
         })(),

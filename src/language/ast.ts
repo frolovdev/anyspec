@@ -123,7 +123,7 @@ export interface EndpointVerbNode {
 
 export interface EndpointParameterQueryNode {
   readonly kind: 'EndpointParameterQuery';
-  readonly name: NameNode;
+  readonly type: NamedTypeNode;
   readonly loc?: Location;
 }
 
