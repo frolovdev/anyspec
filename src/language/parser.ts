@@ -321,26 +321,42 @@ export class ModelParser {
     };
   }
 
+  parseListReference(name: NameNode): ListTypeNode {
+    this.expectToken(TokenKind.BRACKET_L);
+    const br = this.expectToken(TokenKind.BRACKET_R);
+
+    return this.node<ListTypeNode>(br, {
+      kind: ASTNodeKind.LIST_TYPE,
+      type: {
+        kind: ASTNodeKind.NAMED_TYPE,
+        name,
+      },
+    });
+  }
+
   parseTypeReference(): TypeNode {
     const startToken = this.lexer.token;
 
     if (this.peek(TokenKind.NAME)) {
       const name = this.parseName();
-      const bracket = this.expectOptionalToken(TokenKind.BRACKET_L);
-
-      if (bracket) {
-        this.expectToken(TokenKind.BRACKET_R);
+      // const bracket = this.expectOptionalToken(TokenKind.BRACKET_L);
+      if (this.peek(TokenKind.BRACKET_L)) {
+        return this.parseListReference(name);
       }
 
-      if (bracket) {
-        return this.node<ListTypeNode>(startToken, {
-          kind: ASTNodeKind.LIST_TYPE,
-          type: {
-            kind: ASTNodeKind.NAMED_TYPE,
-            name,
-          },
-        });
-      }
+      // if (bracket) {
+      //   this.expectToken(TokenKind.BRACKET_R);
+      // }
+
+      // if (bracket) {
+      //   return this.node<ListTypeNode>(startToken, {
+      //     kind: ASTNodeKind.LIST_TYPE,
+      //     type: {
+      //       kind: ASTNodeKind.NAMED_TYPE,
+      //       name,
+      //     },
+      //   });
+      // }
 
       return this.node<NamedTypeNode>(startToken, {
         kind: ASTNodeKind.NAMED_TYPE,
