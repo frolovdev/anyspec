@@ -19,9 +19,8 @@ export function EndpointsKnownHttpVerbs(context: ValidationContext): ASTVisitor 
 
   return {
     EndpointVerb(node) {
-      console.log(node);
       if (!set.has(node.name.value)) {
-        context.reportError(new AnySpecError(`Unknown http method "${node.name.value}".`, node));
+        context.reportError(new AnySpecError(`Unknown http method "${node.name.value}"`, node));
       }
     },
   };

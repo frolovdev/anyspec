@@ -126,7 +126,7 @@ export interface EndpointVerbNode {
 
 export interface EndpointParameterQueryNode {
   readonly kind: `${ASTContextEndpoint}ParameterQuery`;
-  readonly name: NameNode;
+  readonly type: NamedTypeNode;
   readonly loc?: Location;
 }
 

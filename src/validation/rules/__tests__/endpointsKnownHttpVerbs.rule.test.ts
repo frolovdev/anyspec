@@ -1,3 +1,4 @@
+import { toJSONDeep } from '../../../utils';
 import { EndpointsKnownHttpVerbs } from '../base/endpointsKnownHttpVerbs.rule';
 import { expectValidationErrors } from './fixtures';
 
@@ -11,17 +12,35 @@ function expectValid(queryStr: string) {
   expect(errors).toEqual([]);
 }
 
-function expectInvalidValid(queryStr: string) {
-  const errors = getErrors(queryStr);
-
-  expect(errors).toEqual(['shiiit']);
-}
-
 describe(__filename, () => {
-  it('known type names are valid', () => {
+  it('unknown type names are invalid', () => {
     expectValid(`
-NYN /analytics_events AnalyticsEventNewRequest
+POST /analytics_events AnalyticsEventNewRequest
     => AnalyticsEventNewResponse
 `);
+  });
+  it('known type names are valid', () => {
+    const errors = getErrors(
+      `
+YUY /analytics_events AnalyticsEventNewRequest
+    => AnalyticsEventNewResponse
+
+POST /analytics_events AnalyticsEventNewRequest
+  => AnalyticsEventNewResponse
+
+XXX /analytics_events AnalyticsEventNewRequest
+  => AnalyticsEventNewResponse
+`,
+    );
+
+    expect(toJSONDeep(errors)).toMatchObject([
+      {
+        message: 'Unknown http method "YUY"',
+      },
+
+      {
+        message: 'Unknown http method "XXX"',
+      },
+    ]);
   });
 });
