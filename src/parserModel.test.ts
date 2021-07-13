@@ -442,6 +442,7 @@ describe(__filename, () => {
         `;
 
       const ast = parse(model);
+
       expect(toJSONDeep(ast)).toEqual({
         kind: ASTNodeKind.DOCUMENT,
         definitions: [
