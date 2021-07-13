@@ -1,4 +1,4 @@
-import { Source } from './source';
+import { Source } from './language';
 
 describe('Source', () => {
   it('asserts that a body was provided', () => {

@@ -12,12 +12,6 @@ import {
   EndpointSecurityDefinitionNode,
   EndpointParameterBodyNode,
   OptionalEndpointParameterPathTypeNode,
-} from './language/ast';
-import { syntaxError } from './error/syntaxError';
-import { Lexer, isPunctuatorTokenKind } from './lexer';
-import { TokenKindEnum, Token, TokenKind } from './token';
-import { isSource, Source } from './source';
-import {
   ASTNodeKind,
   TypeDefinitionNode,
   DocumentNode,
@@ -33,7 +27,11 @@ import {
   OptionalNameNode,
   TypeNode,
   EnumTypeDefinitionNode,
-} from './language';
+} from './ast';
+import { syntaxError } from '../error/syntaxError';
+import { Lexer, isPunctuatorTokenKind } from './lexer';
+import { TokenKindEnum, Token, TokenKind } from './token';
+import { isSource, Source } from './source';
 import { Location } from './location';
 
 export interface ParseOptions {
