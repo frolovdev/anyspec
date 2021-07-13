@@ -352,7 +352,7 @@ export class ModelParser {
       return this.parseEnumInlineTypeDefinition();
     }
 
-    const strict = Boolean(this.expectOptionalToken(TokenKind.BANG))
+    const strict = Boolean(this.expectOptionalToken(TokenKind.BANG));
 
     const fields = this.parseFieldsDefinition();
 
