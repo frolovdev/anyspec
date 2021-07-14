@@ -30,6 +30,9 @@ POST /analytics_events AnalyticsEventNewRequest
 
 XXX /analytics_events AnalyticsEventNewRequest
   => AnalyticsEventNewResponse
+
+GUT /analytics_events AnalyticsEventNewRequest
+  => AnalyticsEventNewResponse
 `,
     );
 
@@ -40,10 +43,13 @@ XXX /analytics_events AnalyticsEventNewRequest
         locations: [{ line: 2, column: 1 }],
         message: 'Unknown http method "YUY". Did you mean "PUT"?',
       },
-
       {
         locations: [{ line: 8, column: 1 }],
         message: 'Unknown http method "XXX".',
+      },
+      {
+        locations: [{ line: 11, column: 1 }],
+        message: 'Unknown http method "GUT". Did you mean "GET" or "PUT"?',
       },
     ]);
   });
