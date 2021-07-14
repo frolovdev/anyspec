@@ -1,5 +1,5 @@
 import { toJSONDeep } from '../../../utils';
-import { RecommendedFilterPostfix } from '../recommended/recomendedFilterPostfix.rule';
+import { RecommendedFilterPostfix } from '../recommended/recommendedFilterPostfix.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
