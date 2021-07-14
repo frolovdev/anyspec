@@ -31,7 +31,7 @@ GET /endpoint
     expect(toJSONDeep(errors)).toMatchObject([
       {
         locations: [{ line: 3, column: 19 }],
-        message: 'Request model should ends with Response postfix',
+        message: 'Request model should ends with Response postfix, e.g. SomeTypeRequestQuery',
       },
     ]);
   });
