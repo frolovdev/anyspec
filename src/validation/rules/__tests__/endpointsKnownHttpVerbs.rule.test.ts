@@ -36,8 +36,6 @@ GUT /analytics_events AnalyticsEventNewRequest
 `,
     );
 
-    console.log(errors[0].location);
-
     expect(toJSONDeep(errors)).toMatchObject([
       {
         locations: [{ line: 2, column: 1 }],
