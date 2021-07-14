@@ -25,14 +25,27 @@ GET /endpoint3 Request
       `
 POST /endpoint Request
 PATCH /endpoint2 Request
+\`tag\`:
+  POST /endpoint Request
+  PATCH /endpoint2 Request
 `,
     );
 
     expect(toJSONDeep(errors)).toMatchObject([
       {
+        locations: [{ line: 2, column: 16 }],
         message: 'POST body parameter should ends with CreateRequestBody postfix',
       },
       {
+        locations: [{ line: 3, column: 18 }],
+        message: 'PATCH body parameter should ends with UpdateRequestBody postfix',
+      },
+      {
+        locations: [{ line: 5, column: 18 }],
+        message: 'POST body parameter should ends with CreateRequestBody postfix',
+      },
+      {
+        locations: [{ line: 6, column: 20 }],
         message: 'PATCH body parameter should ends with UpdateRequestBody postfix',
       },
     ]);
