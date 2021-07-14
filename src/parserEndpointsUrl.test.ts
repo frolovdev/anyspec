@@ -1,8 +1,5 @@
-import { ASTNode, ASTNodeKind } from './language/ast';
-import { AnySpecError } from './error/AnySpecError';
-import { parse as defaultParse } from './parser';
-import { toJSONDeep, log } from './utils';
-import { Source } from './source';
+import { ASTNode, ASTNodeKind, parse as defaultParse, Source } from './language';
+import { toJSONDeep } from './utils';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -33,7 +30,10 @@ POST /endpoint?RequestQuery
                     kind: ASTNodeKind.ENDPOINT_PARAMETER,
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-                      name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      },
                     },
                   },
                 ],
@@ -101,7 +101,10 @@ POST /endpoint?RequestQuery RequestModel
                     kind: ASTNodeKind.ENDPOINT_PARAMETER,
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-                      name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      },
                     },
                   },
                 ],
@@ -159,7 +162,10 @@ POST /endpoint?RequestQuery
                     kind: ASTNodeKind.ENDPOINT_PARAMETER,
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-                      name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      },
                     },
                   },
                 ],
@@ -509,7 +515,10 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name?RequestQuery RequestModel
                     kind: ASTNodeKind.ENDPOINT_PARAMETER,
                     type: {
                       kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-                      name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestQuery' },
+                      },
                     },
                   },
                   {

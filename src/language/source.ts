@@ -1,5 +1,5 @@
-import { assert } from './utils';
-import { inspect } from './utils';
+import { assert } from '../utils';
+import { inspect } from '../utils';
 
 interface Location {
   line: number;

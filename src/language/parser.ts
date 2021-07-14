@@ -12,12 +12,6 @@ import {
   EndpointSecurityDefinitionNode,
   EndpointParameterBodyNode,
   OptionalEndpointParameterPathTypeNode,
-} from './language/ast';
-import { syntaxError } from './error/syntaxError';
-import { Lexer, isPunctuatorTokenKind } from './lexer';
-import { TokenKindEnum, Token, TokenKind } from './token';
-import { isSource, Source } from './source';
-import {
   ASTNodeKind,
   TypeDefinitionNode,
   DocumentNode,
@@ -33,7 +27,11 @@ import {
   OptionalNameNode,
   TypeNode,
   EnumTypeDefinitionNode,
-} from './language';
+} from './ast';
+import { syntaxError } from '../error/syntaxError';
+import { Lexer, isPunctuatorTokenKind } from './lexer';
+import { TokenKindEnum, Token, TokenKind } from './token';
+import { isSource, Source } from './source';
 import { Location } from './location';
 
 export interface ParseOptions {
@@ -323,25 +321,34 @@ export class ModelParser {
     };
   }
 
+  /**
+   * Recursively parse list types
+   * a[][]
+   */
+  parseListReference(name: NameNode, startToken: Token): ListTypeNode | NamedTypeNode {
+    const closeBrackets = this.expectOptionalToken(TokenKind.BRACKET_L);
+    if (!closeBrackets) {
+      return this.node<NamedTypeNode>(startToken, {
+        kind: ASTNodeKind.NAMED_TYPE,
+        name,
+      });
+    }
+    this.expectToken(TokenKind.BRACKET_R);
+
+    return this.node<ListTypeNode>(startToken, {
+      kind: ASTNodeKind.LIST_TYPE,
+      type: this.parseListReference(name, startToken),
+    });
+  }
+
   parseTypeReference(): TypeNode {
     const startToken = this.lexer.token;
 
     if (this.peek(TokenKind.NAME)) {
       const name = this.parseName();
-      const bracket = this.expectOptionalToken(TokenKind.BRACKET_L);
 
-      if (bracket) {
-        this.expectToken(TokenKind.BRACKET_R);
-      }
-
-      if (bracket) {
-        return this.node<ListTypeNode>(startToken, {
-          kind: ASTNodeKind.LIST_TYPE,
-          type: {
-            kind: ASTNodeKind.NAMED_TYPE,
-            name,
-          },
-        });
+      if (this.peek(TokenKind.BRACKET_L)) {
+        return this.parseListReference(name, startToken);
       }
 
       return this.node<NamedTypeNode>(startToken, {
@@ -625,9 +632,12 @@ export class EndpointsParser extends ModelParser {
 
           return {
             kind: ASTNodeKind.ENDPOINT_PARAMETER_QUERY,
-            name: this.node<NameNode>(this.lexer.token, {
-              kind: ASTNodeKind.NAME,
-              value: q,
+            type: this.node<NamedTypeNode>(this.lexer.token, {
+              kind: ASTNodeKind.NAMED_TYPE,
+              name: this.node<NameNode>(this.lexer.token, {
+                kind: ASTNodeKind.NAME,
+                value: q,
+              }),
             }),
           };
         })(),

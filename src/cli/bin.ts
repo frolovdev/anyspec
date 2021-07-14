@@ -3,14 +3,12 @@
 import { Command } from 'commander';
 import { default as getPath } from 'path';
 import { readFile } from 'fs/promises';
-import { parse } from '../parser';
+import { parse, Source, ASTNodeKind, TypeDefinitionNode } from '../language';
 import { AnySpecSchema } from '../runtypes';
 import { validate, baseRules } from '../validation';
 import { AnySpecError, printError } from '../error';
 import { sync as glob } from 'globby';
-import { Source } from '../source';
 import ora from 'ora';
-import { ASTNodeKind, TypeDefinitionNode } from '../language';
 
 function isEndpoint(val: string) {
   return val.match(/\.endpoints\.tinyspec$/) !== null;

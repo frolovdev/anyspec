@@ -1,4 +1,4 @@
-import { Location } from '../location';
+import { Location } from './location';
 
 /**
  * The set of allowed kind values for AST nodes.
@@ -42,6 +42,9 @@ export const ASTNodeKind = {
   ENDPOINT_STATUS_CODE: 'EndpointStatusCode',
 } as const;
 
+type ASTContextEndpoint = 'Endpoint';
+type ASTContextModel = 'Model';
+
 /**
  * The enum type representing the possible kind values of AST nodes.
  */
@@ -69,6 +72,7 @@ export type ASTNode =
   | EndpointVerbNode
   | EndpointUrlNode
   | EndpointResponseNode
+  | EndpointParameterQueryNode
   | EndpointParameterBodyNode
   | EndpointSecurityDefinitionNode;
 
@@ -92,6 +96,7 @@ export interface ASTKindToNode {
   EndpointTypeDefinition: EndpointTypeDefinitionNode;
   EndpointResponse: EndpointResponseNode;
   EndpointParameterBody: EndpointParameterBodyNode;
+  EndpointParameterQuery: EndpointParameterQueryNode;
   EndpointSecurityDefinition: EndpointSecurityDefinitionNode;
 }
 
@@ -108,7 +113,7 @@ export type EndpointDomainTypeDefinitionNode = EndpointNamespaceTypeDefinitionNo
 export type TypeDefinitionNode = ModelDomainTypeDefinitionNode | EndpointDomainTypeDefinitionNode;
 
 export interface EndpointNamespaceTypeDefinitionNode {
-  readonly kind: 'EndpointNamespaceTypeDefinition';
+  readonly kind: `${ASTContextEndpoint}NamespaceTypeDefinition`;
   readonly tag?: NameNode;
   readonly description?: DescriptionNode;
   readonly endpoints: ReadonlyArray<EndpointTypeDefinitionNode>;
@@ -116,31 +121,31 @@ export interface EndpointNamespaceTypeDefinitionNode {
 }
 
 export interface EndpointVerbNode {
-  readonly kind: 'EndpointVerb';
+  readonly kind: `${ASTContextEndpoint}Verb`;
   readonly name: NameNode;
   readonly loc?: Location;
 }
 
 export interface EndpointParameterQueryNode {
-  readonly kind: 'EndpointParameterQuery';
-  readonly name: NameNode;
+  readonly kind: `${ASTContextEndpoint}ParameterQuery`;
+  readonly type: NamedTypeNode;
   readonly loc?: Location;
 }
 
 export interface EndpointParameterBodyNode {
-  readonly kind: 'EndpointParameterBody';
+  readonly kind: `${ASTContextEndpoint}ParameterBody`;
   readonly type: TypeNode;
   readonly loc?: Location;
 }
 
 export interface EndpointParameterPathTypeNode {
-  readonly kind: 'EndpointParameterPathType';
+  readonly kind: `${ASTContextEndpoint}ParameterPathType`;
   readonly name: NameNode;
   readonly loc?: Location;
 }
 
 export interface OptionalEndpointParameterPathTypeNode {
-  readonly kind: 'EndpointParameterPathType';
+  readonly kind: `${ASTContextEndpoint}ParameterPathType`;
   readonly loc?: Location;
 }
 
@@ -149,7 +154,7 @@ export type EndpointPathParameterType =
   | OptionalEndpointParameterPathTypeNode;
 
 export interface EndpointParameterPathNode {
-  readonly kind: 'EndpointParameterPath';
+  readonly kind: `${ASTContextEndpoint}ParameterPath`;
   readonly name?: NameNode;
   readonly loc?: Location;
   readonly type: EndpointPathParameterType;
@@ -160,37 +165,37 @@ export type EndpointParameterType =
   | EndpointParameterQueryNode
   | EndpointParameterPathNode;
 export interface EndpointParameterNode {
-  readonly kind: 'EndpointParameter';
+  readonly kind: `${ASTContextEndpoint}Parameter`;
   readonly type: EndpointParameterType;
   readonly loc?: Location;
 }
 export interface EndpointUrlNode {
-  readonly kind: 'EndpointUrl';
+  readonly kind: `${ASTContextEndpoint}Url`;
   readonly name: NameNode;
   readonly parameters: ReadonlyArray<EndpointParameterNode>;
   readonly loc?: Location;
 }
 
 export interface EndpointStatusCodeNode {
-  readonly kind: 'EndpointStatusCode';
+  readonly kind: `${ASTContextEndpoint}StatusCode`;
   readonly name: NameNode;
   readonly loc?: Location;
 }
 export interface EndpointResponseNode {
-  readonly kind: 'EndpointResponse';
+  readonly kind: `${ASTContextEndpoint}Response`;
   readonly type: TypeNode | EndpointStatusCodeNode;
   readonly description?: DescriptionNode;
   readonly loc?: Location;
 }
 
 export interface EndpointSecurityDefinitionNode {
-  readonly kind: 'EndpointSecurityDefinition';
+  readonly kind: `${ASTContextEndpoint}SecurityDefinition`;
   readonly name?: NameNode;
   readonly loc?: Location;
 }
 
 export interface EndpointTypeDefinitionNode {
-  readonly kind: 'EndpointTypeDefinition';
+  readonly kind: `${ASTContextEndpoint}TypeDefinition`;
   readonly verb: EndpointVerbNode;
   readonly url: EndpointUrlNode;
   readonly description?: DescriptionNode;
@@ -200,7 +205,7 @@ export interface EndpointTypeDefinitionNode {
 }
 
 export interface ModelTypeDefinitionNode {
-  readonly kind: 'ModelTypeDefinition';
+  readonly kind: `${ASTContextModel}TypeDefinition`;
   readonly loc?: Location;
   readonly description?: DescriptionNode;
   readonly name: NameNode;

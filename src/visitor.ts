@@ -87,6 +87,12 @@ const QueryDocumentKeys = {
   FieldDefinition: ['name', 'type'],
   EnumInlineTypeDefinition: ['name', 'values'],
   EnumValueDefinition: ['name'],
+  EndpointNamespaceTypeDefinition: ['tag', 'endpoints'],
+  EndpointTypeDefinition: ['verb', 'url', 'responses'],
+  EndpointResponse: ['type'],
+  EndpointVerb: ['name'],
+  EndpointUrl: ['name', 'parameters'],
+  EndpointParameter: ['type'],
 } as const;
 
 export const BREAK = {

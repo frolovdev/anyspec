@@ -1,6 +1,6 @@
 import { Token, TokenKind, TokenKindEnum } from './token';
 import { Source } from './source';
-import { syntaxError } from './error/syntaxError';
+import { syntaxError } from '../error';
 
 class IndentReader {
   private indents: number[] = [0];

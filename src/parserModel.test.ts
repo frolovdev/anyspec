@@ -1,8 +1,13 @@
-import { ASTNode, ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
+import {
+  ASTNode,
+  ASTNodeKind,
+  EnumTypeDefinitionNode,
+  ModelTypeDefinitionNode,
+  parse as defaultParse,
+  Source,
+} from './language';
 import { AnySpecError } from './error/AnySpecError';
-import { parse as defaultParse } from './parser';
 import { toJSONDeep, log } from './utils';
-import { Source } from './source';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -411,6 +416,108 @@ describe(__filename, () => {
                     name: {
                       kind: ASTNodeKind.NAME,
                       value: 'b',
+                    },
+                  },
+                },
+              },
+            ],
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'AcDocument',
+            },
+            strict: false,
+            kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+            description: undefined,
+            extendsModels: [],
+          },
+        ],
+      });
+    });
+
+    it('correctly parse field multi arrays', () => {
+      const model = `
+          AcDocument {
+            surname: b[][],
+          }
+        `;
+
+      const ast = parse(model);
+
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            fields: [
+              {
+                omitted: false,
+                optional: false,
+                kind: ASTNodeKind.FIELD_DEFINITION,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 'surname',
+                },
+                type: {
+                  kind: ASTNodeKind.LIST_TYPE,
+                  type: {
+                    kind: ASTNodeKind.LIST_TYPE,
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: 'b',
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'AcDocument',
+            },
+            strict: false,
+            kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+            description: undefined,
+            extendsModels: [],
+          },
+        ],
+      });
+    });
+
+    it('correctly parse field multi arrays v2', () => {
+      const model = `
+          AcDocument {
+            surname: b[][][],
+          }
+        `;
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            fields: [
+              {
+                omitted: false,
+                optional: false,
+                kind: ASTNodeKind.FIELD_DEFINITION,
+                name: {
+                  kind: ASTNodeKind.NAME,
+                  value: 'surname',
+                },
+                type: {
+                  kind: ASTNodeKind.LIST_TYPE,
+                  type: {
+                    kind: ASTNodeKind.LIST_TYPE,
+                    type: {
+                      kind: ASTNodeKind.LIST_TYPE,
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: {
+                          kind: ASTNodeKind.NAME,
+                          value: 'b',
+                        },
+                      },
                     },
                   },
                 },

@@ -1,5 +1,4 @@
-import { parse as defaultParse } from './parser';
-import { Source } from './source';
+import { parse as defaultParse, Source } from './language';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 

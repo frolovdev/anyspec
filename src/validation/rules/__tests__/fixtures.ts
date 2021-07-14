@@ -1,10 +1,16 @@
-import { parse } from '../../../parser';
+import { Source } from './../../../language/source';
+import { parse } from '../../../language';
 import { AnySpecSchema } from '../../../runtypes';
 import { validate } from '../../validate';
 import { ValidationRule } from '../../validationContext';
 
-export function expectValidationErrorsWithSchema(rule: ValidationRule, queryStr: string): any {
-  const doc = parse(queryStr);
+export function expectValidationErrorsWithSchema(
+  rule: ValidationRule,
+  queryStr: string,
+  sourceType: 'endpoints' | 'models',
+): any {
+  const source = new Source({ body: queryStr, sourceType });
+  const doc = parse(source);
 
   const schema = new AnySpecSchema({ ast: doc });
   const errors = validate(schema, doc, [rule]);
@@ -12,6 +18,10 @@ export function expectValidationErrorsWithSchema(rule: ValidationRule, queryStr:
   return errors;
 }
 
-export function expectValidationErrors(rule: ValidationRule, queryStr: string): any {
-  return expectValidationErrorsWithSchema(rule, queryStr);
+export function expectValidationErrors(
+  rule: ValidationRule,
+  queryStr: string,
+  sourceType: 'endpoints' | 'models' = 'models',
+): any {
+  return expectValidationErrorsWithSchema(rule, queryStr, sourceType);
 }

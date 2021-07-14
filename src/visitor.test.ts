@@ -1,5 +1,4 @@
-import { ASTNode, ASTNodeKind, NameNode, OptionalNameNode } from './language';
-import { parse } from './parser';
+import { ASTNode, ASTNodeKind, NameNode, OptionalNameNode, parse, Source } from './language';
 import { BREAK, visit } from './visitor';
 import { modelsFile } from './__testsUtils__/veryComplexFile';
 
