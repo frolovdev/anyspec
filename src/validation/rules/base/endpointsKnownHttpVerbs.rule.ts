@@ -1,6 +1,7 @@
 import { AnySpecError } from '../../../error';
 import { ASTVisitor } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
+import { didYouMean, suggestionList } from '../../../utils';
 
 const HTTP_REQUEST_METHODS = [
   'GET',
@@ -20,7 +21,13 @@ export function EndpointsKnownHttpVerbs(context: ValidationContext): ASTVisitor 
   return {
     EndpointVerb(node) {
       if (!set.has(node.name.value)) {
-        context.reportError(new AnySpecError(`Unknown http method "${node.name.value}"`, node));
+        const suggestedTypes = suggestionList(node.name.value, HTTP_REQUEST_METHODS);
+        context.reportError(
+          new AnySpecError(
+            `Unknown http method "${node.name.value}".` + didYouMean(suggestedTypes),
+            node,
+          ),
+        );
       }
     },
   };
