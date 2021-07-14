@@ -15,7 +15,7 @@ import { ValidationContext } from '../../validationContext';
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
- *    connection: BkConnectionUpdate
+ *    connection: ConnectionUpdate
  * }
  *
  * bad ❌
@@ -24,7 +24,7 @@ import { ValidationContext } from '../../validationContext';
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
- *    connection: BkConnection
+ *    connection: Connection
  * }
  *
  */
@@ -58,7 +58,7 @@ export function RecommendedPostfixForUpdateModels(context: ValidationContext): A
         ) {
           context.reportError(
             new AnySpecError(
-              `Type name of create field should ends with Update postfix, did you mean ${fieldDefinition.type.name.value}Update`,
+              `Type name of update field should ends with Update postfix, did you mean ${fieldDefinition.type.name.value}Update`,
               fieldDefinition.type,
             ),
           );
