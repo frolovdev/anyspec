@@ -23,12 +23,22 @@ function isModel(val: string) {
 async function main() {
   const program = new Command();
   program
-    .requiredOption('-o, --out-dir <dir>', 'path to a directory for a generated SDK')
-    .arguments('<specFiles...>');
+    .option('-o, --outDir <dir>', 'path to a directory for a generated openapi')
+    .option('-ns, --namespaces [namespaces...]', 'array of existed namespaces')
+    .option('-cns, --commonNamespace <commonNamespace>', 'name of common namespace', 'common')
+    .arguments('<specFiles>');
 
   program.parse();
 
   const { args } = program;
+
+  const options = program.opts() as {
+    commonNamespace: string;
+    namespaces?: string[];
+    outDir?: string;
+  };
+
+  const { namespaces, outDir, commonNamespace } = options;
 
   const argPaths = args.map((arg) => getPath.resolve(process.cwd(), arg));
 
