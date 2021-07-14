@@ -9,7 +9,10 @@ export function EndpointsRecommendedQueryPostfix(context: ValidationContext): AS
     EndpointParameterQuery(node) {
       if (!node.type.name.value?.endsWith(POSTFIX)) {
         context.reportError(
-          new AnySpecError(`Query model should ends with RequestQuery postfix`, node),
+          new AnySpecError(
+            `Query model should ends with RequestQuery postfix, e.g. SomeTypeRequestQuery`,
+            node.type,
+          ),
         );
       }
     },

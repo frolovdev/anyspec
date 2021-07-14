@@ -30,7 +30,7 @@ POST /analytics_events?Analytics
     expect(toJSONDeep(errors)).toMatchObject([
       {
         locations: [{ line: 2, column: 33 }],
-        message: 'Query model should ends with RequestQuery postfix',
+        message: 'Query model should ends with RequestQuery postfix, e.g. SomeTypeRequestQuery',
       },
     ]);
   });
