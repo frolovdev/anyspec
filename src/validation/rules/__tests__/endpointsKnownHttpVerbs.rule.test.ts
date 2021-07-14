@@ -33,13 +33,17 @@ XXX /analytics_events AnalyticsEventNewRequest
 `,
     );
 
+    console.log(errors[0].location);
+
     expect(toJSONDeep(errors)).toMatchObject([
       {
-        message: 'Unknown http method "YUY"',
+        locations: [{ line: 2, column: 1 }],
+        message: 'Unknown http method "YUY". Did you mean "PUT"?',
       },
 
       {
-        message: 'Unknown http method "XXX"',
+        locations: [{ line: 8, column: 1 }],
+        message: 'Unknown http method "XXX".',
       },
     ]);
   });
