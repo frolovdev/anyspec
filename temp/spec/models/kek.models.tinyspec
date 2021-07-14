@@ -11,3 +11,5 @@ C {
     a: string
   }
 }
+
+CompanyBankStatementSummaryQuery {}
