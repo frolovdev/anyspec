@@ -11,7 +11,10 @@ export function EndpointsRecommendedQueryPostfix(context: ValidationContext): AS
       if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
         if (!node.type.name.value?.endsWith(POSTFIX)) {
           context.reportError(
-            new AnySpecError(`Request model should ends with Response postfix`, node),
+            new AnySpecError(
+              `Request model should ends with Response postfix, e.g. SomeTypeRequestQuery`,
+              node,
+            ),
           );
         }
       }

@@ -12,7 +12,10 @@ export function RecommendedFilterPostfix(context: ValidationContext): ASTVisitor
         if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
           if (!node.type.name.value?.endsWith(POSTFIX)) {
             context.reportError(
-              new AnySpecError(`Type name of filter should end with Filter prefix`, node),
+              new AnySpecError(
+                `Type name of filter field should ends with Filter postfix, did you mean ${node.type.name.value}Filter`,
+                node.type,
+              ),
             );
           }
         }

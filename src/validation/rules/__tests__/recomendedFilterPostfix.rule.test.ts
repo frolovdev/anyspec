@@ -36,7 +36,9 @@ describe(__filename, () => {
 
     expect(toJSONDeep(errors)).toMatchObject([
       {
-        message: 'Type name of filter should end with Filter prefix',
+        locations: [{ line: 3, column: 17 }],
+        message:
+          'Type name of filter field should ends with Filter postfix, did you mean BkConnectionFilter',
       },
     ]);
   });
