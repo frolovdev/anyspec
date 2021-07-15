@@ -5,36 +5,36 @@ import { ValidationContext } from '../../validationContext';
 
 /**
  *
- * if endpoint is `PATCH` && contains Body parameter ⇒
+ * if endpoint is `POST` && contains Body parameter ⇒
  * we should watch model that referenced by body parameter
- * and ensure that every `field`, that is named type, should ends with `Update` postfix
+ * and ensure that every `field`, that is named type, should ends with `New` postfix
  *
  * good ✅
  *
- * PATCH /connections ConnectionCreateRequestBody
+ * POST /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
- *    connection: ConnectionUpdate
+ *    connection: BkConnectionNew
  * }
  *
  * bad ❌
  *
- * PATCH /connections ConnectionCreateRequestBody
+ * POST /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
- *    connection: Connection
+ *    connection: BkConnection
  * }
  *
  */
-export function RecommendedPostfixForUpdateModels(context: ValidationContext): ASTVisitor {
+export function RecommendedPostfixForCreateModels(context: ValidationContext): ASTVisitor {
   let bodyParameters: string[] = [];
 
   // TODO: Rewrite after introducing type info #59
   visit(context.getDocument(), {
     EndpointTypeDefinition(node) {
-      if (node.verb.name.value === 'PATCH') {
+      if (node.verb.name.value === 'POST') {
         node.url.parameters.forEach((parameter) => {
           if (
             parameter.type.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY &&
@@ -55,11 +55,11 @@ export function RecommendedPostfixForUpdateModels(context: ValidationContext): A
       node.fields.forEach((fieldDefinition) => {
         if (
           fieldDefinition.type.kind === ASTNodeKind.NAMED_TYPE &&
-          !fieldDefinition.type.name.value?.endsWith('Update')
+          !fieldDefinition.type.name.value?.endsWith('New')
         ) {
           context.reportError(
             new AnySpecError(
-              `Type name of update field should ends with Update postfix, did you mean ${fieldDefinition.type.name.value}Update`,
+              `Type name of create field should ends with New postfix, did you mean ${fieldDefinition.type.name.value}New`,
               fieldDefinition.type,
             ),
           );
