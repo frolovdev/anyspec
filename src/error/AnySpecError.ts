@@ -212,5 +212,5 @@ export function printError(error: AnySpecError): string {
     }
   }
 
-  return output;
+  return `${output}\n\n------------------------------------------------------------------------------------------\n`;
 }

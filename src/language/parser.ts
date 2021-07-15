@@ -60,11 +60,18 @@ export class ModelParser {
    */
   many<T>(openKind: TokenKindEnum, parseFn: () => T, closeKind: TokenKindEnum): Array<T> {
     this.expectToken(openKind);
-
+    let count = 0;
     const nodes = [];
     do {
       const curResult = parseFn.call(this);
-
+      count++;
+      if (count === 99999) {
+        throw syntaxError(
+          this.lexer.source,
+          this.lexer.token.end,
+          `Unexpected token or not closed block`,
+        );
+      }
       nodes.push(curResult);
     } while (!this.expectOptionalToken(closeKind));
 
@@ -74,7 +81,16 @@ export class ModelParser {
   optionalMany<T>(openKind: TokenKindEnum, parseFn: () => T, closeKind: TokenKindEnum): Array<T> {
     if (this.expectOptionalToken(openKind)) {
       const nodes = [];
+      let count = 0;
       while (!this.expectOptionalToken(closeKind)) {
+        count++;
+        if (count === 99999) {
+          throw syntaxError(
+            this.lexer.source,
+            this.lexer.token.end,
+            `Unexpected token or not closed block`,
+          );
+        }
         nodes.push(parseFn.call(this));
       }
 
