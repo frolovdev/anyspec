@@ -193,6 +193,8 @@ export class ModelParser {
       }
     }
 
+    this.lexer.advance();
+
     throw this.unexpected();
   }
 

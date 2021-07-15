@@ -1431,7 +1431,7 @@ describe(__filename, () => {
 
     it('correctly parse model with named with complicated values', () => {
       const model = `
-          CompanyType (
+          CompanyType = (
             Branch Office Singapore |
             Private Company 'Limited' by Shares (Pte. Ltd.) |
             + amount | 
