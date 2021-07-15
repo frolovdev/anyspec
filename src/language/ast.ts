@@ -183,7 +183,8 @@ export interface EndpointStatusCodeNode {
 }
 export interface EndpointResponseNode {
   readonly kind: `${ASTContextEndpoint}Response`;
-  readonly type: TypeNode | EndpointStatusCodeNode;
+  readonly type?: TypeNode;
+  readonly status: EndpointStatusCodeNode;
   readonly description?: DescriptionNode;
   readonly loc?: Location;
 }

@@ -341,6 +341,8 @@ export class ModelParser {
     });
   }
 
+  // Name, (, {
+
   parseTypeReference(): TypeNode {
     const startToken = this.lexer.token;
 
@@ -502,9 +504,16 @@ export class EndpointsParser extends ModelParser {
    * parse status code (404, 202, etc)
    */
   parseEndpointStatusCode(): EndpointStatusCodeNode {
+    const status = this.peek(TokenKind.NUMBER)
+      ? this.parseNumber()
+      : this.node<NameNode>(this.lexer.token, {
+          kind: ASTNodeKind.NAME,
+          value: '200',
+        });
+
     return this.node<EndpointStatusCodeNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
-      name: this.parseNumber(),
+      name: status,
     });
   }
 
@@ -520,19 +529,17 @@ export class EndpointsParser extends ModelParser {
       throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or empty response`);
     }
 
-    if (this.peek(TokenKind.NUMBER)) {
-      return this.node<EndpointResponseNode>(this.lexer.token, {
-        kind: ASTNodeKind.ENDPOINT_RESPONSE,
-        type: this.parseEndpointStatusCode(),
-      });
-    }
-
-    const type = this.parseTypeReference();
+    const status = this.parseEndpointStatusCode();
+    const type =
+      this.peek(TokenKind.NAME) || this.peek(TokenKind.BRACE_L) || this.peek(TokenKind.PAREN_L)
+        ? this.parseTypeReference()
+        : undefined;
 
     return this.node<EndpointResponseNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_RESPONSE,
-      description,
       type,
+      status,
+      description,
     });
   }
 
