@@ -31,7 +31,7 @@ import { ValidationContext } from '../../validationContext';
 export function RecommendedPostfixForCreateModels(context: ValidationContext): ASTVisitor {
   let bodyParameters: string[] = [];
 
-  // TODO: migrate to type info
+  // TODO: Rewrite after introducing type info #59
   visit(context.getDocument(), {
     EndpointTypeDefinition(node) {
       if (node.verb.name.value === 'POST') {
