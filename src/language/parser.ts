@@ -587,7 +587,7 @@ export class EndpointsParser extends ModelParser {
       throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or missed url`);
     }
 
-    if (url.value.includes('&')) {
+    if (url.value.includes('&') || url.value.includes(';') || url.value.includes('=')) {
       throw this.throwNoInlineQuery();
     }
 
@@ -627,6 +627,10 @@ export class EndpointsParser extends ModelParser {
           }
 
           if (isLowerCase(q.charAt(0))) {
+            throw this.throwNoInlineQuery();
+          }
+
+          if (q.includes(':')) {
             throw this.throwNoInlineQuery();
           }
 
