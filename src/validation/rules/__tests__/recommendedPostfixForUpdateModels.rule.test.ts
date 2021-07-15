@@ -56,6 +56,8 @@ RequestModel {
 }
 `;
 
+
+    // TODO: remove after #58 
     const sourceEndpoints = new Source({
       body: endpointString,
       name: 'endpoints-source',
