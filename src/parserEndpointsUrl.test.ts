@@ -40,6 +40,13 @@ POST /endpoint?RequestQuery
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -111,6 +118,13 @@ POST /endpoint?RequestQuery RequestModel
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -172,6 +186,13 @@ POST /endpoint?RequestQuery
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -233,6 +254,13 @@ POST /endpoint/:entryType
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -304,6 +332,13 @@ POST /endpoint/:entryType/:entryType2
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -375,6 +410,13 @@ POST /endpoint/:entryType/api/v2/:entryType2
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -451,6 +493,13 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
@@ -547,6 +596,13 @@ POST /endpoint/:entryType:a/api/v2/:entryType2:b/name?RequestQuery RequestModel
               },
               responses: [
                 {
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '200',
+                    },
+                  },
                   kind: ASTNodeKind.ENDPOINT_RESPONSE,
                   type: {
                     kind: ASTNodeKind.NAMED_TYPE,
