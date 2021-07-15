@@ -22,7 +22,7 @@ const POSTFIX = 'Response';
 export function EndpointsRecommendedResponsePostfix(context: ValidationContext): ASTVisitor {
   return {
     EndpointResponse(node) {
-      if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
+      if (node.type?.kind === ASTNodeKind.NAMED_TYPE) {
         if (!node.type.name.value?.endsWith(POSTFIX)) {
           context.reportError(
             new AnySpecError(
