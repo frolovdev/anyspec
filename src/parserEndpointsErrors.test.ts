@@ -137,5 +137,19 @@ GET /examples?sort:i
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
     });
+    it('endpoint with inline enums are not supported v2', () => {
+      const sourceString = `
+GET /examples?Sort:i
+  => {examples: Example[], totalCount?: i}
+  => 404
+`;
+
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
+
+      expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
+    });
   });
 });
