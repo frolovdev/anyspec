@@ -11,3 +11,8 @@ C {
     a: string
   }
 }
+
+WSEventsFromServerForAgent {
+  messages:new?: WSOnNewMessageForAgent,
+  messages:update?: WSOnUpdateMessageForAgent,
+}

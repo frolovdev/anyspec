@@ -89,6 +89,31 @@
       "required": [
         "pathParameters"
       ]
+    },
+    "WSEventsFromServerForAgent": {
+      "type": "object",
+      "properties": {
+        "messages:New": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/WSOnNewMessageForAgent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "messages:update": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/WSOnUpdateMessageForAgent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
     }
   }
 }

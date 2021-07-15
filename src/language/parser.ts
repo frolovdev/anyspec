@@ -65,7 +65,7 @@ export class ModelParser {
     do {
       const curResult = parseFn.call(this);
       count++;
-      if (count === 99999) {
+      if (count === 999999) {
         throw syntaxError(
           this.lexer.source,
           this.lexer.token.end,
@@ -84,7 +84,7 @@ export class ModelParser {
       let count = 0;
       while (!this.expectOptionalToken(closeKind)) {
         count++;
-        if (count === 99999) {
+        if (count === 999999) {
           throw syntaxError(
             this.lexer.source,
             this.lexer.token.end,
