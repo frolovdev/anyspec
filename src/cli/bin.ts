@@ -18,6 +18,10 @@ function isModel(val: string) {
   return val.includes('.models.');
 }
 
+function printCliError(error: string) {
+  return `${error}\n\n------------------------------------------------------------------------------------------\n`;
+}
+
 async function main() {
   const program = new Command();
   program
@@ -71,14 +75,14 @@ async function main() {
 
   if (parsingError.length > 0) {
     for (const e of parsingError) {
-      console.error(printError(e));
+      console.error(printCliError(printError(e)));
     }
   } else {
     const doc = { kind: ASTNodeKind.DOCUMENT, definitions: resultDefinitions };
     const schema = new AnySpecSchema({ ast: doc });
 
     const errors = validate(schema, doc, baseRules);
-    errors.forEach((e) => console.error(printError(e)));
+    errors.forEach((e) => console.error(printCliError(printError(e))));
   }
   processingSpinner.succeed();
 }

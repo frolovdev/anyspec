@@ -211,6 +211,5 @@ export function printError(error: AnySpecError): string {
       output += '\n\n' + printSourceLocation(error.source, location);
     }
   }
-
-  return `${output}\n\n------------------------------------------------------------------------------------------\n`;
+  return output;
 }
