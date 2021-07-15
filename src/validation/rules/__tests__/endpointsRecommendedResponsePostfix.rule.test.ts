@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { EndpointsRecommendedQueryPostfix } from '../recommended/endpointsRecommendedResponsePostfix.rule';
+import { EndpointsRecommendedResponsePostfix } from '../recommended/endpointsRecommendedResponsePostfix.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(EndpointsRecommendedQueryPostfix, queryStr, 'endpoints');
+  return expectValidationErrors(EndpointsRecommendedResponsePostfix, queryStr, 'endpoints');
 }
 
 function expectValid(queryStr: string) {
@@ -31,7 +31,7 @@ GET /endpoint
     expect(toJSONDeep(errors)).toMatchObject([
       {
         locations: [{ line: 3, column: 19 }],
-        message: 'Request model should ends with Response postfix, e.g. SomeTypeRequestQuery',
+        message: 'Request model should ends with Response postfix, e.g. SomeTypeResponse',
       },
     ]);
   });
