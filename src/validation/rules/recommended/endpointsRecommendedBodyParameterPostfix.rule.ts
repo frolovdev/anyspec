@@ -6,7 +6,7 @@ import { ValidationContext } from '../../validationContext';
 const prefixMap = {
   POST: 'CreateRequestBody',
   PATCH: 'UpdateRequestBody',
-};
+} as const;
 
 /**
  *
@@ -23,11 +23,14 @@ const prefixMap = {
  *
  */
 export function EndpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
+  const isInPrefixMap = (verb: string): verb is keyof typeof prefixMap => {
+    const keys = Object.keys(prefixMap);
+    return keys.includes(verb);
+  };
   return {
     EndpointTypeDefinition(node) {
-      const keys = Object.keys(prefixMap);
-      if (keys.includes(node.verb.name.value)) {
-        const verb = node.verb.name.value as keyof typeof prefixMap;
+      if (isInPrefixMap(node.verb.name.value)) {
+        const verb = node.verb.name.value;
         node.url.parameters.forEach((param) => {
           if (
             param.type.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY &&
