@@ -71,6 +71,7 @@ RequestModel {
     const astEndpoints = parse(sourceEndpoints);
     const astModels = parse(sourceModels);
 
+     // TODO: delete after @frolovdev create schema merge functionality #58 
     const combined = {
       kind: ASTNodeKind.DOCUMENT,
       definitions: [...astEndpoints.definitions, ...astModels.definitions],
