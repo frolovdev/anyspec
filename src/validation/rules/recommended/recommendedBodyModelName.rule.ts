@@ -41,7 +41,7 @@ export function RecommendedBodyModelName(context: ValidationContext): ASTVisitor
       if (!fieldTypeName?.includes(modelName)) {
         context.reportError(
           new AnySpecError(
-            `Name of model "${modelName}" should be substring of "body" parameter type "${fieldTypeName}"`,
+            `Name of model "${modelName}" should be substring of "body" parameter type "${fieldTypeName}", e.g. Model { body: ModelRequestBody }`,
             node,
           ),
         );

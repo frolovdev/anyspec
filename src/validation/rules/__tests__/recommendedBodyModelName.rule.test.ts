@@ -38,7 +38,7 @@ describe(__filename, () => {
       {
         locations: [{ line: 2, column: 5 }],
         message:
-          'Name of model "Other" should be substring of "body" parameter type "ModelRequestBody"',
+          'Name of model "Other" should be substring of "body" parameter type "ModelRequestBody", e.g. Model { body: ModelRequestBody }',
       },
     ]);
   });
