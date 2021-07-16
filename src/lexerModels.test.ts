@@ -588,6 +588,22 @@ describe('lexer understands enums', () => {
     expect(tokens).toEqual(['A', '(', 'f', '|', 'b', ')']);
   });
 
+  it('lexer understand normal enum with ":"', () => {
+    const enumString = new Source({ body: `A (f:f | b:b )` });
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual(['A', '(', 'f:f', '|', 'b:b', ')']);
+  });
+
+  it('lexer understand normal enum with ":" and ""', () => {
+    const enumString = new Source({ body: `A ("f:f" | "b:b" )` });
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual(['A', '(', 'f:f', '|', 'b:b', ')']);
+  });
+
   it('lexer understand enum with spaces and symbols', () => {
     const enumString = new Source({
       body: `A 
