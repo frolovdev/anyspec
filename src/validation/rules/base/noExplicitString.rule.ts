@@ -1,9 +1,9 @@
-import { AnySpecError } from '../../error';
-import { NamedTypeNode } from '../../language';
-import { ASTVisitor } from '../../visitor';
+import { AnySpecError } from '../../../error';
+import { NamedTypeNode } from '../../../language';
+import { ASTVisitor } from '../../../visitor';
 
-import { ValidationContext } from '../validationContext';
-import { stringAliases } from '../../runtypes/specifiedScalarTypes';
+import { ValidationContext } from '../../validationContext';
+import { stringAliases } from '../../../runtypes/specifiedScalarTypes';
 
 /**
  *

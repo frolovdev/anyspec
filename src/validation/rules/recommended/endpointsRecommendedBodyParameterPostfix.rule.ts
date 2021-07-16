@@ -22,7 +22,7 @@ const prefixMap = {
  * PATCH /endpoint2 Request
  *
  */
-export function EndpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
+export function EndpointsRecommendedBodyParameterPostfix(context: ValidationContext): ASTVisitor {
   const isInPrefixMap = (verb: string): verb is keyof typeof prefixMap => {
     const keys = Object.keys(prefixMap);
     return keys.includes(verb);
