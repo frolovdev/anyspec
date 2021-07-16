@@ -12,8 +12,8 @@
     "clean": "rm -rf src/cli/dist",
     "prepublish:cli": "cd src/cli && npm install && cd .. && npm run clean && npm run build",
     "publish:cli": "npm publish ./src/cli",
-    "test:cli": "NODE_PATH=./src TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true ts-node src/cli/bin.ts src/cli/spec -o ./",
-    "test:integration:anyspec:cli": "anyspec src/cli/examples/kek.models.tinyspec -o ./",
+    "test:cli": "NODE_PATH=./src TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true ts-node src/cli/bin.ts src/cli/spec -ns agent client",
+    "test:integration:anyspec:cli": "anyspec src/cli/examples/kek.models.tinyspec",
     "test:tinyspec:build": "tinyspec --json --add-nulls -s temp/spec/ -o ../",
     "lint": "eslint --max-warnings 0 'src/**/*.ts'",
     "lint:fix": "eslint --fix 'src/**/*.ts'"

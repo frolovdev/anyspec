@@ -12,6 +12,9 @@ C {
   }
 }
 
+CompanyBankStatementSummaryQuery {}
+
+
 WSEventsFromServerForAgent {
   messages:new?: WSOnNewMessageForAgent,
   messages:update?: WSOnUpdateMessageForAgent,
