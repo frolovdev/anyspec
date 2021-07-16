@@ -71,14 +71,14 @@ async function main() {
 
   const resultDefinitions: TypeDefinitionNode[] = [];
 
-  const parsingError: AnySpecError[] = [];
+  const parsingErrors: AnySpecError[] = [];
   for (const source of sources) {
     try {
       const doc = parse(source);
       resultDefinitions.push(...doc.definitions);
     } catch (error) {
       if (error instanceof AnySpecError) {
-        parsingError.push(error);
+        parsingErrors.push(error);
       } else {
         console.error('Unknown error during parsing', error);
         processingSpinner.fail();
@@ -87,8 +87,8 @@ async function main() {
     }
   }
 
-  if (parsingError.length > 0) {
-    for (const e of parsingError) {
+  if (parsingErrors.length > 0) {
+    for (const e of parsingErrors) {
       console.error(printCliError(printError(e)));
     }
   } else {
