@@ -18,6 +18,10 @@ function isModel(val: string) {
   return val.match(/\.models\.tinyspec$/) !== null;
 }
 
+function printCliError(error: string) {
+  return `${error}\n\n------------------------------------------------------------------------------------------\n`;
+}
+
 async function main() {
   const program = new Command();
   program
@@ -61,28 +65,36 @@ async function main() {
     throw new Error(`File doesn't contain .endpoints.tinyspec or .models.tinyspec extension`);
   });
 
-  try {
-    const resultDefinitions: TypeDefinitionNode[] = [];
-    for (const source of sources) {
+  const resultDefinitions: TypeDefinitionNode[] = [];
+
+  const parsingError: AnySpecError[] = [];
+  for (const source of sources) {
+    try {
       const doc = parse(source);
-
       resultDefinitions.push(...doc.definitions);
+    } catch (error) {
+      if (error instanceof AnySpecError) {
+        parsingError.push(error);
+      } else {
+        console.error('Unknown error during parsing', error);
+        processingSpinner.fail();
+        process.exit(1);
+      }
     }
+  }
 
+  if (parsingError.length > 0) {
+    for (const e of parsingError) {
+      console.error(printCliError(printError(e)));
+    }
+  } else {
     const doc = { kind: ASTNodeKind.DOCUMENT, definitions: resultDefinitions };
     const schema = new AnySpecSchema({ ast: doc });
 
     const errors = validate(schema, doc, baseRules);
-    errors.forEach((e) => console.log(printError(e)));
-
-    processingSpinner.succeed();
-  } catch (error) {
-    if (error instanceof AnySpecError) {
-      console.log(printError(error));
-    }
-
-    processingSpinner.fail(`Failed to process document`);
+    errors.forEach((e) => console.error(printCliError(printError(e))));
   }
+  processingSpinner.succeed();
 }
 
 main();

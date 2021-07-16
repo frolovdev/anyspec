@@ -1835,4 +1835,22 @@ describe(__filename, () => {
       );
     });
   });
+
+  describe('unexpected symbols', () => {
+    it('no unexpected symbols at enums definition', () => {
+      const enumString = `
+      A = (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow('Syntax Error: Unexpected "="');
+    });
+
+    it('no unexpected symbols at model definition', () => {
+      const enumString = `
+      Model = {}
+      `;
+
+      expect(() => parse(enumString)).toThrow('Syntax Error: Unexpected "="');
+    });
+  });
 });
