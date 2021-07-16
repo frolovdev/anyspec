@@ -27,7 +27,11 @@ async function main() {
   program
     .option('-o, --outDir <dir>', 'path to a directory for a generated openapi')
     .option('-ns, --namespaces [namespaces...]', 'array of existed namespaces')
-    .option('-cns, --commonNamespace <commonNamespace>', 'name of common namespace', 'common')
+    .option(
+      '-cns, --commonNamespace <commonNamespace>',
+      'name of common namespace where shared definitions stored',
+      'common',
+    )
     .arguments('<specFiles>');
 
   program.parse();
