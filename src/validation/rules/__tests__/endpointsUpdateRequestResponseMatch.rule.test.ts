@@ -241,7 +241,7 @@ PATCH /endpoint ConnectionUpdateRequestBody
       expect(toJSONDeep(errors)).toEqual([
         {
           locations: [{ line: 3, column: 8 }],
-          message: 'In PATH endpoints Response should match with RequestBody',
+          message: 'In PATCH endpoints Response should match with RequestBody',
         },
       ]);
     });
@@ -285,7 +285,7 @@ PATCH /endpoint { field: number, field2: string }
       expect(toJSONDeep(errors)).toEqual([
         {
           locations: [{ line: 3, column: 8 }],
-          message: 'In PATH endpoints Response should match with RequestBody',
+          message: 'In PATCH endpoints Response should match with RequestBody',
         },
       ]);
     });
@@ -329,7 +329,7 @@ PATCH /endpoint ConnectionUpdateRequestBody
       expect(toJSONDeep(errors)).toEqual([
         {
           locations: [{ line: 3, column: 8 }],
-          message: 'In PATH endpoints Response should match with RequestBody',
+          message: 'In PATCH endpoints Response should match with RequestBody',
         },
       ]);
     });
@@ -354,7 +354,7 @@ PATCH /endpoint { field: string, field2: number }
       expect(toJSONDeep(errors)).toEqual([
         {
           locations: [{ line: 3, column: 8 }],
-          message: 'In PATH endpoints Response should match with RequestBody',
+          message: 'In PATCH endpoints Response should match with RequestBody',
         },
       ]);
     });
@@ -378,7 +378,7 @@ PATCH /endpoint { field: string, field2: string, f:s }
       expect(toJSONDeep(errors)).toEqual([
         {
           locations: [{ line: 3, column: 8 }],
-          message: 'In PATH endpoints Response should match with RequestBody',
+          message: 'In PATCH endpoints Response should match with RequestBody',
         },
       ]);
     });

@@ -100,7 +100,7 @@ export function EndpointsUpdateRequestResponseMatch(context: ValidationContext):
       if (!isFieldDefinitionsMatches(requestFieldDefinitions, responseFieldDefinitions)) {
         context.reportError(
           new AnySpecError(
-            `In PATH endpoints Response should match with RequestBody`,
+            `In PATCH endpoints Response should match with RequestBody`,
             responseNode.type,
           ),
         );
