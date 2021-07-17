@@ -1,7 +1,12 @@
 import { didYouMean, suggestionList } from '../../utils';
 
 import { AnySpecError } from '../../error';
-import { ASTNode, NamedTypeNode, isModelDomainDefinitionNode } from '../../language';
+import {
+  ASTNode,
+  NamedTypeNode,
+  isModelDomainDefinitionNode,
+  isEndpointNamespaceTypeDefinitionNode,
+} from '../../language';
 import { ASTVisitor } from '../../visitor';
 import { specifiedScalarTypes } from '../../runtypes';
 
@@ -29,6 +34,7 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
   return {
     NamedType(node, _1, parent, _2, ancestors) {
       const typeName = defaultNamedTypeCast(node);
+      // console.log(node.name);
       if (!existingTypesMap[typeName] && !definedTypes[typeName]) {
         const definitionNode = ancestors[2] ?? parent;
 
@@ -50,7 +56,10 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
 }
 
 function isSDLNode(value: ASTNode | ReadonlyArray<ASTNode>): boolean {
-  return 'kind' in value && isModelDomainDefinitionNode(value);
+  return (
+    ('kind' in value && isModelDomainDefinitionNode(value)) ||
+    ('kind' in value && isEndpointNamespaceTypeDefinitionNode(value))
+  );
 }
 
 function defaultNamedTypeCast(node: NamedTypeNode) {
