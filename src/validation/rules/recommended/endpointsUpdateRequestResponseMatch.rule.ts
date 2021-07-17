@@ -37,7 +37,7 @@ import { ValidationContext } from '../../validationContext';
  *  => ConnectionResponse
  *
  * ConnectionCreateRequestBody {
- *  field: number
+ *  field: string
  *  field2: number
  * }
  *
