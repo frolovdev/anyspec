@@ -9,6 +9,7 @@ import {
   ModelTypeDefinitionNode,
   TypeNode,
 } from '../../../language';
+import { specifiedScalarTypes } from '../../../runtypes';
 import { ASTVisitor, visit } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
 
@@ -131,7 +132,7 @@ function findEndpointParameterBodyNode(
     (parameter) => parameter.type.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY,
   );
 
-  const requestNodeParameterBody = requestNodeParameter.type as
+  const requestNodeParameterBody = requestNodeParameter?.type as
     | EndpointParameterBodyNode
     | undefined;
 
@@ -163,5 +164,12 @@ function isNamedTypesPrimitiveMatch(t1: TypeNode, t2: TypeNode) {
     return t1.kind === t2.kind;
   }
 
-  return t1.name.value === t2.name.value;
+  if (
+    specifiedScalarTypes.includes(t1.name.value ?? '') &&
+    specifiedScalarTypes.includes(t2.name.value ?? '')
+  ) {
+    return t1.name.value === t2.name.value;
+  }
+
+  return true;
 }
