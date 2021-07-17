@@ -62,13 +62,8 @@ export function EndpointsUpdateRequestResponseMatch(context: ValidationContext):
 
   return {
     EndpointResponse(responseNode, _1, parent, _2, ancestors) {
-      // TODO: get rig of typecasting
-      const [endpointTypeDefinition] = ancestors.filter((ancestor) => {
-        if (Array.isArray(ancestor)) {
-          return false;
-        }
-        return isEndpointTypeDefinitionNode(ancestor as ASTNode);
-      }) as EndpointTypeDefinitionNode[];
+      const endpointTypeDefinition = findEndpointTypeDefinitionNode(ancestors);
+      const requestNodeParameterBody = findEndpointParameterBodyNode(endpointTypeDefinition);
 
       if (endpointTypeDefinition.verb.name.value !== 'PATCH') {
         return;
@@ -81,23 +76,14 @@ export function EndpointsUpdateRequestResponseMatch(context: ValidationContext):
         return;
       }
 
-      const responseNodeBody = responseNode.type;
-
-      const [requestNodeParameter] = endpointTypeDefinition.url.parameters.filter(
-        (parameter) => parameter.type.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY,
-      );
-
-      // TODO: get rig of typecasting
-      const requestNodeParameterBody = requestNodeParameter.type as
-        | EndpointParameterBodyNode
-        | undefined;
-
       if (
         requestNodeParameterBody?.type.kind === ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION ||
         requestNodeParameterBody?.type.kind === ASTNodeKind.LIST_TYPE
       ) {
         return;
       }
+
+      const responseNodeBody = responseNode.type;
 
       const requestTypeNode = requestNodeParameterBody?.type;
 
@@ -121,6 +107,35 @@ export function EndpointsUpdateRequestResponseMatch(context: ValidationContext):
       }
     },
   };
+}
+
+// TODO: get rig of typecasting
+function findEndpointTypeDefinitionNode(
+  ancestors: readonly (ASTNode | readonly ASTNode[])[],
+): EndpointTypeDefinitionNode {
+  const [endpointTypeDefinition] = ancestors.filter((ancestor) => {
+    if (Array.isArray(ancestor)) {
+      return false;
+    }
+    return isEndpointTypeDefinitionNode(ancestor as ASTNode);
+  }) as EndpointTypeDefinitionNode[];
+
+  return endpointTypeDefinition;
+}
+
+// TODO: get rig of typecasting
+function findEndpointParameterBodyNode(
+  endpointNode: EndpointTypeDefinitionNode,
+): EndpointParameterBodyNode | undefined {
+  const [requestNodeParameter] = endpointNode.url.parameters.filter(
+    (parameter) => parameter.type.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+  );
+
+  const requestNodeParameterBody = requestNodeParameter.type as
+    | EndpointParameterBodyNode
+    | undefined;
+
+  return requestNodeParameterBody;
 }
 
 function isFieldDefinitionsMatches(
