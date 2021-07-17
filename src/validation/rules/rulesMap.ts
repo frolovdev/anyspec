@@ -16,7 +16,7 @@ export const RulesMap: Record<string, (context: ValidationContext) => ASTVisitor
   'endpoints-recommended-response-postfix': Recommended.EndpointsRecommendedResponsePostfix,
   'recommended-body-model-name': Recommended.RecommendedBodyModelName,
   'recommended-filter-postfix': Recommended.RecommendedFilterPostfix,
-  'recommended-model-body-field-postfix': Recommended.RecommendedFilterPostfix,
+  'recommended-model-body-field-postfix': Recommended.RecommendedModelBodyFieldPostfix,
   'recommended-postfix-for-create-models': Recommended.RecommendedPostfixForCreateModels,
   'recommended-postfix-for-update-models': Recommended.RecommendedPostfixForUpdateModels,
 };
