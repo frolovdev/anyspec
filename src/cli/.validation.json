@@ -1,8 +1,8 @@
 {
     "rules": {
-        "known-type-names": "error",
+        "known-type-names": "off",
         "no-explicit-string-rule": "off",
-        "endpoints-known-http-verbs": "off",
+        "endpoints-known-http-verbs": "error",
         "endpoints-recommended-body-parameter-postfix": "off",
         "endpoints-recommended-query-postfix": "off",
         "endpoints-recommended-response-postfix": "off",
