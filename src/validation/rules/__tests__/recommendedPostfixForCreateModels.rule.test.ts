@@ -44,6 +44,46 @@ RequestModel {
     expect(errors).toEqual([]);
   });
 
+  it('should be valid with scalar types', () => {
+    const endpointString = `
+POST /endpoint RequestModel
+    => ResponseModel
+`;
+
+    const modelString = `
+RequestModel {
+    connection: s,
+    referralCode
+}
+`;
+
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: [...astEndpoints.definitions, ...astModels.definitions],
+    };
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [RecommendedPostfixForCreateModels]);
+
+    expect(errors).toEqual([]);
+  });
+
   it('should be invalid', () => {
     const endpointString = `
 POST /endpoint RequestModel
