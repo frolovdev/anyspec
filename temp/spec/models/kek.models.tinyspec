@@ -14,13 +14,13 @@ C {
 
 CompanyBankStatementSummaryQuery {}
 
-
+// вуыск
 WSEventsFromServerForAgent {
   messages:new?: WSOnNewMessageForAgent,
   messages:update?: Enum,
 }
 
-
+// вуыск
 Enum (
   'Aaa' |
   'Bb' |

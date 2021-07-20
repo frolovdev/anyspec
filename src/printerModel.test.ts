@@ -121,6 +121,7 @@ AcDocument {}
       const printed = printModels(ast);
 
       expect(printed).toEqual(dedent`
+// My _perfect_ tiny model
 AcDocument {
   name
 }
@@ -172,7 +173,7 @@ AcDocument {
             },
             strict: false,
             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-            description: undefined,
+            description: { kind: ASTNodeKind.DESCRIPTION, value: 'My _perfect_ tiny model' },
             extendsModels: [],
           },
         ],

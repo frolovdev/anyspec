@@ -34,7 +34,7 @@ const printDocASTReducerModel: ASTReducer<string> = {
       if (fields.length === 0) {
         return `${description ?? ''}${name}${extModels} ${strct}{}`;
       }
-      return `${name}${extModels} ${strct}${block(fields)}`;
+      return `${description ?? ''}${name}${extModels} ${strct}${block(fields)}`;
     },
   },
   Description: {

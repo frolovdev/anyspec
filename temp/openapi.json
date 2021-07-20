@@ -94,6 +94,8 @@
       "type": "object"
     },
     "WSEventsFromServerForAgent": {
+      "title": "вуыск",
+      "description": "вуыск",
       "type": "object",
       "properties": {
         "messages:new": {
@@ -119,6 +121,8 @@
       }
     },
     "Enum": {
+      "title": "вуыск",
+      "description": "вуыск",
       "enum": [
         "'Aaa'",
         "'Bb'",
