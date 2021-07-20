@@ -21,7 +21,7 @@ const printDocASTReducer: ASTReducer<string> = {
   ModelTypeDefinition: {
     leave: ({ name, description, fields }) => {
       if (fields.length === 0) {
-        return `${description}${name} {}`;
+        return `${description ?? ''}${name} {}`;
       }
       return join([name, block(fields)], ' ');
     },
