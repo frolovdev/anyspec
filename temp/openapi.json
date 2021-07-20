@@ -90,10 +90,13 @@
         "pathParameters"
       ]
     },
+    "CompanyBankStatementSummaryQuery": {
+      "type": "object"
+    },
     "WSEventsFromServerForAgent": {
       "type": "object",
       "properties": {
-        "messages:New": {
+        "messages:new": {
           "anyOf": [
             {
               "$ref": "#/definitions/WSOnNewMessageForAgent"
@@ -106,7 +109,7 @@
         "messages:update": {
           "anyOf": [
             {
-              "$ref": "#/definitions/WSOnUpdateMessageForAgent"
+              "$ref": "#/definitions/Enum"
             },
             {
               "type": "null"
@@ -114,6 +117,15 @@
           ]
         }
       }
+    },
+    "Enum": {
+      "enum": [
+        "'Aaa'",
+        "'Bb'",
+        "'Cccc'",
+        "'BBB'",
+        ""
+      ]
     }
   }
 }

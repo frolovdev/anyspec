@@ -17,5 +17,13 @@ CompanyBankStatementSummaryQuery {}
 
 WSEventsFromServerForAgent {
   messages:new?: WSOnNewMessageForAgent,
-  messages:update?: WSOnUpdateMessageForAgent,
+  messages:update?: Enum,
 }
+
+
+Enum (
+  'Aaa' |
+  'Bb' |
+  'Cccc' |
+  'BBB' |
+)

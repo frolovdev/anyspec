@@ -5,11 +5,20 @@ import { ASTNode, ASTNodeKind } from './ast';
  * Converts an AST into a string, using one set of reasonable
  * formatting rules.
  */
-export function print(ast: ASTNode): string {
-  return visit(ast, printDocASTReducer);
+
+const MAX_LINE_LENGTH = 80;
+
+export function printModels(ast: ASTNode): string {
+  return visit(ast, printDocASTReducerModel);
 }
 
-const printDocASTReducer: ASTReducer<string> = {
+const printDocASTReducerModel: ASTReducer<string> = {
+  EndpointNamespaceTypeDefinition: {
+    leave: () => {
+      throw new Error("Can't parse AST with EndpointNamespaceTypeDefinition");
+    },
+  },
+
   Name: { leave: (node) => node.value ?? '' },
 
   NamedType: { leave: (node) => node.name },
@@ -19,11 +28,13 @@ const printDocASTReducer: ASTReducer<string> = {
   },
 
   ModelTypeDefinition: {
-    leave: ({ name, description, fields }) => {
+    leave: ({ name, description, fields, strict, extendsModels }) => {
+      const extModels = extendsModels.length > 0 ? ` < ${extendsModels.join(', ')}` : '';
+      const strct = strict ? '!' : '';
       if (fields.length === 0) {
-        return `${description ?? ''}${name} {}`;
+        return `${description ?? ''}${name}${extModels} ${strct}{}`;
       }
-      return join([name, block(fields)], ' ');
+      return `${name}${extModels} ${strct}${block(fields)}`;
     },
   },
   Description: {
@@ -53,6 +64,36 @@ const printDocASTReducer: ASTReducer<string> = {
       return `${node.type}${list.join()}`;
     },
   },
+  EnumValueDefinition: {
+    leave: ({ name }) => name,
+  },
+  EnumInlineTypeDefinition: {
+    leave: ({ values }) => {
+      const str = `( ${join(values, ' | ')} )`;
+      if (str.length > MAX_LINE_LENGTH) {
+        return enumBlock(values);
+      }
+      return str;
+    },
+  },
+  ObjectTypeDefinition: {
+    leave: ({ fields, strict }) => {
+      const strct = strict ? '!' : '';
+      if (fields.length === 0) {
+        return `${strct}{}`;
+      }
+      return `${strct}${block(fields)}`;
+    },
+  },
+  EnumTypeDefinition: {
+    leave: ({ name, values }) => {
+      const str = `${name} ( ${join(values, ' | ')} )`;
+      if (str.length > MAX_LINE_LENGTH) {
+        return `${name} ${enumBlock(values)}`;
+      }
+      return str;
+    },
+  },
 };
 
 /** Conveniently represents flow's "Maybe" type https://flow.org/en/docs/types/maybe/ */
@@ -73,6 +114,13 @@ function block(array: Maybe<ReadonlyArray<string | undefined>>): string {
 }
 
 /**
+ * Given array, print each item on its own line, wrapped in an indented `( )` block with `|` separator.
+ */
+function enumBlock(array: Maybe<ReadonlyArray<string | undefined>>): string {
+  return wrap('(\n', indent(join(array, ' |\n')), '\n)');
+}
+
+/**
  * If maybeString is not null or empty, then wrap with start and end, otherwise print an empty string.
  */
 function wrap(start: string, maybeString: Maybe<string>, end: string = ''): string {
@@ -81,9 +129,4 @@ function wrap(start: string, maybeString: Maybe<string>, end: string = ''): stri
 
 function indent(str: string): string {
   return wrap('  ', str.replace(/\n/g, '\n  '));
-}
-
-function hasMultilineItems(maybeArray: Maybe<ReadonlyArray<string>>): boolean {
-  // istanbul ignore next (See: 'https://github.com/graphql/graphql-js/issues/2203')
-  return maybeArray?.some((str) => str.includes('\n')) ?? false;
 }

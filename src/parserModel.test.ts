@@ -1188,7 +1188,7 @@ describe(__filename, () => {
       });
     });
 
-    it('should parse strict nested types coorectly', () => {
+    it('should parse strict nested types correctly', () => {
       const model = `
       AcDocument < Kek, Lel !{
             pathParameters: !{
