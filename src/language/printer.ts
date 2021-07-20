@@ -1,5 +1,5 @@
 import { ASTReducer, visit } from '../visitor';
-import { ASTNode } from './ast';
+import { ASTNode, ASTNodeKind } from './ast';
 
 /**
  * Converts an AST into a string, using one set of reasonable
@@ -39,6 +39,18 @@ const printDocASTReducer: ASTReducer<string> = {
         return `${name}${opt}`;
       }
       return `${name}${opt}: ${type}`;
+    },
+  },
+  ListType: {
+    leave: (node) => {
+      const arraySymbol = '[]';
+      let list: string[] = [];
+      let currentNode: any = node;
+      while (currentNode.kind === ASTNodeKind.LIST_TYPE) {
+        list.push(arraySymbol);
+        currentNode = node.type;
+      }
+      return `${node.type}${list.join()}`;
     },
   },
 };
