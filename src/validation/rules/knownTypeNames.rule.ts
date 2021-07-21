@@ -34,7 +34,6 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
   return {
     NamedType(node, _1, parent, _2, ancestors) {
       const typeName = defaultNamedTypeCast(node);
-      // console.log(node.name);
       if (!existingTypesMap[typeName] && !definedTypes[typeName]) {
         const definitionNode = ancestors[2] ?? parent;
 
