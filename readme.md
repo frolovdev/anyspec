@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI)](https://codecov.io/gh/frolovdev/anyspec)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec?ref=badge_shield)
 
 [](https://astexplorer.net/)
 
@@ -89,3 +90,7 @@ A ( "a" | "b" |  )
 ```
 
 To much dsl like $CRUDL
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec?ref=badge_large)
