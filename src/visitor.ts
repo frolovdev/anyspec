@@ -93,6 +93,7 @@ const QueryDocumentKeys = {
   EndpointVerb: ['name'],
   EndpointUrl: ['name', 'parameters'],
   EndpointParameter: ['type'],
+  EndpointParameterBody: ['type'],
 } as const;
 
 export const BREAK = {
