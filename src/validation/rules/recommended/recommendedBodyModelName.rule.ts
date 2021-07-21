@@ -1,5 +1,6 @@
 import { AnySpecError } from '../../../error';
 import { ASTNodeKind } from '../../../language';
+import { specifiedScalarTypes } from '../../../runtypes';
 import { ASTVisitor } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
 
@@ -35,6 +36,13 @@ export function RecommendedBodyModelName(context: ValidationContext): ASTVisitor
         fieldNode?.type.kind === ASTNodeKind.NAMED_TYPE ? fieldNode.type.name.value : undefined;
 
       if (!fieldNode) {
+        return;
+      }
+
+      if (!fieldTypeName) {
+        return;
+      }
+      if (specifiedScalarTypes.includes(fieldTypeName)) {
         return;
       }
 

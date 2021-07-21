@@ -23,6 +23,26 @@ describe(__filename, () => {
 `);
   });
 
+  it('should be valid v2', () => {
+    expectValid(`
+    Model {
+        body,
+    }
+      
+    ModelRequestBody {}
+`);
+  });
+
+  it('should be valid v3', () => {
+    expectValid(`
+    Model {
+        body: s,
+    }
+      
+    ModelRequestBody {}
+`);
+  });
+
   it('should be invalid', () => {
     const errors = getErrors(
       `
