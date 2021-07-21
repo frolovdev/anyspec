@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI)](https://codecov.io/gh/frolovdev/anyspec)
+
 [](https://astexplorer.net/)
 
 ## WIP, I call you when we are be ready 
