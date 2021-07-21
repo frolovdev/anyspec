@@ -1,12 +1,11 @@
-import { AnySpecError } from '../../../error';
-import { NamedTypeNode } from '../../../language';
 import { ASTVisitor } from '../../../visitor';
 
 import { ValidationContext } from '../../validationContext';
 import { stringAliases } from '../../../runtypes/specifiedScalarTypes';
+import { ASTNodeKind } from '../../../language';
+import { AnySpecError } from '../../../error';
 
 /**
- *
  *
  * good ✅
  *
@@ -20,24 +19,23 @@ import { stringAliases } from '../../../runtypes/specifiedScalarTypes';
  *   field: s
  * }
  *
- *
  */
 export function NoExplicitStringRule(context: ValidationContext): ASTVisitor {
   return {
-    NamedType(node, _1, parent, _2, ancestors) {
-      const castedValue = defaultNamedTypeCast(node);
-      if (stringAliases.includes(castedValue)) {
-        context.reportError(
-          new AnySpecError(
-            `No need to explicitly specify string type since it is the default`,
-            node,
-          ),
-        );
+    FieldDefinition(node, _1, parent, _2, ancestors) {
+      if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
+        if (!node.type.name.value) {
+          return;
+        }
+        if (stringAliases.includes(node.type.name.value)) {
+          context.reportError(
+            new AnySpecError(
+              `No need to explicitly specify string type since it is the default`,
+              node.type,
+            ),
+          );
+        }
       }
     },
   };
-}
-
-function defaultNamedTypeCast(node: NamedTypeNode) {
-  return node.name.value ? node.name.value : 'string';
 }

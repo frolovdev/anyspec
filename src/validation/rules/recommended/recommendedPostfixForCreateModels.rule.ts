@@ -1,5 +1,6 @@
 import { AnySpecError } from '../../../error';
 import { ASTNodeKind } from '../../../language';
+import { specifiedScalarTypes } from '../../../runtypes';
 import { ASTVisitor, visit } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
 
@@ -55,6 +56,8 @@ export function RecommendedPostfixForCreateModels(context: ValidationContext): A
       node.fields.forEach((fieldDefinition) => {
         if (
           fieldDefinition.type.kind === ASTNodeKind.NAMED_TYPE &&
+          fieldDefinition.type.name.value &&
+          !specifiedScalarTypes.includes(fieldDefinition.type.name.value) &&
           !fieldDefinition.type.name.value?.endsWith('New')
         ) {
           context.reportError(
