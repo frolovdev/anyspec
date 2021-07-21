@@ -24,7 +24,7 @@ describe(__filename, () => {
     `);
   });
 
-  it('all knwon types are valid', () => {
+  it('all known types are valid', () => {
     specifiedScalarTypes.forEach((type) =>
       expectValid(`
     Doc {
@@ -34,7 +34,7 @@ describe(__filename, () => {
     );
   });
 
-  it('unkown type names are invalid', () => {
+  it('unknown type names are invalid', () => {
     const errors = getErrors(`
       Doc {
         name: ew,
@@ -104,7 +104,7 @@ describe(__filename, () => {
     ]);
   });
 
-  it('known type names are valid endpoints', () => {
+  it('known-type-names rule are work with endpoints, valid', () => {
     const endpointString = `
 POST /endpoint RequestModel
   => {a: string, c: b, s}
@@ -139,7 +139,7 @@ RequestModel {a: string, c: b, s}
     expect(errors).toEqual([]);
   });
 
-  it('unknown type names are valid endpoints', () => {
+  it('known-type-names rule are work with endpoints, invalid', () => {
     const endpointString = `
 POST /endpoint Model
   => RespModel
