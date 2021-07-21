@@ -23,6 +23,26 @@ describe(__filename, () => {
 `);
   });
 
+  it('should be valid v2', () => {
+    expectValid(`
+    RequestQuery {
+        body,
+    }
+      
+    RequestQueryRequestBody {}
+`);
+  });
+
+  it('should be valid v3', () => {
+    expectValid(`
+    RequestQuery {
+        body: s,
+    }
+      
+    RequestQueryRequestBody {}
+`);
+  });
+
   it('should be invalid', () => {
     const errors = getErrors(
       `
