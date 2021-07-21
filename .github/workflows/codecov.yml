@@ -10,14 +10,10 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  setup:
-    runs-on: ubuntu-20.04
-    steps:
-     - uses: actions/setup-action@v1
-
   codecov:
     runs-on: ubuntu-20.04
     steps:
+      - uses: actions/setup-action@v1
       - name: Generate coverage
         run: npm run test:coverage
       - name: Upload coverage to Codecov
