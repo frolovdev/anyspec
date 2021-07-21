@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
-      - uses: ./.github/actions/setup-action
+      - uses: ./.github/actions/setup-action.yml
         continue-on-error: false
       - name: Generate coverage
         run: npm run test:coverage
