@@ -89,3 +89,10 @@ A ( "a" | "b" |  )
 ```
 
 To much dsl like $CRUDL
+
+
+## License
+
+The code in this project is released under the [MIT License](LICENSE).
+
+[![FOSSA Status](https://app.fossa.com/api/revisions/git%2Bgithub.com%2Ffrolovdev%2Fanyspec-action.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-action?ref=badge_large)
