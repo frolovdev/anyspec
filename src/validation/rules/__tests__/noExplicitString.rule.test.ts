@@ -1,5 +1,5 @@
 import { toJSONDeep } from '../../../utils';
-import { NoExplicitStringRule } from '../noExplicitString.rule';
+import { NoExplicitStringRule } from '../base';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
