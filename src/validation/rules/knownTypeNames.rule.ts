@@ -56,8 +56,8 @@ export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
 
 function isSDLNode(value: ASTNode | ReadonlyArray<ASTNode>): boolean {
   return (
-    ('kind' in value && isModelDomainDefinitionNode(value)) ||
-    ('kind' in value && isEndpointNamespaceTypeDefinitionNode(value))
+    'kind' in value &&  ( isModelDomainDefinitionNode(value)  ||  isEndpointNamespaceTypeDefinitionNode(value) )
+    
   );
 }
 
