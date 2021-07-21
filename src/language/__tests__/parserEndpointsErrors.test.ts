@@ -1,4 +1,4 @@
-import { parse as defaultParse, Source } from './language';
+import { parse as defaultParse, Source } from '../';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
