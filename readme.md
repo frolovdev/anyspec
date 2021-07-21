@@ -6,38 +6,11 @@
 
 [Main link](https://excalidraw.com/#json=4790454524575744,zoP_ISTzjIbi1HhB6ErtWw)
 
-## TODO
-
-- [x] write a visitor tests
-- [x] write a base validator layer
-- [ ] create cli
-- [ ] After creating enum /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
-
-- [ ] After creating endpoints add similar case /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
-- [ ] lear how to visit in parallel
-
-
-### Parser endpoints
-
-
-
-### Validator
-
-- [] split up base validation and schema validation (sdl)
-
 
 https://cuelang.org/docs/
 
 https://tree-sitter.github.io/tree-sitter/
 https://chevrotain.io/
-
-### IDEAS
-
-Генерация клиента для мобилы
-
-
-###
-
 
 
 https://youtu.be/TeZqKnC2gvA
@@ -45,16 +18,14 @@ https://youtu.be/TeZqKnC2gvA
 
 
 
-# Чего не должно быть во второй версии
+# What will be deleted in v2
 
-* удаление полей из модели
-* енамы и строки начинающеся с символа - или +
-* значения енамов через пробелы
-
-
-# Чего делать во второй версии
+* omitting fields from model
+* enum vaues started by + or -
+* enum values divided by spaces
 
 
+# What todo in v2
 
 delete $TSFixMe
 
