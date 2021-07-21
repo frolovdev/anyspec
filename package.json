@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "husky install",
     "build": "tsc --project tsconfig.build.json --outDir ./src/cli/dist",
     "test": "NODE_PATH=./src STAGE=test jest --maxWorkers=4",
     "test:watch": "NODE_PATH=./src STAGE=test jest --watch",
