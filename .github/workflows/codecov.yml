@@ -8,7 +8,6 @@ on:
     paths-ignore:
       - 'docs/**'
   pull_request:
-
     branches: [master]
     
 
@@ -20,7 +19,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.ref }}
-      
+      - uses: ./.github/actions/setup-action
+        continue-on-error: false
       - name: Generate coverage
         run: npm run test:coverage
       - name: Upload coverage to Codecov
