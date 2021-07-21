@@ -14,7 +14,6 @@ module.exports = {
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   verbose: true,
-
   testEnvironment: 'node',
   coveragePathIgnorePatterns: [
     '<rootDir>/node_modules/',
