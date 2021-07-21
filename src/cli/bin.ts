@@ -11,7 +11,7 @@ import { sync as glob } from 'globby';
 import ora from 'ora';
 import { concatAST } from '../language/concatAST';
 
-type Config = { rules: { [key: string]: 'error' | 'off' } };
+type Config = { rules: Record<string, 'error' | 'off'> };
 
 async function main() {
   const program = new Command();
@@ -79,9 +79,7 @@ async function main() {
     const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
     const errors = schemas.map((s, index) => validate(s, unitedASTs[index], enabledRulesFns));
     errors.flat().forEach((e) => console.error(printCliError(printError(e))));
-    if (invalidRules.length > 0) {
-      console.error(printCliError(`Invalid Rules: ${invalidRules.join(', ')}`));
-    }
+    invalidRules.forEach((e) => console.error(printCliError(`Invalid Rule: ${e}`)));
     processingSpinner.succeed();
   } catch (e) {
     console.error(e);
