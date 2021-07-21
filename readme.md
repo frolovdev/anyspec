@@ -95,4 +95,4 @@ To much dsl like $CRUDL
 
 The code in this project is released under the [MIT License](LICENSE).
 
-[![FOSSA Status](https://app.fossa.com/api/revisions/git%2Bgithub.com%2Ffrolovdev%2Fanyspec-action.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-action?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec?ref=badge_large)
