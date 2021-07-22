@@ -11,15 +11,19 @@ const POSTFIX = 'Filter';
  *
  * good ✅
  *
+ * ```
  * RequestQuery {
  *   filter: BkConnectionFilter,
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * RequestQuery {
  *   filter: BkConnection,
  * }
+ * ```
  *
  */
 export function RecommendedFilterPostfix(context: ValidationContext): ASTVisitor {

@@ -1,20 +1,8 @@
-name: CI
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
-
-on:
-  push:
-    branches: [master]
-    paths-ignore:
-      - 'docs/**'
-  pull_request:
-    branches: [master]
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+name: Build and Deploy docs
+on: [push]
 jobs:
-  codecov:
-    runs-on: ubuntu-20.04
+  build-and-deploy:
+    runs-on: ubuntu-latest
     steps:
       - name: Cancel previous workflow runs
         uses: styfle/cancel-workflow-action@0.9.0
@@ -44,13 +32,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install dependencies
+      - name: Install dependencies 🔧
         run: npm ci
 
-      - name: Generate coverage
-        run: npm run test:coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+          branch: docs
+          folder: docs/rules

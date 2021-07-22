@@ -11,15 +11,19 @@ const POSTFIX = 'RequestBody';
  *
  * good ✅
  *
+ * ```
  * RequestQuery {
  *   body: BkConnectionRequestBody,
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * RequestQuery {
  *   body: BkConnection,
  * }
+ * ```
  *
  */
 export function RecommendedModelBodyFieldPostfix(context: ValidationContext): ASTVisitor {

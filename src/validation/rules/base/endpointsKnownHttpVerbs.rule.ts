@@ -15,6 +15,12 @@ const HTTP_REQUEST_METHODS = [
   'PATCH',
 ];
 
+/**
+ * verb in front of endpoint should be one of available HTTP methods
+ *
+ * [https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
+ *
+ */
 export function EndpointsKnownHttpVerbs(context: ValidationContext): ASTVisitor {
   const set = new Set(HTTP_REQUEST_METHODS);
 

@@ -12,21 +12,25 @@ import { ValidationContext } from '../../validationContext';
  *
  * good ✅
  *
+ * ```
  * POST /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
  *    connection: BkConnectionNew
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * POST /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
  *    connection: BkConnection
  * }
+ * ```
  *
  */
 export function RecommendedPostfixForCreateModels(context: ValidationContext): ASTVisitor {

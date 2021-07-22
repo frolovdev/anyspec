@@ -9,15 +9,19 @@ import { AnySpecError } from '../../error';
  *
  * good ✅
  *
+ * ```
  * AcDocument {
  *    field
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * Document {
  *   field: s
  * }
+ * ```
  *
  */
 export function NoExplicitStringRule(context: ValidationContext): ASTVisitor {
