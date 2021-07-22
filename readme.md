@@ -10,14 +10,109 @@ The main problem we trying to solve is a verbosity of openapi.
 
 Example in action
 
-<p align="left">
-<img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/before.png"
-  width="686" height="289">
+Before
+```
 
-  <img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/after.png"
-  width="686" height="289">
-</p>
+// **Some description**
+@token POST /documents DocumentNew
+    => { document: Document }
 
+DocumentNew {
+  name: s, 
+}
+
+DocumentNew {
+  id: i,
+  name: s,
+}
+```
+
+After
+
+```json
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API",
+    "version": "{{version}}"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "token": {
+      "name": "X-Access-Token",
+      "type": "apiKey",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/documents": {
+      "post": {
+        "summary": "**Some description**",
+        "description": "**Some description**",
+        "operationId": "POST--documents",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "document": {
+                  "$ref": "#/definitions/Document"
+                }
+              },
+              "required": [
+                "document"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DocumentNew"
+            },
+            "in": "body"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "DocumentNew": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    }
+  }
+}
+```
 
 ## License
 
