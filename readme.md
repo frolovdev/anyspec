@@ -1,10 +1,11 @@
 # anyspec [![codecov](https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI)](https://codecov.io/gh/frolovdev/anyspec)
 
-Anyspec is a [DSL (Domain Specific Language)](https://en.wikipedia.org/wiki/Domain-specific_language) for writing API specs on top of [Openapi (swagger)](https://swagger.io/specification/).
+Anyspec is a [DSL (Domain Specific Language)](https://en.wikipedia.org/wiki/Domain-specific_language) for writing API specs with main compilation target to [Openapi (swagger)](https://swagger.io/specification/).
 
-The main problem we trying to solve is a verbosity of openapi.
+The main problem we are trying to solve is the verbosity of open API.
 
-* **Linting** - specs can be linted by internal linter, that can enhanced by your external rules.
+* **Write less code** - get rid of boileprate in your daily routine. 
+* **Lint your specs** - specs can be linted by internal linter, that can enhanced by your external rules.
 * **Prettify (WIP)** - we support pretifying of specs.
 * **Compilation (WIP)** - the result json fully compatible with openapi specification
 
