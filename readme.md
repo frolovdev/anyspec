@@ -12,13 +12,21 @@ The main problem we trying to solve is a verbosity of openapi.
   .table {
     border-collapse: collapse;
   }
+
+  .raw {
+    border: none;
+  }
+
+  .cell {
+    border: none;
+  }
 </style>
 
 <table class="table" >
     <tbody>
-        <tr>
-          <td valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
-          <td valign="middle">
+        <tr class="raw">
+          <td class="cell" valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
+          <td class="cell" valign="middle">
             <img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/osome.svg" />
           </td>
         </tr>
