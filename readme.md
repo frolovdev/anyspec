@@ -8,25 +8,11 @@ The main problem we trying to solve is a verbosity of openapi.
 * **Prettify** - we support pretifying of specs.
 * Fully compatible with openapi specification
 
-<style type="text/css">
-  .table {
-    border-collapse: collapse;
-  }
-
-  .raw {
-    border: none;
-  }
-
-  .cell {
-    border: none;
-  }
-</style>
-
-<table class="table" >
+<table styled="border-collapse: collapse;">
     <tbody>
-        <tr class="raw">
-          <td class="cell" valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
-          <td class="cell" valign="middle">
+        <tr style="border: none;">
+          <td style="border: none;" valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
+          <td style="border: none;" valign="middle">
             <img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/osome.svg" />
           </td>
         </tr>
