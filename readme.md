@@ -8,7 +8,13 @@ The main problem we trying to solve is a verbosity of openapi.
 * **Prettify** - we support pretifying of specs.
 * Fully compatible with openapi specification
 
-<table style="border-collapse: collapse !important; border: none !important;">
+<style type="text/css">
+  .table {
+    border-collapse: collapse;
+  }
+</style>
+
+<table class="table" >
     <tbody>
         <tr>
           <td valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
@@ -22,7 +28,7 @@ The main problem we trying to solve is a verbosity of openapi.
 
 [We are hiring](https://osome.com/careers/positions/)
 
-Example in action
+## Watch in action
 
 Before
 ```
