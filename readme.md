@@ -8,17 +8,16 @@ The main problem we trying to solve is a verbosity of openapi.
 * **Prettify** - we support pretifying of specs.
 * Fully compatible with openapi specification
 
-<table styled="border-collapse: collapse;">
+<table>
     <tbody>
-        <tr style="border: none;">
-          <td style="border: none;" valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
-          <td style="border: none;" valign="middle">
+        <tr>
+          <td valign="middle">Built by 2 engineers for Osome with love ❤️</td>
+          <td valign="middle">
             <img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/osome.svg" />
           </td>
         </tr>
     </tbody>
 </table> 
-
 
 [We are hiring](https://osome.com/careers/positions/)
 
