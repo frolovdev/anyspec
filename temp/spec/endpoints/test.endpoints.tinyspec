@@ -1,4 +1,4 @@
 
-
-`/industries`:
-    $L /industries ?branch?
+// **Send**
+@token POST /documents DocumentNew
+    => { document: Document }
