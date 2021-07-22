@@ -5,8 +5,8 @@ Anyspec is a [DSL (Domain Specific Language)](https://en.wikipedia.org/wiki/Doma
 The main problem we are trying to solve is the verbosity of open API.
 
 * **Write less code** - get rid of boileprate in your daily routine. 
-* **Lint your specs** - specs can be linted by internal linter, that can enhanced by your external rules.
-* **Prettify (WIP)** - we support pretifying of specs.
+* **Enforce best practices** - use predefined or write your own rules for specs.
+* **Prettify (WIP)** - format your code without pain.
 * **Compilation (WIP)** - the result json fully compatible with openapi specification
 
 <table>
