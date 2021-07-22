@@ -5,8 +5,8 @@ Anyspec is a [DSL (Domain Specific Language)](https://en.wikipedia.org/wiki/Doma
 The main problem we trying to solve is a verbosity of openapi.
 
 * **Linting** - specs can be linted by internal linter, that can enhanced by your external rules.
-* **Prettify** - we support pretifying of specs.
-* Fully compatible with openapi specification
+* **Prettify (WIP)** - we support pretifying of specs.
+* **Compilation (WIP)** - fully compatible with openapi specification
 
 <table>
     <tbody>
