@@ -1,4 +1,4 @@
-name: CI
+name: Code coverage (CODECOV)
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -31,7 +31,7 @@ jobs:
         run: echo "::set-output name=version::$(cat .nvmrc)"
         shell: bash
 
-      - name: Setup Node.js
+      - name: Setup Node.js 
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.read-nvmrc.outputs.version }}
