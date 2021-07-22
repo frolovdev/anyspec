@@ -6,7 +6,7 @@ import * as Recommended from './recommended';
 /**
  * This record includes all available validation rules.
  */
-export const RulesMap: Record<string, (context: ValidationContext) => ASTVisitor> = {
+export const rulesMap: Record<string, (context: ValidationContext) => ASTVisitor> = {
   'base/known-type-names': Base.KnownTypeNamesRule,
   'base/no-explicit-string-rule': Base.NoExplicitStringRule,
   'base/endpoints-known-http-verbs': Base.EndpointsKnownHttpVerbs,

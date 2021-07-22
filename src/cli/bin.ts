@@ -5,7 +5,7 @@ import { default as getPath } from 'path';
 import { readFile } from 'fs/promises';
 import { parse, Source, DocumentNode } from '../language';
 import { AnySpecSchema } from '../runtypes';
-import { validate, Rules } from '../validation';
+import { validate, rulesMap } from '../validation';
 import { AnySpecError, printError } from '../error';
 import { sync as glob } from 'globby';
 import ora from 'ora';
@@ -17,14 +17,14 @@ async function main() {
   const program = new Command();
   program
     .option('-o, --outDir <dir>', 'path to a directory for a generated openapi')
+    .option('-cfg', '--config', 'src/cli/anyspec.config.js')
     .option('-ns, --namespaces [namespaces...]', 'array of existed namespaces')
     .option(
       '-cns, --commonNamespace <commonNamespace>',
       'name of common namespace where shared definitions stored',
       'common',
     )
-    .arguments('<specFiles>')
-    .arguments('<validationRules>');
+    .arguments('<specFiles>');
 
   program.parse();
 
@@ -34,9 +34,10 @@ async function main() {
     commonNamespace: string;
     namespaces?: string[];
     outDir?: string;
+    Cfg: string;
   };
 
-  const { namespaces, outDir, commonNamespace } = options;
+  const { namespaces, outDir, commonNamespace, Cfg: configPath } = options;
 
   if (!namespaces) {
     throw new Error('please provide namespaces');
@@ -45,13 +46,13 @@ async function main() {
   const argPaths = args.map((arg) => getPath.resolve(process.cwd(), arg));
 
   const argumentPath = argPaths[0];
-  const validationRulesPath = argPaths[1];
   const processingSpinner = ora(`Processing spec: ${argumentPath}`).start();
 
   const specFilePaths = glob(`${argumentPath}/**/*.tinyspec`);
   try {
     const sources = await mapPathsToSources(specFilePaths);
-    const config = await readConfig(validationRulesPath);
+
+    const config = await readConfig(configPath);
     const groupedSources = groupSourcesByNamespaces({ sources, commonNamespace, namespaces });
 
     const { groupedParsedDocuments, parsingErrors } = getGroupedDocuments(
@@ -74,7 +75,7 @@ async function main() {
 
     const { enabledRules, invalidRules } = parseConfig(config);
 
-    const enabledRulesFns = enabledRules.map((rule) => Rules[rule]);
+    const enabledRulesFns = enabledRules.map((rule) => rulesMap[rule]);
     const unitedASTs = groupedParsedDocuments.map((documents) => concatAST(documents));
     const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
     const errors = schemas.map((s, index) => validate(s, unitedASTs[index], enabledRulesFns));
@@ -126,21 +127,20 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
 async function readConfig(path: string): Promise<Config> {
   try {
     const configFile = await readFile(path, { encoding: 'utf-8' });
-    const config = JSON.parse(configFile);
-    const isConfig = (config: unknown): config is Config => {
-      return (config as Config).rules !== undefined;
+    const isConfig = (configFile: unknown): configFile is Config => {
+      return (configFile as Config).rules !== undefined;
     };
-    if (!isConfig(config)) {
+    if (!isConfig(configFile)) {
       throw new Error(`Invalid config file`);
     }
-    return config;
+    return configFile;
   } catch (e) {
-    return e;
+    throw e;
   }
 }
 
 function parseConfig({ rules }: Config): { enabledRules: string[]; invalidRules: string[] } {
-  const existingRules = Object.keys(Rules);
+  const existingRules = Object.keys(rulesMap);
   const enabled = Object.keys(rules).filter((key) => rules[key] === 'error');
   const invalidRules = enabled.filter((rule) => !existingRules.includes(rule));
   const validRules = enabled.filter((rule) => existingRules.includes(rule));

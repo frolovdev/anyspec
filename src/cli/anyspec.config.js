@@ -1,4 +1,4 @@
-const config = {
+module.exports = {
   rules: {
     'base/known-type-names': 'off',
     'base/no-explicit-string-rule': 'off',
@@ -8,7 +8,7 @@ const config = {
     'recommended/endpoints-response-postfix': 'off',
     'recommended/body-model-name': 'off',
     'recommended/filter-postfix': 'off',
-    'recommended/model-body-field-postfix': 'error',
+    'recommended/model-body-field-postfix': 'off',
     'recommended/postfix-for-create-models': 'off',
     'recommended/postfix-for-update-models': 'off',
   },
