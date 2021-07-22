@@ -13,7 +13,7 @@ The main problem we trying to solve is a verbosity of openapi.
         <tr>
           <td valign="middle">Built by 2 engineers related to Osome with love ❤️</td>
           <td valign="middle">
-            <img src="https://github.com/frolovdev/anyspec/osome.svg" />
+            <img src="https://github.com/frolovdev/anyspec/assets/osome.svg" />
           </td>
         </tr>
     </tbody>
