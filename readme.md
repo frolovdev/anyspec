@@ -61,6 +61,9 @@ A ( "a" | "b" |  )
 
 To much dsl like $CRUDL
 
+## List of rules
+
+[Watch docs](https://frolovdev.github.io/anyspec/modules.html)
 
 ## License
 
