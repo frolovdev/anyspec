@@ -1,65 +1,22 @@
-[![codecov](https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI)](https://codecov.io/gh/frolovdev/anyspec)
+# anyspec [![codecov](https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI)](https://codecov.io/gh/frolovdev/anyspec)
 
-[](https://astexplorer.net/)
+Anyspec is a [DSL (Domain Specific Language)](https://en.wikipedia.org/wiki/Domain-specific_language) for writing API specs on top of [Openapi (swagger)](https://swagger.io/specification/).
 
-## WIP, I call you when we are be ready 
+The main problem we trying to solve is a verbosity of openapi.
 
-[Main link](https://excalidraw.com/#json=4790454524575744,zoP_ISTzjIbi1HhB6ErtWw)
+* **Linting** - specs can be linted by internal linter, that can enhanced by your external rules.
+* **Prettify** - we support pretifying of specs.
+* Fully compatible with openapi specification
 
+Example in action
 
-https://cuelang.org/docs/
+<p align="left">
+<img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/before.png"
+  width="686" height="289">
 
-https://tree-sitter.github.io/tree-sitter/
-https://chevrotain.io/
-
-
-https://youtu.be/TeZqKnC2gvA
-
-
-
-
-# What will be deleted in v2
-
-* omitting fields from model
-* enum vaues started by + or -
-* enum values divided by spaces
-
-
-# What todo in v2
-
-delete $TSFixMe
-
-delete $Maybe
-
-Allow to describe lambdas
-
-
-
-https://swagger.io/docs/specification/2-0/describing-parameters/
-
-
-# Why tinyspec is bad
-
-Don't throw an error in this case
-
-```
-`/industries`:
-    $L /industries ?branch?
-
-```
-
-No consistency in enums
-
-```
-A ( a | b )
-
-A ( "a" | "b" )
-
-A ( "a" | "b" |  )
-
-```
-
-To much dsl like $CRUDL
+  <img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/after.png"
+  width="686" height="289">
+</p>
 
 
 ## License
