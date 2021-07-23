@@ -1258,8 +1258,10 @@ describe(__filename, () => {
   });
 
   describe('enum', () => {
-    it('correctly parse model with named enum', () => {
+    it('correctly parse model with named enum and descriptions', () => {
       const model = `
+          // лул
+          // kek
           A (
             f | b | 
           )
@@ -1286,6 +1288,7 @@ describe(__filename, () => {
           kind: ASTNodeKind.NAME,
           value: 'A',
         },
+        description: { kind: ASTNodeKind.DESCRIPTION, value: 'лул\nkek' },
         kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
       };
 

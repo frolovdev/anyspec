@@ -1072,7 +1072,7 @@ AcDocument2 {
     });
   });
   describe('enums', () => {
-    it('correctly print model with short named enum', () => {
+    it('correctly print model with short named enum and description', () => {
       const ast = {
         kind: ASTNodeKind.DOCUMENT,
         definitions: [
@@ -1098,12 +1098,15 @@ AcDocument2 {
               value: 'A',
             },
             kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+            description: { kind: ASTNodeKind.DESCRIPTION, value: 'лул\nkek' },
           },
         ],
       };
       const printed = printModels(ast);
 
       expect(printed).toEqual(dedent`
+      // лул
+      // kek
       A (
         f |
         b

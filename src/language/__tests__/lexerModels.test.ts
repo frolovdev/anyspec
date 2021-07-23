@@ -580,12 +580,15 @@ describe('isPunctuatorTokenKind', () => {
 });
 
 describe('lexer understands enums', () => {
-  it('lexer understand normal enum', () => {
-    const enumString = new Source({ body: `A (f | b)` });
+  it('lexer understand normal enum with description', () => {
+    const enumString = new Source({
+      body: `// description
+    A (f | b)`,
+    });
 
     const tokens = getFullTokenList(enumString);
 
-    expect(tokens).toEqual(['A', '(', 'f', '|', 'b', ')']);
+    expect(tokens).toEqual(['Description', 'A', '(', 'f', '|', 'b', ')']);
   });
 
   it('lexer understand normal enum with ":"', () => {

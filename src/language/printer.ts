@@ -87,8 +87,8 @@ const printDocASTReducerModel: ASTReducer<string> = {
     },
   },
   EnumTypeDefinition: {
-    leave: ({ name, values }) => {
-      return `${name} ${enumBlock(values)}`;
+    leave: ({ name, values, description }) => {
+      return `${description ?? ''}${name} ${enumBlock(values)}`;
     },
   },
 };
