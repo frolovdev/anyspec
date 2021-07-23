@@ -1,5 +1,5 @@
 import { ASTReducer, visit } from '../visitor';
-import { ASTNode, ASTNodeKind } from './ast';
+import { ASTNode, ASTNodeKind } from '../language/ast';
 
 /**
  * Converts an AST into a string, using one set of reasonable
