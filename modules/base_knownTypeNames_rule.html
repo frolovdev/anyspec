@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>noExplicitString.rule | anyspec</title>
+	<title>base/knownTypeNames.rule | anyspec</title>
 	<meta name="description" content="Documentation for anyspec">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">anyspec</a>
 				</li>
 				<li>
-					<a href="noExplicitString_rule.html">noExplicitString.rule</a>
+					<a href="base_knownTypeNames_rule.html">base/knownTypeNames.rule</a>
 				</li>
 			</ul>
-			<h1>Module noExplicitString.rule</h1>
+			<h1>Module base/knownTypeNames.rule</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="noExplicitString_rule.html#NoExplicitStringRule" class="tsd-kind-icon">No<wbr>Explicit<wbr>String<wbr>Rule</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="base_knownTypeNames_rule.html#KnownTypeNamesRule" class="tsd-kind-icon">Known<wbr>Type<wbr>Names<wbr>Rule</a></li>
 							</ul>
 						</section>
 					</div>
@@ -81,31 +81,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="NoExplicitStringRule" class="tsd-anchor"></a>
-					<h3>No<wbr>Explicit<wbr>String<wbr>Rule</h3>
+					<a name="KnownTypeNamesRule" class="tsd-anchor"></a>
+					<h3>Known<wbr>Type<wbr>Names<wbr>Rule</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">No<wbr>Explicit<wbr>String<wbr>Rule<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ValidationContext</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ASTVisitor</span></li>
+						<li class="tsd-signature tsd-kind-icon">Known<wbr>Type<wbr>Names<wbr>Rule<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ValidationContext</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ASTVisitor</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/frolovdev/anyspec/blob/6c6c1cc/src/validation/rules/noExplicitString.rule.ts#L27">noExplicitString.rule.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/frolovdev/anyspec/blob/0d339ff/src/validation/rules/base/knownTypeNames.rule.ts#L21">base/knownTypeNames.rule.ts:21</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>good ✅</p>
+									<p>Known type names</p>
 								</div>
-								<pre><code><span style="color: #24292E">AcDocument {</span>
-<span style="color: #24292E">   field</span>
-<span style="color: #24292E">}</span>
-</code></pre>
-								<p>bad ❌</p>
-								<pre><code><span style="color: #24292E">Document {</span>
-<span style="color: #24292E">  </span><span style="color: #6F42C1">field</span><span style="color: #24292E">: s</span>
-<span style="color: #24292E">}</span>
-</code></pre>
+								<p>An AnySpec document is only valid if referenced types (specifically
+								variable definitions) are defined by the type schema.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -128,6 +121,12 @@
 					<li class=" tsd-kind-module">
 						<a href="base_endpointsKnownHttpVerbs_rule.html">base/endpoints<wbr>Known<wbr>Http<wbr>Verbs.rule</a>
 					</li>
+					<li class="current tsd-kind-module">
+						<a href="base_knownTypeNames_rule.html">base/known<wbr>Type<wbr>Names.rule</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="base_noExplicitString_rule.html">base/no<wbr>Explicit<wbr>String.rule</a>
+					</li>
 					<li class=" tsd-kind-module">
 						<a href="experimental_allowOnlyShorthandProperties_rule.html">experimental/allow<wbr>Only<wbr>Shorthand<wbr>Properties.rule</a>
 					</li>
@@ -136,12 +135,6 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.html">experimental/type<wbr>Definition<wbr>Should<wbr>Start<wbr>ByNamesapce<wbr>Name.rule</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="knownTypeNames_rule.html">known<wbr>Type<wbr>Names.rule</a>
-					</li>
-					<li class="current tsd-kind-module">
-						<a href="noExplicitString_rule.html">no<wbr>Explicit<wbr>String.rule</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="recommended_endpointsRecommendedBodyParameterPostfix_rule.html">recommended/endpoints<wbr>Recommended<wbr>Body<wbr>Parameter<wbr>Postfix.rule</a>
@@ -167,12 +160,15 @@
 					<li class=" tsd-kind-module">
 						<a href="recommended_recommendedPostfixForUpdateModels_rule.html">recommended/recommended<wbr>Postfix<wbr>For<wbr>Update<wbr>Models.rule</a>
 					</li>
+					<li class=" tsd-kind-module">
+						<a href="rulesMap.html">rules<wbr>Map</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="noExplicitString_rule.html#NoExplicitStringRule" class="tsd-kind-icon">No<wbr>Explicit<wbr>String<wbr>Rule</a>
+						<a href="base_knownTypeNames_rule.html#KnownTypeNamesRule" class="tsd-kind-icon">Known<wbr>Type<wbr>Names<wbr>Rule</a>
 					</li>
 				</ul>
 			</nav>
@@ -184,6 +180,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 			</ul>
 			<ul class="tsd-legend">
