@@ -20,5 +20,5 @@ export const rulesMap: Record<string, (context: ValidationContext) => ASTVisitor
   'recommended/postfix-for-create-models': Recommended.RecommendedPostfixForCreateModels,
   'recommended/postfix-for-update-models': Recommended.RecommendedPostfixForUpdateModels,
   'recommended/endpoints-update-request-response-match':
-    Recommended.EndpointsUpdateRequestResponseMatch,
+    Recommended.endpointsUpdateRequestResponseMatch,
 };

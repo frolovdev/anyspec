@@ -51,7 +51,7 @@ import { ValidationContext } from '../../validationContext';
  * }
  * ```
  */
-export function EndpointsUpdateRequestResponseMatch(context: ValidationContext): ASTVisitor {
+export function endpointsUpdateRequestResponseMatch(context: ValidationContext): ASTVisitor {
   const findModelDefinition = (name?: string): ModelTypeDefinitionNode | undefined => {
     let definition: ModelTypeDefinitionNode | undefined = undefined;
     visit(context.getDocument(), {

@@ -1,8 +1,9 @@
 import { validate } from '../..';
 import { ASTNodeKind, parse, Source } from '../../../language';
+import { concatAST } from '../../../language/concatAST';
 import { AnySpecSchema } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
-import { EndpointsUpdateRequestResponseMatch } from '../recommended/endpointsUpdateRequestResponseMatch.rule';
+import { endpointsUpdateRequestResponseMatch } from '../recommended/endpointsUpdateRequestResponseMatch.rule';
 
 describe(__filename, () => {
   describe('valid', () => {
@@ -38,14 +39,11 @@ PATCH /endpoint ConnectionUpdateRequestBody
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -82,14 +80,11 @@ PATCH /endpoint ConnectionUpdateRequestBody
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -122,14 +117,11 @@ PATCH /endpoint { field: string, field2: string }
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -162,14 +154,11 @@ PATCH /endpoint ConnectionUpdateRequestBody
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -190,7 +179,7 @@ PATCH /endpoint { field: string, field2: string }
 
       const schema = new AnySpecSchema({ ast: astEndpoints });
 
-      const errors = validate(schema, astEndpoints, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, astEndpoints, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -227,14 +216,11 @@ PATCH /endpoint ConnectionUpdateRequestBody
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -277,14 +263,11 @@ ModelUpdate {
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(errors).toEqual([]);
     });
@@ -323,14 +306,11 @@ PATCH /endpoint ConnectionUpdateRequestBody
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(toJSONDeep(errors)).toEqual([
         {
@@ -367,14 +347,11 @@ PATCH /endpoint { field: number, field2: string }
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(toJSONDeep(errors)).toEqual([
         {
@@ -411,14 +388,11 @@ PATCH /endpoint ConnectionUpdateRequestBody
       const astEndpoints = parse(sourceEndpoints);
       const astModels = parse(sourceModels);
 
-      const combined = {
-        kind: ASTNodeKind.DOCUMENT,
-        definitions: [...astEndpoints.definitions, ...astModels.definitions],
-      };
+      const combined = concatAST([astEndpoints, astModels]);
 
       const schema = new AnySpecSchema({ ast: combined });
 
-      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, combined, [endpointsUpdateRequestResponseMatch]);
 
       expect(toJSONDeep(errors)).toEqual([
         {
@@ -443,7 +417,7 @@ PATCH /endpoint { field: string, field2: number }
 
       const schema = new AnySpecSchema({ ast: astEndpoints });
 
-      const errors = validate(schema, astEndpoints, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, astEndpoints, [endpointsUpdateRequestResponseMatch]);
 
       expect(toJSONDeep(errors)).toEqual([
         {
@@ -468,7 +442,7 @@ PATCH /endpoint { field: string, field2: string }
 
       const schema = new AnySpecSchema({ ast: astEndpoints });
 
-      const errors = validate(schema, astEndpoints, [EndpointsUpdateRequestResponseMatch]);
+      const errors = validate(schema, astEndpoints, [endpointsUpdateRequestResponseMatch]);
       expect(toJSONDeep(errors)).toEqual([
         {
           locations: [{ line: 3, column: 8 }],
