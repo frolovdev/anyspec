@@ -159,9 +159,9 @@ function isFieldDefinitionsMatches(
 }
 
 function isNamedTypesPrimitiveMatch(t1: TypeNode, t2: TypeNode) {
-  if (t1.kind !== ASTNodeKind.NAMED_TYPE || t2.kind !== ASTNodeKind.NAMED_TYPE) {
+  if (t1.kind !== ASTNodeKind.NAMED_TYPE && t2.kind !== ASTNodeKind.NAMED_TYPE) {
     // if TypeNodes not Named type not go deeper and compare only kind match
-    return t1.kind === t2.kind;
+    return true;
   }
 
   if (
