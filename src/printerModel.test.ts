@@ -121,9 +121,8 @@ AcDocument {}
       const printed = printModels(ast);
 
       expect(printed).toEqual(dedent`
-// My _perfect_ tiny model
 AcDocument {
-  name
+  name,
 }
 `);
     });
@@ -173,7 +172,6 @@ AcDocument {
             },
             strict: false,
             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-            description: { kind: ASTNodeKind.DESCRIPTION, value: 'My _perfect_ tiny model' },
             extendsModels: [],
           },
         ],
@@ -183,7 +181,7 @@ AcDocument {
       expect(printed).toEqual(dedent`
 AcDocument {
   name,
-  surname
+  surname,
 }
 `);
     });
@@ -244,7 +242,7 @@ AcDocument {
       expect(printed).toEqual(dedent`
 AcDocument {
   name: s,
-  surname
+  surname,
 }
 `);
     });
@@ -305,7 +303,7 @@ AcDocument {
       expect(printed).toEqual(dedent`
 AcDocument {
   name?: s,
-  surname
+  surname,
 }
 `);
     });
@@ -366,7 +364,7 @@ AcDocument {
       expect(printed).toEqual(dedent`
 AcDocument {
   name?,
-  surname
+  surname,
 }
 `);
     });
@@ -436,7 +434,7 @@ AcDocument {
       expect(printed).toEqual(dedent`
 AcDocument {
   name?: s[],
-  surname: b[][]
+  surname: b[][],
 }
 `);
     });
@@ -503,7 +501,7 @@ AcDocument {
       expect(printed).toEqual(dedent`
 AcDocument !{
   name?: s[],
-  surname: b[]
+  surname: b[],
 }
 `);
     });
@@ -574,7 +572,7 @@ AcDocument !{
       expect(printed).toEqual(dedent`
 AcDocument < Kek {
   name?: s[],
-  surname: b[]
+  surname: b[],
 }
 `);
     });
@@ -649,7 +647,7 @@ AcDocument < Kek {
       expect(printed).toEqual(dedent`
 AcDocument < Kek, Lel !{
   name?: s[],
-  surname: b[]
+  surname: b[],
 }
 `);
     });
@@ -746,7 +744,7 @@ AcDocument < Kek, Lel !{
 AcDocument < Kek, Lel !{
   name?: s[],
   type?: ( standard | service ),
-  surname: b[]
+  surname: b[],
 }
 `);
     });
@@ -944,10 +942,10 @@ AcDocument < Kek, Lel !{
     users: {
       id: i,
       nickname,
-      avatar?
-    }[]
+      avatar?,
+    }[],
   },
-  surname: b[]
+  surname: b[],
 }
 `);
     });
@@ -1010,8 +1008,8 @@ AcDocument < Kek, Lel !{
       expect(printed).toEqual(dedent`
 AcDocument < Kek, Lel !{
   pathParameters: !{
-    pathParameters: !{}
-  }
+    pathParameters: !{},
+  },
 }
 `);
     });
@@ -1068,7 +1066,7 @@ AcDocument < Kek, Lel !{
 AcDocument {}
 
 AcDocument2 {
-  name
+  name,
 }
 `);
     });
@@ -1373,10 +1371,10 @@ AcDocument < Kek, Lel !{
     users: {
       id: i,
       nickname,
-      avatar?
-    }[]
+      avatar?,
+    }[],
   },
-  surname: b[]
+  surname: b[],
 }
 `);
     });
@@ -1468,7 +1466,7 @@ AcDocument < Kek, Lel !{
 A ( f | b )
 
 MyModel {
-  color: A
+  color: A,
 }
 
 B ( c | d )

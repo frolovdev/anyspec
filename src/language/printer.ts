@@ -110,7 +110,7 @@ function join(maybeArray: Maybe<ReadonlyArray<string | undefined>>, separator = 
  * Given array, print each item on its own line, wrapped in an indented `{ }` block.
  */
 function block(array: Maybe<ReadonlyArray<string | undefined>>): string {
-  return wrap('{\n', indent(join(array, ',\n')), '\n}');
+  return wrap('{\n', indent(join(array, ',\n')), ',\n}');
 }
 
 /**
