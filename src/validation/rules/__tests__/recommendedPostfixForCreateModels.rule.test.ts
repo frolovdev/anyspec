@@ -2,7 +2,7 @@ import { validate } from '../..';
 import { ASTNodeKind, parse, Source } from '../../../language';
 import { AnySpecSchema } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
-import { RecommendedPostfixForCreateModels } from '../recommended/recommendedPostfixForCreateModels.rule';
+import { recommendedPostfixForCreateModels } from '../recommended/recommendedPostfixForCreateModels.rule';
 
 describe(__filename, () => {
   it('should be valid', () => {
@@ -39,7 +39,7 @@ RequestModel {
 
     const schema = new AnySpecSchema({ ast: combined });
 
-    const errors = validate(schema, combined, [RecommendedPostfixForCreateModels]);
+    const errors = validate(schema, combined, [recommendedPostfixForCreateModels]);
 
     expect(errors).toEqual([]);
   });
@@ -79,7 +79,7 @@ RequestModel {
 
     const schema = new AnySpecSchema({ ast: combined });
 
-    const errors = validate(schema, combined, [RecommendedPostfixForCreateModels]);
+    const errors = validate(schema, combined, [recommendedPostfixForCreateModels]);
 
     expect(errors).toEqual([]);
   });
@@ -119,7 +119,7 @@ RequestModel {
 
     const schema = new AnySpecSchema({ ast: combined });
 
-    const errors = validate(schema, combined, [RecommendedPostfixForCreateModels]);
+    const errors = validate(schema, combined, [recommendedPostfixForCreateModels]);
 
     expect(toJSONDeep(errors)).toEqual([
       {

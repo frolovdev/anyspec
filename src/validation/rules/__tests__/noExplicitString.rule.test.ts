@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { NoExplicitStringRule } from '../base';
+import { noExplicitStringRule } from '../base';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(NoExplicitStringRule, queryStr);
+  return expectValidationErrors(noExplicitStringRule, queryStr);
 }
 
 function expectValid(queryStr: string) {
