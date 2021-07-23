@@ -14,12 +14,56 @@ PATCH /endpoint ConnectionUpdateRequestBody
 
       const modelString = `
   ConnectionUpdateRequestBody {
-      field: string
-      field2: string
+      field: string,
+      field2: string,
   }
   ConnectionResponse {
-      field: string
-      field2: string
+      field: string,
+      field2: string,
+  }
+  `;
+
+      const sourceEndpoints = new Source({
+        body: endpointString,
+        name: 'endpoints-source',
+        sourceType: 'endpoints',
+      });
+
+      const sourceModels = new Source({
+        body: modelString,
+        name: 'endpoints-model',
+        sourceType: 'models',
+      });
+
+      const astEndpoints = parse(sourceEndpoints);
+      const astModels = parse(sourceModels);
+
+      const combined = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [...astEndpoints.definitions, ...astModels.definitions],
+      };
+
+      const schema = new AnySpecSchema({ ast: combined });
+
+      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+
+      expect(errors).toEqual([]);
+    });
+
+    it('should be valid with shorten and default type names', () => {
+      const endpointString = `
+PATCH /endpoint ConnectionUpdateRequestBody
+    => ConnectionResponse
+`;
+
+      const modelString = `
+  ConnectionUpdateRequestBody {
+      field,
+      field2: i,
+  }
+  ConnectionResponse {
+      field: string,
+      field2: integer,
   }
   `;
 
@@ -58,8 +102,8 @@ PATCH /endpoint { field: string, field2: string }
 
       const modelString = `
   ConnectionResponse {
-      field: string
-      field2: string
+      field: string,
+      field2: string,
   }
   `;
 
@@ -98,8 +142,8 @@ PATCH /endpoint ConnectionUpdateRequestBody
 
       const modelString = `
   ConnectionUpdateRequestBody {
-      field: string
-      field2: string
+      field: string,
+      field2: string,
   }
   `;
 
@@ -159,12 +203,12 @@ PATCH /endpoint ConnectionUpdateRequestBody
 
       const modelString = `
   ConnectionUpdateRequestBody {
-      field: {a: s}
-      field2: string
+      field: {a: s},
+      field2: string,
   }
   ConnectionResponse {
-      field: {c: number}
-      field2: string
+      field: {c: number},
+      field2: string,
   }
   `;
 
@@ -207,13 +251,13 @@ ModelResponse {
 
 Model {
   field1: number,
-  field2: number
+  field2: number,
 }
 
 ModelUpdate {
   entity: {
     field1: string,
-    field2: number
+    field2: number,
   },
 }
   `;
@@ -254,12 +298,12 @@ PATCH /endpoint ConnectionUpdateRequestBody
 
       const modelString = `
   ConnectionUpdateRequestBody {
-      field: number
-      field2: string
+      field: number,
+      field2: string,
   }
   ConnectionResponse {
-      field: string
-      field2: string
+      field: string,
+      field2: string,
   }
   `;
 
@@ -303,8 +347,8 @@ PATCH /endpoint { field: number, field2: string }
 
       const modelString = `
   ConnectionResponse {
-      field: string
-      field2: string
+      field: string,
+      field2: string,
   }
   `;
 
@@ -347,8 +391,8 @@ PATCH /endpoint ConnectionUpdateRequestBody
 
       const modelString = `
   ConnectionUpdateRequestBody {
-      field: string
-      field2: number
+      field: string,
+      field2: number,
   }
   `;
 
@@ -410,8 +454,8 @@ PATCH /endpoint { field: string, field2: number }
     });
     it('should be invalid with inline models with non matching fields', () => {
       const endpointString = `
-PATCH /endpoint { field: string, field2: string, f:s }
-    => { field: string, field2: string }
+PATCH /endpoint { field: string, field2: string }
+    => { field: string, field3: string }
 `;
 
       const sourceEndpoints = new Source({
