@@ -1,2 +1,2 @@
-export * from "./printLocation"
-export * from "./visitor"
+export * from './printLocation';
+export * from './visitor';
