@@ -149,7 +149,8 @@ function readConfig(passedPath?: string): ConfigRes {
     }
     return { res: configFile, err: null };
   } catch (e) {
-    return { err: `Can't find anyspec.config.js in root of your project`, res: null };
+    const path = getPath.resolve(process.cwd(), passedPath ?? '', 'anyspec.config');
+    return { err: `Can't find anyspec.config.js in ${path}`, res: null };
   }
 }
 
