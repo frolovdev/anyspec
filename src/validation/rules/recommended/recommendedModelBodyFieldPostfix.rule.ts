@@ -1,5 +1,6 @@
 import { AnySpecError } from '../../../error';
 import { ASTNodeKind } from '../../../language';
+import { specifiedScalarTypes } from '../../../runtypes';
 import { ASTVisitor } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
 
@@ -10,15 +11,19 @@ const POSTFIX = 'RequestBody';
  *
  * good ✅
  *
+ * ```
  * RequestQuery {
  *   body: BkConnectionRequestBody,
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * RequestQuery {
  *   body: BkConnection,
  * }
+ * ```
  *
  */
 export function RecommendedModelBodyFieldPostfix(context: ValidationContext): ASTVisitor {
@@ -26,6 +31,12 @@ export function RecommendedModelBodyFieldPostfix(context: ValidationContext): AS
     FieldDefinition(node) {
       if (node.name.value === 'body') {
         if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
+          if (!node.type.name.value) {
+            return;
+          }
+          if (specifiedScalarTypes.includes(node.type.name.value)) {
+            return;
+          }
           if (!node.type.name.value?.endsWith(POSTFIX)) {
             context.reportError(
               new AnySpecError(

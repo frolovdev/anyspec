@@ -5,9 +5,9 @@ import {
   ModelTypeDefinitionNode,
   parse as defaultParse,
   Source,
-} from './language';
-import { AnySpecError } from './error/AnySpecError';
-import { toJSONDeep, log } from './utils';
+} from '../';
+import { AnySpecError } from '../../error/AnySpecError';
+import { toJSONDeep, log } from '../../utils';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -1188,7 +1188,7 @@ describe(__filename, () => {
       });
     });
 
-    it('should parse strict nested types coorectly', () => {
+    it('should parse strict nested types correctly', () => {
       const model = `
       AcDocument < Kek, Lel !{
             pathParameters: !{

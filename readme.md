@@ -1,91 +1,139 @@
-[](https://astexplorer.net/)
+# anyspec [![codecov](https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI)](https://codecov.io/gh/frolovdev/anyspec)
 
-## WIP, I call you when we are be ready 
+Anyspec is a [DSL (Domain Specific Language)](https://en.wikipedia.org/wiki/Domain-specific_language) for writing API specs with main compilation target to [Openapi (swagger)](https://swagger.io/specification/).
 
-[Main link](https://excalidraw.com/#json=4790454524575744,zoP_ISTzjIbi1HhB6ErtWw)
+The main problem we are trying to solve is the verbosity of open API.
 
-## TODO
+* **Write less code** - get rid of boileprate in your daily routine. 
+* **Enforce best practices** - use predefined or write your own rules for specs.
+* **Prettify (WIP)** - format your code without pain.
+* **Compilation (WIP)** - the result json fully compatible with openapi specification.
 
-- [x] write a visitor tests
-- [x] write a base validator layer
-- [ ] create cli
-- [ ] After creating enum /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
+<table>
+    <tbody>
+        <tr>
+          <td valign="middle">Built by 2 engineers for Osome with love ❤️</td>
+          <td valign="middle">
+            <img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/osome.svg" />
+          </td>
+        </tr>
+    </tbody>
+</table> 
 
-- [ ] After creating endpoints add similar case /Users/andreyfrolov/Documents/osome/anyspec/src/visitor.test.ts:538
-- [ ] lear how to visit in parallel
+[We are hiring](https://osome.com/careers/positions/)
 
+## Watch in action
 
-### Parser endpoints
-
-
-
-### Validator
-
-- [] split up base validation and schema validation (sdl)
-
-
-https://cuelang.org/docs/
-
-
-
-https://tree-sitter.github.io/tree-sitter/
-https://chevrotain.io/
-
-### IDEAS
-
-Генерация клиента для мобилы
-
-
-###
-
-
-
-https://youtu.be/TeZqKnC2gvA
-
-
-
-
-# Чего не должно быть во второй версии
-
-* удаление полей из модели
-* енамы и строки начинающеся с символа - или +
-* значения енамов через пробелы
-
-
-# Чего делать во второй версии
-
-
-
-delete $TSFixMe
-
-delete $Maybe
-
-Allow to describe lambdas
-
-
-
-https://swagger.io/docs/specification/2-0/describing-parameters/
-
-
-# Why tinyspec is bad
-
-Don't throw an error in this case
-
-```
-`/industries`:
-    $L /industries ?branch?
-
+Before
 ```
 
-No consistency in enums
+// **Some description**
+@token POST /documents DocumentNew
+    => { document: Document }
 
+DocumentNew {
+  name: s, 
+}
+
+DocumentNew {
+  id: i,
+  name: s,
+}
 ```
-A ( a | b )
 
-A ( "a" | "b" )
+After
 
-A ( "a" | "b" |  )
-
+```json
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API",
+    "version": "{{version}}"
+  },
+  "host": "{{host}}",
+  "basePath": "/api/v2",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "token": {
+      "name": "X-Access-Token",
+      "type": "apiKey",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/documents": {
+      "post": {
+        "summary": "**Some description**",
+        "description": "**Some description**",
+        "operationId": "POST--documents",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "document": {
+                  "$ref": "#/definitions/Document"
+                }
+              },
+              "required": [
+                "document"
+              ]
+            }
+          }
+        },
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DocumentNew"
+            },
+            "in": "body"
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "DocumentNew": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name"
+      ]
+    }
+  }
+}
 ```
 
-To much dsl like $CRUDL
+## List of rules
+
+[Watch docs](https://frolovdev.github.io/anyspec/modules.html)
+
+## License
+
+The code in this project is released under the [MIT License](LICENSE).
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ffrolovdev%2Fanyspec?ref=badge_large)

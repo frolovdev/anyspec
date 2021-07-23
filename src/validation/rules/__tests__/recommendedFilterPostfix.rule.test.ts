@@ -23,6 +23,20 @@ describe(__filename, () => {
 `);
   });
 
+  it('should be valid v2', () => {
+    expectValid(`
+    BkConnectionIndexRequestQuery !{
+        filter,
+    }
+`);
+  });
+  it('should be valid v3', () => {
+    expectValid(`
+    BkConnectionIndexRequestQuery !{
+        filter: s,
+    }
+`);
+  });
   it('should be invalid', () => {
     const errors = getErrors(
       `

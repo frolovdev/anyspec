@@ -12,15 +12,15 @@ const prefixMap = {
  *
  *
  * good ✅
- *
+ * ```
  * POST /endpoint RequestCreateRequestBody
  * PATCH /endpoint2 RequestUpdateRequestBody
- *
+ * ```
  * bad ❌
- *
+ * ```
  * POST /endpoint Request
  * PATCH /endpoint2 Request
- *
+ * ```
  */
 export function EndpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
   const isInPrefixMap = (verb: string): verb is keyof typeof prefixMap => {

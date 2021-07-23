@@ -5,3 +5,4 @@ export * from './parser';
 export * from './source';
 export * from './token';
 export * from './location';
+export * from './printer';

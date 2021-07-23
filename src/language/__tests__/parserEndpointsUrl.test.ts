@@ -1,5 +1,5 @@
-import { ASTNode, ASTNodeKind, parse as defaultParse, Source } from './language';
-import { toJSONDeep } from './utils';
+import { ASTNode, ASTNodeKind, parse as defaultParse, Source } from '../';
+import { toJSONDeep } from '../../utils';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 

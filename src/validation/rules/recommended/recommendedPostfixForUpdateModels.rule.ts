@@ -1,5 +1,6 @@
 import { AnySpecError } from '../../../error';
 import { ASTNodeKind } from '../../../language';
+import { specifiedScalarTypes } from '../../../runtypes';
 import { ASTVisitor, visit } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
 
@@ -11,21 +12,25 @@ import { ValidationContext } from '../../validationContext';
  *
  * good ✅
  *
+ * ```
  * PATCH /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
  *    connection: ConnectionUpdate
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * PATCH /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
  *    connection: Connection
  * }
+ * ```
  *
  */
 export function RecommendedPostfixForUpdateModels(context: ValidationContext): ASTVisitor {
@@ -55,6 +60,8 @@ export function RecommendedPostfixForUpdateModels(context: ValidationContext): A
       node.fields.forEach((fieldDefinition) => {
         if (
           fieldDefinition.type.kind === ASTNodeKind.NAMED_TYPE &&
+          fieldDefinition.type.name.value &&
+          !specifiedScalarTypes.includes(fieldDefinition.type.name.value) &&
           !fieldDefinition.type.name.value?.endsWith('Update')
         ) {
           context.reportError(
