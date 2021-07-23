@@ -19,3 +19,4 @@ src/cli/spec
 ./temp/openapi.json
 openapi.json
 tsconfig.tsbuildinfo
+docs/rules

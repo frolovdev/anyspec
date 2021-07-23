@@ -9,16 +9,19 @@ import { ValidationContext } from '../../validationContext';
  * if model contains `body` field ensure that model name is substring of body parameter type
  *
  * good ✅
- *
+ * ```
  * Model {
  *   body: ModelRequestBody,
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * Other {
  *   body: ModelRequestBody,
  * }
+ * ```
  *
  */
 export function RecommendedBodyModelName(context: ValidationContext): ASTVisitor {
