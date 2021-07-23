@@ -55,6 +55,7 @@ async function main() {
     const { res: config, err: configErr } = readConfig(configPath);
     if (configErr || !config) {
       console.error(configErr);
+      processingSpinner.fail();
       return;
     }
 
