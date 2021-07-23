@@ -742,7 +742,7 @@ AcDocument < Kek, Lel !{
       const printed = printModels(ast);
       expect(printed).toEqual(dedent`
 AcDocument < Kek, Lel !{
-  name?: s[],
+  -name?: s[],
   type?: ( standard | service ),
   surname: b[],
 }
@@ -935,7 +935,7 @@ AcDocument < Kek, Lel !{
       const printed = printModels(ast);
       expect(printed).toEqual(dedent`
 AcDocument < Kek, Lel !{
-  name?: s[],
+  -name?: s[],
   type?: ( standard | service ),
   kek: {
     conversationId: i,
@@ -1359,7 +1359,7 @@ CompanyType (
 
       expect(printed).toEqual(dedent`
 AcDocument < Kek, Lel !{
-  name?: s[],
+  -name?: s[],
   type?: (
     + amount |
     - amount |

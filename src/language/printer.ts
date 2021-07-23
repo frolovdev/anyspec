@@ -44,12 +44,13 @@ const printDocASTReducerModel: ASTReducer<string> = {
     },
   },
   FieldDefinition: {
-    leave: ({ name, type, optional }) => {
+    leave: ({ name, type, optional, omitted }) => {
+      const ommtd = omitted ? '-' : '';
       const opt = optional ? '?' : '';
       if (type.length === 0) {
-        return `${name}${opt}`;
+        return `${ommtd}${name}${opt}`;
       }
-      return `${name}${opt}: ${type}`;
+      return `${ommtd}${name}${opt}: ${type}`;
     },
   },
   ListType: {
