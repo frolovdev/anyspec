@@ -58,48 +58,134 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<p><a href="https://codecov.io/gh/frolovdev/anyspec"><img src="https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI" alt="codecov"></a></p>
-				<p><a href="https://astexplorer.net/"></a></p>
-				<a href="#wip-i-call-you-when-we-are-be-ready" id="wip-i-call-you-when-we-are-be-ready" style="color: inherit; text-decoration: none;">
-					<h2>WIP, I call you when we are be ready</h2>
+				<a href="#anyspec-" id="anyspec-" style="color: inherit; text-decoration: none;">
+					<h1>anyspec <a href="https://codecov.io/gh/frolovdev/anyspec"><img src="https://codecov.io/gh/frolovdev/anyspec/branch/master/graph/badge.svg?token=8D8S09PRQI" alt="codecov"></a></h1>
 				</a>
-				<p><a href="https://excalidraw.com/#json=4790454524575744,zoP_ISTzjIbi1HhB6ErtWw">Main link</a></p>
-				<p><a href="https://cuelang.org/docs/">https://cuelang.org/docs/</a></p>
-				<p><a href="https://tree-sitter.github.io/tree-sitter/">https://tree-sitter.github.io/tree-sitter/</a>
-				<a href="https://chevrotain.io/">https://chevrotain.io/</a></p>
-				<p><a href="https://youtu.be/TeZqKnC2gvA">https://youtu.be/TeZqKnC2gvA</a></p>
-				<a href="#what-will-be-deleted-in-v2" id="what-will-be-deleted-in-v2" style="color: inherit; text-decoration: none;">
-					<h1>What will be deleted in v2</h1>
-				</a>
+				<p>Anyspec is a <a href="https://en.wikipedia.org/wiki/Domain-specific_language">DSL (Domain Specific Language)</a> for writing API specs with main compilation target to <a href="https://swagger.io/specification/">Openapi (swagger)</a>.</p>
+				<p>The main problem we are trying to solve is the verbosity of open API.</p>
 				<ul>
-					<li>omitting fields from model</li>
-					<li>enum vaues started by + or -</li>
-					<li>enum values divided by spaces</li>
+					<li><strong>Write less code</strong> - get rid of boileprate in your daily routine. </li>
+					<li><strong>Enforce best practices</strong> - use predefined or write your own rules for specs.</li>
+					<li><strong>Prettify (WIP)</strong> - format your code without pain.</li>
+					<li><strong>Compilation (WIP)</strong> - the result json fully compatible with openapi specification.</li>
 				</ul>
-				<a href="#what-todo-in-v2" id="what-todo-in-v2" style="color: inherit; text-decoration: none;">
-					<h1>What todo in v2</h1>
+				<table>
+					<tbody>
+						<tr>
+							<td valign="middle">Built by 2 engineers for Osome with love ❤️</td>
+							<td valign="middle">
+								<img src="https://raw.githubusercontent.com/frolovdev/anyspec/master/assets/osome.svg" />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<p><a href="https://osome.com/careers/positions/">We are hiring</a></p>
+				<a href="#watch-in-action" id="watch-in-action" style="color: inherit; text-decoration: none;">
+					<h2>Watch in action</h2>
 				</a>
-				<p>delete $TSFixMe</p>
-				<p>delete $Maybe</p>
-				<p>Allow to describe lambdas</p>
-				<p><a href="https://swagger.io/docs/specification/2-0/describing-parameters/">https://swagger.io/docs/specification/2-0/describing-parameters/</a></p>
-				<a href="#why-tinyspec-is-bad" id="why-tinyspec-is-bad" style="color: inherit; text-decoration: none;">
-					<h1>Why tinyspec is bad</h1>
+				<p>Before</p>
+				<pre><code>
+<span style="color: #6A737D">// **Some description**</span>
+<span style="color: #24292E">@token </span><span style="color: #005CC5">POST</span><span style="color: #24292E"> </span><span style="color: #D73A49">/</span><span style="color: #24292E">documents DocumentNew</span>
+<span style="color: #24292E">    </span><span style="color: #D73A49">=&gt;</span><span style="color: #24292E"> { </span><span style="color: #6F42C1">document</span><span style="color: #24292E">: Document }</span>
+
+<span style="color: #24292E">DocumentNew {</span>
+<span style="color: #24292E">  </span><span style="color: #6F42C1">name</span><span style="color: #24292E">: s, </span>
+<span style="color: #24292E">}</span>
+
+<span style="color: #24292E">DocumentNew {</span>
+<span style="color: #24292E">  </span><span style="color: #6F42C1">id</span><span style="color: #24292E">: i,</span>
+<span style="color: #24292E">  </span><span style="color: #6F42C1">name</span><span style="color: #24292E">: s,</span>
+<span style="color: #24292E">}</span>
+</code></pre>
+				<p>After</p>
+				<pre><code class="language-json"><span style="color: #24292E">{</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;swagger&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;2.0&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;info&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">    </span><span style="color: #005CC5">&quot;title&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;Test API&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">    </span><span style="color: #005CC5">&quot;version&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;{{version}}&quot;</span>
+<span style="color: #24292E">  },</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;host&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;{{host}}&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;basePath&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;/api/v2&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;schemes&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">    </span><span style="color: #032F62">&quot;https&quot;</span>
+<span style="color: #24292E">  ],</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;consumes&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">    </span><span style="color: #032F62">&quot;application/json&quot;</span>
+<span style="color: #24292E">  ],</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;produces&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">    </span><span style="color: #032F62">&quot;application/json&quot;</span>
+<span style="color: #24292E">  ],</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;securityDefinitions&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">    </span><span style="color: #005CC5">&quot;token&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;name&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;X-Access-Token&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;type&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;apiKey&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;in&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;header&quot;</span>
+<span style="color: #24292E">    }</span>
+<span style="color: #24292E">  },</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;paths&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">    </span><span style="color: #005CC5">&quot;/documents&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;post&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;summary&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;**Some description**&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;description&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;**Some description**&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;operationId&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;POST--documents&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;responses&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">          </span><span style="color: #005CC5">&quot;200&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;description&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;schema&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">              </span><span style="color: #005CC5">&quot;type&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;object&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">              </span><span style="color: #005CC5">&quot;properties&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">                </span><span style="color: #005CC5">&quot;document&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">                  </span><span style="color: #005CC5">&quot;$ref&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;#/definitions/Document&quot;</span>
+<span style="color: #24292E">                }</span>
+<span style="color: #24292E">              },</span>
+<span style="color: #24292E">              </span><span style="color: #005CC5">&quot;required&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">                </span><span style="color: #032F62">&quot;document&quot;</span>
+<span style="color: #24292E">              ]</span>
+<span style="color: #24292E">            }</span>
+<span style="color: #24292E">          }</span>
+<span style="color: #24292E">        },</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;security&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">          {</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;token&quot;</span><span style="color: #24292E">: []</span>
+<span style="color: #24292E">          }</span>
+<span style="color: #24292E">        ],</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;parameters&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">          {</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;name&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;body&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;required&quot;</span><span style="color: #24292E">: </span><span style="color: #005CC5">true</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;schema&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">              </span><span style="color: #005CC5">&quot;$ref&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;#/definitions/DocumentNew&quot;</span>
+<span style="color: #24292E">            },</span>
+<span style="color: #24292E">            </span><span style="color: #005CC5">&quot;in&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;body&quot;</span>
+<span style="color: #24292E">          }</span>
+<span style="color: #24292E">        ]</span>
+<span style="color: #24292E">      }</span>
+<span style="color: #24292E">    }</span>
+<span style="color: #24292E">  },</span>
+<span style="color: #24292E">  </span><span style="color: #005CC5">&quot;definitions&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">    </span><span style="color: #005CC5">&quot;DocumentNew&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;type&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;object&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;properties&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;id&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">          </span><span style="color: #005CC5">&quot;type&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;integer&quot;</span>
+<span style="color: #24292E">        },</span>
+<span style="color: #24292E">        </span><span style="color: #005CC5">&quot;name&quot;</span><span style="color: #24292E">: {</span>
+<span style="color: #24292E">          </span><span style="color: #005CC5">&quot;type&quot;</span><span style="color: #24292E">: </span><span style="color: #032F62">&quot;string&quot;</span>
+<span style="color: #24292E">        }</span>
+<span style="color: #24292E">      },</span>
+<span style="color: #24292E">      </span><span style="color: #005CC5">&quot;required&quot;</span><span style="color: #24292E">: [</span>
+<span style="color: #24292E">        </span><span style="color: #032F62">&quot;id&quot;</span><span style="color: #24292E">,</span>
+<span style="color: #24292E">        </span><span style="color: #032F62">&quot;name&quot;</span>
+<span style="color: #24292E">      ]</span>
+<span style="color: #24292E">    }</span>
+<span style="color: #24292E">  }</span>
+<span style="color: #24292E">}</span>
+</code></pre>
+				<a href="#list-of-rules" id="list-of-rules" style="color: inherit; text-decoration: none;">
+					<h2>List of rules</h2>
 				</a>
-				<p>Don&#39;t throw an error in this case</p>
-				<pre><code><span style="color: #032F62">`/industries`</span><span style="color: #24292E">:</span>
-<span style="color: #24292E">    $L </span><span style="color: #D73A49">/</span><span style="color: #24292E">industries </span><span style="color: #D73A49">?</span><span style="color: #24292E">branch</span><span style="color: #D73A49">?</span>
-
-</code></pre>
-				<p>No consistency in enums</p>
-				<pre><code><span style="color: #6F42C1">A</span><span style="color: #24292E"> ( a </span><span style="color: #D73A49">|</span><span style="color: #24292E"> b )</span>
-
-<span style="color: #6F42C1">A</span><span style="color: #24292E"> ( </span><span style="color: #032F62">&quot;a&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">|</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;b&quot;</span><span style="color: #24292E"> )</span>
-
-<span style="color: #6F42C1">A</span><span style="color: #24292E"> ( </span><span style="color: #032F62">&quot;a&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">|</span><span style="color: #24292E"> </span><span style="color: #032F62">&quot;b&quot;</span><span style="color: #24292E"> </span><span style="color: #D73A49">|</span><span style="color: #24292E">  )</span>
-
-</code></pre>
-				<p>To much dsl like $CRUDL</p>
+				<p><a href="https://frolovdev.github.io/anyspec/modules.html">Watch docs</a></p>
 				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
 					<h2>License</h2>
 				</a>
