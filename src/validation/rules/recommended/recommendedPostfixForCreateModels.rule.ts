@@ -54,7 +54,7 @@ export function RecommendedPostfixForCreateModels(context: ValidationContext): A
   });
   return {
     ModelTypeDefinition(node) {
-      const bodyParametersSet = new Set(bodyParameters)
+      const bodyParametersSet = new Set(bodyParameters);
       if (!bodyParametersSet.has(node.name.value)) {
         return;
       }
