@@ -93,34 +93,32 @@ const printDocASTReducerModel: ASTReducer<string> = {
   },
 };
 
-/** Conveniently represents flow's "Maybe" type https://flow.org/en/docs/types/maybe/ */
-type Maybe<T> = null | undefined | T;
 /**
  * Given maybeArray, print an empty string if it is null or empty, otherwise
  * print all items together separated by separator if provided
  */
-function join(maybeArray: Maybe<ReadonlyArray<string | undefined>>, separator = ''): string {
+function join(maybeArray: $Maybe<ReadonlyArray<string | undefined>>, separator = ''): string {
   return maybeArray?.filter((x) => x).join(separator) ?? '';
 }
 
 /**
  * Given array, print each item on its own line, wrapped in an indented `{ }` block.
  */
-function block(array: Maybe<ReadonlyArray<string | undefined>>): string {
+function block(array: $Maybe<ReadonlyArray<string | undefined>>): string {
   return wrap('{\n', indent(join(array, ',\n')), ',\n}');
 }
 
 /**
  * Given array, print each item on its own line, wrapped in an indented `( )` block with `|` separator.
  */
-function enumBlock(array: Maybe<ReadonlyArray<string | undefined>>): string {
+function enumBlock(array: $Maybe<ReadonlyArray<string | undefined>>): string {
   return wrap('(\n', indent(join(array, ' |\n')), '\n)');
 }
 
 /**
  * If maybeString is not null or empty, then wrap with start and end, otherwise print an empty string.
  */
-function wrap(start: string, maybeString: Maybe<string>, end: string = ''): string {
+function wrap(start: string, maybeString: $Maybe<string>, end: string = ''): string {
   return maybeString != null && maybeString !== '' ? start + maybeString + end : '';
 }
 
