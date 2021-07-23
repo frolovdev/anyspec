@@ -1,8 +1,11 @@
-name: Build and Deploy docs
+name: Default pipeline
 
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
+
 
 jobs:
   build-and-deploy:
@@ -39,11 +42,5 @@ jobs:
       - name: Install dependencies 🔧
         run: npm ci
 
-      - name: Build docs 📖
-        run: npm run docs:typedoc
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: docs
-          folder: docs/rules
+      - name: Static checks ⚙️
+        run: npm run static-checks
