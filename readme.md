@@ -134,7 +134,7 @@ After
 
 ## Inspiration section
 
-The main idea of library - DSL on top of openapi comes from [tinyspec](https://github.com/Ajaxy/tinyspec).
+The main idea of library - DSL on top of openapi comes from [tinyspec](https://github.com/Ajaxy/tinyspec). The syntax constructions comes from tinyspec too. 
 
 Also authors were inspired and use a lot of findings and ideas from:
 
