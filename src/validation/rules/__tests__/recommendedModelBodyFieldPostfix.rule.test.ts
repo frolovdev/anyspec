@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { RecommendedModelBodyFieldPostfix } from '../recommended/recommendedModelBodyFieldPostfix.rule';
+import { recommendedModelBodyFieldPostfix } from '../recommended/recommendedModelBodyFieldPostfix.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(RecommendedModelBodyFieldPostfix, queryStr);
+  return expectValidationErrors(recommendedModelBodyFieldPostfix, queryStr);
 }
 
 function expectValid(queryStr: string) {

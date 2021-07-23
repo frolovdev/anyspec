@@ -33,7 +33,7 @@ import { ValidationContext } from '../../validationContext';
  * ```
  *
  */
-export function RecommendedPostfixForCreateModels(context: ValidationContext): ASTVisitor {
+export function recommendedPostfixForCreateModels(context: ValidationContext): ASTVisitor {
   let bodyParameters: string[] = [];
 
   // TODO: Rewrite after introducing type info #59

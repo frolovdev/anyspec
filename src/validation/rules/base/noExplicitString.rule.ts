@@ -24,7 +24,7 @@ import { AnySpecError } from '../../../error';
  * ```
  *
  */
-export function NoExplicitStringRule(context: ValidationContext): ASTVisitor {
+export function noExplicitStringRule(context: ValidationContext): ASTVisitor {
   return {
     FieldDefinition(node, _1, parent, _2, ancestors) {
       if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
