@@ -44,3 +44,6 @@ jobs:
 
       - name: Static checks ⚙️
         run: npm run static-checks
+
+      - name: Tests
+        run: npm run test:ci
