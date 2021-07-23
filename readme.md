@@ -132,6 +132,15 @@ After
 
 [Watch docs](https://frolovdev.github.io/anyspec/modules.html)
 
+## Inspiration section
+
+The main idea of library - DSL on top of openapi comes from [tinyspec](https://github.com/Ajaxy/tinyspec).
+
+Also authors were inspired and use a lot of findings and ideas from:
+
+* [Graphqljs implementation](https://github.com/graphql/graphql-js)
+* [python lexer and parser](https://github.com/python)
+
 ## License
 
 The code in this project is released under the [MIT License](LICENSE).
