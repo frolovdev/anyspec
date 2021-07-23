@@ -2,7 +2,7 @@ import { validate } from '../..';
 import { ASTNodeKind, parse, Source } from '../../../language';
 import { AnySpecSchema, specifiedScalarTypes } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
-import { KnownTypeNamesRule } from '../knownTypeNames.rule';
+import { KnownTypeNamesRule } from '../base/knownTypeNames.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {

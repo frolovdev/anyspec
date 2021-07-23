@@ -5,7 +5,6 @@ import { visit } from '../visitor';
 import { AnySpecSchema } from '../runtypes';
 
 import { ValidationRule } from './validationContext';
-import { baseRules } from './baseRules';
 import { ValidationContext } from './validationContext';
 import { assert } from '../utils';
 
@@ -28,7 +27,7 @@ import { assert } from '../utils';
 export function validate(
   schema: AnySpecSchema,
   documentAST: DocumentNode,
-  rules: ReadonlyArray<ValidationRule> = baseRules,
+  rules: ReadonlyArray<ValidationRule>,
   options: { maxErrors?: number } = { maxErrors: undefined },
 ): ReadonlyArray<AnySpecError> {
   assert(documentAST, 'Must provide document.');

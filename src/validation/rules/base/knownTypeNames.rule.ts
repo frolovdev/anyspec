@@ -1,16 +1,15 @@
-import { didYouMean, suggestionList } from '../../utils';
-
-import { AnySpecError } from '../../error';
+import { didYouMean, suggestionList } from '../../../utils';
+import { AnySpecError } from '../../../error';
 import {
   ASTNode,
   NamedTypeNode,
   isModelDomainDefinitionNode,
   isEndpointNamespaceTypeDefinitionNode,
-} from '../../language';
-import { ASTVisitor } from '../../visitor';
-import { specifiedScalarTypes } from '../../runtypes';
+} from '../../../language';
+import { ASTVisitor } from '../../../visitor';
+import { specifiedScalarTypes } from '../../../runtypes';
 
-import { ValidationContext } from '../validationContext';
+import { ValidationContext } from '../../validationContext';
 
 const standardTypeNames = specifiedScalarTypes;
 /**
