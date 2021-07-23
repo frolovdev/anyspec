@@ -5,11 +5,13 @@ import { default as getPath } from 'path';
 import { readFile } from 'fs/promises';
 import { parse, Source, DocumentNode } from '../language';
 import { AnySpecSchema } from '../runtypes';
-import { validate, baseRules } from '../validation';
+import { validate, rulesMap } from '../validation';
 import { AnySpecError, printError } from '../error';
 import { sync as glob } from 'globby';
 import ora from 'ora';
 import { concatAST } from '../language/concatAST';
+
+type Config = { rules: Record<string, 'error' | 'off'> };
 
 async function main() {
   const program = new Command();
@@ -21,6 +23,7 @@ async function main() {
       'name of common namespace where shared definitions stored',
       'common',
     )
+    .option('-c, --config <path>', 'path to config file', './anyspec.config.js')
     .arguments('<specFiles>');
 
   program.parse();
@@ -31,9 +34,10 @@ async function main() {
     commonNamespace: string;
     namespaces?: string[];
     outDir?: string;
+    config: string;
   };
 
-  const { namespaces, outDir, commonNamespace } = options;
+  const { namespaces, outDir, commonNamespace, config: configPath } = options;
 
   if (!namespaces) {
     throw new Error('please provide namespaces');
@@ -45,34 +49,46 @@ async function main() {
   const processingSpinner = ora(`Processing spec: ${argumentPath}`).start();
 
   const specFilePaths = glob(`${argumentPath}/**/*.tinyspec`);
+  try {
+    const sources = await mapPathsToSources(specFilePaths);
 
-  const sources = await mapPathsToSources(specFilePaths);
+    const config = await readConfig(configPath);
+    const groupedSources = groupSourcesByNamespaces({ sources, commonNamespace, namespaces });
 
-  const groupedSources = groupSourcesByNamespaces({ sources, commonNamespace, namespaces });
+    const { groupedParsedDocuments, parsingErrors } = getGroupedDocuments(
+      groupedSources,
+      (error: Error) => {
+        console.error('Unknown error during parsing', error);
+        processingSpinner.fail();
+        process.exit(1);
+      },
+    );
 
-  const { groupedParsedDocuments, parsingErrors } = getGroupedDocuments(
-    groupedSources,
-    (error: Error) => {
-      console.error('Unknown error during parsing', error);
+    if (parsingErrors.length > 0) {
+      for (const e of parsingErrors) {
+        console.error(printCliError(printError(e)));
+      }
+
       processingSpinner.fail();
-      process.exit(1);
-    },
-  );
-
-  if (parsingErrors.length > 0) {
-    for (const e of parsingErrors) {
-      console.error(printCliError(printError(e)));
+      return;
     }
 
-    processingSpinner.fail();
-    return;
-  }
+    const { enabledRules, invalidRules } = parseConfig(config);
 
-  const unitedASTs = groupedParsedDocuments.map((documents) => concatAST(documents));
-  const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
-  const errors = schemas.map((s, index) => validate(s, unitedASTs[index], baseRules));
-  errors.flat().forEach((e) => console.error(printCliError(printError(e))));
-  processingSpinner.succeed();
+    const enabledRulesFns = enabledRules.map((rule) => rulesMap[rule]);
+    const unitedASTs = groupedParsedDocuments.map((documents) => concatAST(documents));
+    const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
+    const errors = schemas.map((s, index) => validate(s, unitedASTs[index], enabledRulesFns));
+    errors.flat().forEach((e) => {
+      const errorString = printError(e);
+      console.error(errorString);
+    });
+    invalidRules.forEach((e) => console.error(printCliError(`Invalid Rule: ${e}`)));
+    processingSpinner.succeed();
+  } catch (e) {
+    console.error(e);
+    processingSpinner.fail();
+  }
 }
 
 main();
@@ -109,6 +125,29 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
   });
 
   return sources;
+}
+
+function readConfig(path: string): Config {
+  try {
+    const configFile = require(path);
+    const isConfig = (configFile: unknown): configFile is Config => {
+      return (configFile as Config).rules !== undefined;
+    };
+    if (!isConfig(configFile)) {
+      throw new Error(`Invalid config file`);
+    }
+    return configFile;
+  } catch (e) {
+    throw e;
+  }
+}
+
+function parseConfig({ rules }: Config): { enabledRules: string[]; invalidRules: string[] } {
+  const existingRules = Object.keys(rulesMap);
+  const enabled = Object.keys(rules).filter((key) => rules[key] === 'error');
+  const invalidRules = enabled.filter((rule) => !existingRules.includes(rule));
+  const validRules = enabled.filter((rule) => existingRules.includes(rule));
+  return { enabledRules: validRules, invalidRules };
 }
 
 function groupSourcesByNamespaces({

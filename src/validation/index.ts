@@ -1,2 +1,3 @@
 export { validate } from './validate';
-export { baseRules } from './baseRules';
+
+export { rulesMap } from './rules/rulesMap';

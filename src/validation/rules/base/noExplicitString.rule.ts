@@ -1,9 +1,9 @@
-import { ASTVisitor } from '../../visitor';
+import { ASTVisitor } from '../../../visitor';
 
-import { ValidationContext } from '../validationContext';
-import { stringAliases } from '../../runtypes/specifiedScalarTypes';
-import { ASTNodeKind } from '../../language';
-import { AnySpecError } from '../../error';
+import { ValidationContext } from '../../validationContext';
+import { stringAliases } from '../../../runtypes/specifiedScalarTypes';
+import { ASTNodeKind } from '../../../language';
+import { AnySpecError } from '../../../error';
 
 /**
  *
