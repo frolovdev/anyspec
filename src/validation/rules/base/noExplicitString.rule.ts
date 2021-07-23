@@ -31,7 +31,7 @@ export function NoExplicitStringRule(context: ValidationContext): ASTVisitor {
         if (!node.type.name.value) {
           return;
         }
-        if (stringAliases.includes(node.type.name.value)) {
+        if (stringAliases.has(node.type.name.value)) {
           context.reportError(
             new AnySpecError(
               `No need to explicitly specify string type since it is the default`,

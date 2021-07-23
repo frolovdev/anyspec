@@ -1,6 +1,6 @@
-export const stringAliases = ['s', 'string'];
+export const stringAliases = new Set(['s', 'string']);
 
-export const specifiedScalarTypes = [
+export const specifiedScalarTypes = new Set([
   'i',
   'integer',
   ...stringAliases,
@@ -17,4 +17,4 @@ export const specifiedScalarTypes = [
   'text',
   'j',
   'json',
-];
+]);

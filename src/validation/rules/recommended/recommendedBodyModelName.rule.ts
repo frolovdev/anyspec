@@ -45,7 +45,7 @@ export function RecommendedBodyModelName(context: ValidationContext): ASTVisitor
       if (!fieldTypeName) {
         return;
       }
-      if (specifiedScalarTypes.includes(fieldTypeName)) {
+      if (specifiedScalarTypes.has(fieldTypeName)) {
         return;
       }
 

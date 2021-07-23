@@ -62,7 +62,7 @@ export function RecommendedPostfixForCreateModels(context: ValidationContext): A
         if (
           fieldDefinition.type.kind === ASTNodeKind.NAMED_TYPE &&
           fieldDefinition.type.name.value &&
-          !specifiedScalarTypes.includes(fieldDefinition.type.name.value) &&
+          !specifiedScalarTypes.has(fieldDefinition.type.name.value) &&
           !fieldDefinition.type.name.value?.endsWith('New')
         ) {
           context.reportError(
