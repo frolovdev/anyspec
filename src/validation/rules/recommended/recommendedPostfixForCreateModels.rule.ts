@@ -54,14 +54,15 @@ export function recommendedPostfixForCreateModels(context: ValidationContext): A
   });
   return {
     ModelTypeDefinition(node) {
-      if (!bodyParameters.includes(node.name.value)) {
+      const bodyParametersSet = new Set(bodyParameters);
+      if (!bodyParametersSet.has(node.name.value)) {
         return;
       }
       node.fields.forEach((fieldDefinition) => {
         if (
           fieldDefinition.type.kind === ASTNodeKind.NAMED_TYPE &&
           fieldDefinition.type.name.value &&
-          !specifiedScalarTypes.includes(fieldDefinition.type.name.value) &&
+          !specifiedScalarTypes.has(fieldDefinition.type.name.value) &&
           !fieldDefinition.type.name.value?.endsWith('New')
         ) {
           context.reportError(

@@ -37,13 +37,13 @@ export function knownTypeNamesRule(context: ValidationContext): ASTVisitor {
         const definitionNode = ancestors[2] ?? parent;
 
         const isSDL = definitionNode != null && isSDLNode(definitionNode);
-        if (isSDL && standardTypeNames.includes(typeName)) {
+        if (isSDL && standardTypeNames.has(typeName)) {
           return;
         }
 
         const suggestedTypes = suggestionList(
           typeName,
-          isSDL ? standardTypeNames.concat(typeNames) : typeNames,
+          isSDL ? [...standardTypeNames].concat(typeNames) : typeNames,
         );
         context.reportError(
           new AnySpecError(`Unknown type "${typeName}".` + didYouMean(suggestedTypes), node),
