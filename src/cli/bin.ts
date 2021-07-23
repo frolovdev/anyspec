@@ -141,7 +141,7 @@ const isConfig = (configFile: unknown): configFile is Config => {
 
 function readConfig(passedPath?: string): ConfigRes {
   try {
-    const path = getPath.resolve(process.cwd(), passedPath ?? '', 'anyspec.config.js');
+    const path = getPath.resolve(process.cwd(), passedPath ?? '', 'anyspec.config');
     const configFile = require(path);
 
     if (!isConfig(configFile)) {
