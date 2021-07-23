@@ -34,7 +34,7 @@ async function main() {
     commonNamespace: string;
     namespaces?: string[];
     outDir?: string;
-    config: string;
+    config?: string;
   };
 
   const { namespaces, outDir, commonNamespace, config: configPath } = options;
@@ -135,12 +135,15 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
 
 type ConfigRes = { res: Config; err: null } | { err: string; res: null };
 
-function readConfig(path: string): ConfigRes {
+const isConfig = (configFile: unknown): configFile is Config => {
+  return (configFile as Config).rules !== undefined;
+};
+
+function readConfig(passedPath?: string): ConfigRes {
   try {
+    const path = getPath.resolve(process.cwd(), passedPath ?? '', 'anyspec.config.js');
     const configFile = require(path);
-    const isConfig = (configFile: unknown): configFile is Config => {
-      return (configFile as Config).rules !== undefined;
-    };
+
     if (!isConfig(configFile)) {
       return { err: `Invalid config file`, res: null };
     }
