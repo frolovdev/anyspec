@@ -54,7 +54,8 @@ export function RecommendedPostfixForCreateModels(context: ValidationContext): A
   });
   return {
     ModelTypeDefinition(node) {
-      if (!bodyParameters.includes(node.name.value)) {
+      const bodyParametersSet = new Set(bodyParameters)
+      if (!bodyParametersSet.has(node.name.value)) {
         return;
       }
       node.fields.forEach((fieldDefinition) => {
