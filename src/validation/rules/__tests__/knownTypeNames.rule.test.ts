@@ -1,4 +1,6 @@
-import { specifiedScalarTypes } from '../../../runtypes';
+import { validate } from '../..';
+import { ASTNodeKind, parse, Source } from '../../../language';
+import { AnySpecSchema, specifiedScalarTypes } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
 import { KnownTypeNamesRule } from '../base/knownTypeNames.rule';
 import { expectValidationErrors } from './fixtures';
@@ -22,7 +24,7 @@ describe(__filename, () => {
     `);
   });
 
-  it('all knwon types are valid', () => {
+  it('all known types are valid', () => {
     specifiedScalarTypes.forEach((type) =>
       expectValid(`
     Doc {
@@ -32,7 +34,7 @@ describe(__filename, () => {
     );
   });
 
-  it('unkown type names are invalid', () => {
+  it('unknown type names are invalid', () => {
     const errors = getErrors(`
       Doc {
         name: ew,
@@ -98,6 +100,87 @@ describe(__filename, () => {
       {
         locations: [{ line: 2, column: 18 }],
         message: 'Unknown type "Document". Did you mean "AcDocument"?',
+      },
+    ]);
+  });
+
+  it('known-type-names rule are work with endpoints, valid', () => {
+    const endpointString = `
+POST /endpoint RequestModel
+  => {a: string, c: b, s}
+`;
+    const modelString = `
+RequestModel {a: string, c: b, s}
+`;
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: [...astEndpoints.definitions, ...astModels.definitions],
+    };
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [KnownTypeNamesRule]);
+
+    expect(errors).toEqual([]);
+  });
+
+  it('known-type-names rule are work with endpoints, invalid', () => {
+    const endpointString = `
+POST /endpoint Model
+  => RespModel
+`;
+    const modelString = `
+RequestModel {a: string, c: b, s}
+ResponseModel {a: string, c: b, s}
+`;
+
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: [...astEndpoints.definitions, ...astModels.definitions],
+    };
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [KnownTypeNamesRule]);
+
+    expect(toJSONDeep(errors)).toMatchObject([
+      {
+        locations: [{ line: 2, column: 16 }],
+        message: 'Unknown type "Model".',
+      },
+      {
+        locations: [{ line: 3, column: 6 }],
+        message: 'Unknown type "RespModel". Did you mean "RequestModel" or "ResponseModel"?',
       },
     ]);
   });

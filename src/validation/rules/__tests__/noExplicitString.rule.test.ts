@@ -32,7 +32,7 @@ describe(__filename, () => {
 
     expect(toJSONDeep(errors)).toMatchObject([
       {
-        locations: [{ line: 3, column: 15 }],
+        locations: [{ line: 3, column: 16 }],
         message: 'No need to explicitly specify string type since it is the default',
       },
     ]);

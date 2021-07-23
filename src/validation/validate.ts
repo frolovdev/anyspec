@@ -4,8 +4,8 @@ import { visit } from '../visitor';
 
 import { AnySpecSchema } from '../runtypes';
 
-import { ValidationRule } from './ValidationContext';
-import { ValidationContext } from './ValidationContext';
+import { ValidationRule } from './validationContext';
+import { ValidationContext } from './validationContext';
 import { assert } from '../utils';
 
 /**

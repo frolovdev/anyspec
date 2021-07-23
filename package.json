@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "husky install",
     "build": "tsc --project tsconfig.build.json --outDir ./src/cli/dist",
     "test": "NODE_PATH=./src STAGE=test jest --maxWorkers=4",
     "test:watch": "NODE_PATH=./src STAGE=test jest --watch",
@@ -13,6 +14,7 @@
     "prepublish:cli": "cd src/cli && npm install && cd .. && npm run clean && npm run build",
     "publish:cli": "npm publish ./src/cli",
     "test:cli": "NODE_PATH=./src TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true ts-node src/cli/bin.ts src/cli/spec -ns agent client -cfg src/cli/anyspec.config.js",
+    "test:coverage": "NODE_PATH=./src jest --bail --collectCoverage",
     "test:integration:anyspec:cli": "anyspec src/cli/examples/kek.models.tinyspec",
     "test:tinyspec:build": "tinyspec --json --add-nulls -s temp/spec/ -o ../",
     "lint": "eslint --max-warnings 0 'src/**/*.ts'",
