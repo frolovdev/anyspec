@@ -9,15 +9,17 @@ const POSTFIX = 'Response';
  *
  *
  * good ✅
- *
+ * ```
  * GET /endpoint
  *  => SomeTypeResponse
+ * ```
  *
  * bad ❌
  *
+ * ```
  * GET /endpoint
  *  => SomeType
- *
+ * ```
  */
 export function EndpointsRecommendedResponsePostfix(context: ValidationContext): ASTVisitor {
   return {

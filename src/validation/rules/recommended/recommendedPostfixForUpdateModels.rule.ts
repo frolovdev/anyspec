@@ -12,21 +12,25 @@ import { ValidationContext } from '../../validationContext';
  *
  * good ✅
  *
+ * ```
  * PATCH /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
  *    connection: ConnectionUpdate
  * }
+ * ```
  *
  * bad ❌
  *
+ * ```
  * PATCH /connections ConnectionCreateRequestBody
  *      => ConnectionResponse`
  *
  * ConnectionCreateRequestBody {
  *    connection: Connection
  * }
+ * ```
  *
  */
 export function RecommendedPostfixForUpdateModels(context: ValidationContext): ASTVisitor {

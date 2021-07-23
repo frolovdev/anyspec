@@ -128,6 +128,10 @@ After
 }
 ```
 
+## List of rules
+
+[Watch docs](https://frolovdev.github.io/anyspec/modules.html)
+
 ## License
 
 The code in this project is released under the [MIT License](LICENSE).
