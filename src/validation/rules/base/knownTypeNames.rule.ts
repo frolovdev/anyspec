@@ -18,7 +18,7 @@ const standardTypeNames = specifiedScalarTypes;
  * An AnySpec document is only valid if referenced types (specifically
  * variable definitions) are defined by the type schema.
  */
-export function KnownTypeNamesRule(context: ValidationContext): ASTVisitor {
+export function knownTypeNamesRule(context: ValidationContext): ASTVisitor {
   const existingTypesMap: Record<string, boolean> = {};
 
   const definedTypes: Record<string, boolean> = {};

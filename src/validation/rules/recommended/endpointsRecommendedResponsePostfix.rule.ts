@@ -21,7 +21,7 @@ const POSTFIX = 'Response';
  *  => SomeType
  * ```
  */
-export function EndpointsRecommendedResponsePostfix(context: ValidationContext): ASTVisitor {
+export function endpointsRecommendedResponsePostfix(context: ValidationContext): ASTVisitor {
   return {
     EndpointResponse(node) {
       if (node.type?.kind === ASTNodeKind.NAMED_TYPE) {

@@ -26,7 +26,7 @@ const POSTFIX = 'Filter';
  * ```
  *
  */
-export function RecommendedFilterPostfix(context: ValidationContext): ASTVisitor {
+export function recommendedFilterPostfix(context: ValidationContext): ASTVisitor {
   return {
     FieldDefinition(node) {
       if (node.name.value === 'filter') {
