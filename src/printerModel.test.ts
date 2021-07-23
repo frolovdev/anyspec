@@ -1,9 +1,5 @@
-import {
-  ASTNodeKind,
-  EnumTypeDefinitionNode,
-  ModelTypeDefinitionNode,
-  printModels,
-} from './language';
+import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from './language';
+import { printModels } from './printer';
 import { dedent } from './__testsUtils__';
 
 describe(__filename, () => {
