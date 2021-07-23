@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TypeDefinitionShouldStartByNamesapceName | anyspec</title>
+	<title>allowOnlyShorthandProperties | anyspec</title>
 	<meta name="description" content="Documentation for anyspec">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,13 +55,13 @@
 					<a href="../modules.html">anyspec</a>
 				</li>
 				<li>
-					<a href="../modules/experimental_typeDefinitionShouldStartByNamesapceName_rule.html">experimental/typeDefinitionShouldStartByNamesapceName.rule</a>
+					<a href="../modules/experimental_allowOnlyShorthandProperties_rule.html">experimental/allowOnlyShorthandProperties.rule</a>
 				</li>
 				<li>
-					<a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.TypeDefinitionShouldStartByNamesapceName.html">TypeDefinitionShouldStartByNamesapceName</a>
+					<a href="experimental_allowOnlyShorthandProperties_rule.allowOnlyShorthandProperties.html">allowOnlyShorthandProperties</a>
 				</li>
 			</ul>
-			<h1>Class TypeDefinitionShouldStartByNamesapceName</h1>
+			<h1>Class allowOnlyShorthandProperties</h1>
 		</div>
 	</div>
 </header>
@@ -73,13 +73,17 @@
 					<div class="lead">
 						<p>WIP: it&#39;s an experimental module, never use it!</p>
 					</div>
-					<p> if we pass namesapce, we allow in out directory start type definition with only this prefix
-						TypeDefinitionShouldStartByNamesapceName(Ac)
-					good ✅</p>
-					<pre><code><span style="color: #24292E">AcDocument {}</span>
+					<p>good ✅</p>
+					<pre><code><span style="color: #24292E">AcDocument {</span>
+<span style="color: #24292E">   </span><span style="color: #6F42C1">field</span><span style="color: #24292E">: d,</span>
+<span style="color: #24292E">   </span><span style="color: #6F42C1">field2</span><span style="color: #24292E">: s,</span>
+<span style="color: #24292E">}</span>
 </code></pre>
 					<p>bad ❌</p>
-					<pre><code><span style="color: #24292E">Document {}</span>
+					<pre><code><span style="color: #24292E">Document {</span>
+<span style="color: #24292E">  </span><span style="color: #6F42C1">field</span><span style="color: #24292E">: string,</span>
+<span style="color: #24292E"> </span><span style="color: #6F42C1">field2</span><span style="color: #24292E">: datetime</span>
+<span style="color: #24292E">}</span>
 </code></pre>
 				</div>
 			</section>
@@ -87,7 +91,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TypeDefinitionShouldStartByNamesapceName</span>
+						<span class="target">allowOnlyShorthandProperties</span>
 					</li>
 				</ul>
 			</section>
@@ -98,7 +102,7 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.TypeDefinitionShouldStartByNamesapceName.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="experimental_allowOnlyShorthandProperties_rule.allowOnlyShorthandProperties.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,13 +114,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Type<wbr>Definition<wbr>Should<wbr>Start<wbr>ByNamesapce<wbr>Name<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.TypeDefinitionShouldStartByNamesapceName.html" class="tsd-signature-type" data-tsd-kind="Class">TypeDefinitionShouldStartByNamesapceName</a></li>
+						<li class="tsd-signature tsd-kind-icon">new allow<wbr>Only<wbr>Shorthand<wbr>Properties<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="experimental_allowOnlyShorthandProperties_rule.allowOnlyShorthandProperties.html" class="tsd-signature-type" data-tsd-kind="Class">allowOnlyShorthandProperties</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.TypeDefinitionShouldStartByNamesapceName.html" class="tsd-signature-type" data-tsd-kind="Class">TypeDefinitionShouldStartByNamesapceName</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="experimental_allowOnlyShorthandProperties_rule.allowOnlyShorthandProperties.html" class="tsd-signature-type" data-tsd-kind="Class">allowOnlyShorthandProperties</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -137,14 +141,8 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/base_noExplicitString_rule.html">base/no<wbr>Explicit<wbr>String.rule</a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/experimental_allowOnlyShorthandProperties_rule.html">experimental/allow<wbr>Only<wbr>Shorthand<wbr>Properties.rule</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/experimental_banUsingTypeDefinitionBeforeDeclaration.html">experimental/ban<wbr>Using<wbr>Type<wbr>Definition<wbr>Before<wbr>Declaration</a>
-					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/experimental_typeDefinitionShouldStartByNamesapceName_rule.html">experimental/type<wbr>Definition<wbr>Should<wbr>Start<wbr>ByNamesapce<wbr>Name.rule</a>
+						<a href="../modules/experimental_allowOnlyShorthandProperties_rule.html">experimental/allow<wbr>Only<wbr>Shorthand<wbr>Properties.rule</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/recommended_endpointsRecommendedBodyParameterPostfix_rule.html">recommended/endpoints<wbr>Recommended<wbr>Body<wbr>Parameter<wbr>Postfix.rule</a>
@@ -180,10 +178,10 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.TypeDefinitionShouldStartByNamesapceName.html" class="tsd-kind-icon">Type<wbr>Definition<wbr>Should<wbr>Start<wbr>ByNamesapce<wbr>Name</a>
+						<a href="experimental_allowOnlyShorthandProperties_rule.allowOnlyShorthandProperties.html" class="tsd-kind-icon">allow<wbr>Only<wbr>Shorthand<wbr>Properties</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="experimental_typeDefinitionShouldStartByNamesapceName_rule.TypeDefinitionShouldStartByNamesapceName.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="experimental_allowOnlyShorthandProperties_rule.allowOnlyShorthandProperties.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 						</ul>
 					</li>
