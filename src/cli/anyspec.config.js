@@ -1,6 +1,6 @@
 module.exports = {
   rules: {
-    'base/known-type-names': 'off',
+    'base/known-type-names': 'error',
     'base/no-explicit-string-rule': 'off',
     'base/endpoints-known-http-verbs': 'off',
     'recommended/endpoints-body-parameter-postfix': 'off',

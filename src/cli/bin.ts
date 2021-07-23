@@ -17,13 +17,13 @@ async function main() {
   const program = new Command();
   program
     .option('-o, --outDir <dir>', 'path to a directory for a generated openapi')
-    .option('-cfg', '--config', 'src/cli/anyspec.config.js')
     .option('-ns, --namespaces [namespaces...]', 'array of existed namespaces')
     .option(
       '-cns, --commonNamespace <commonNamespace>',
       'name of common namespace where shared definitions stored',
       'common',
     )
+    .option('-cfg, --config <path>', 'path to config file', './anyspec.config.js')
     .arguments('<specFiles>');
 
   program.parse();
@@ -34,10 +34,10 @@ async function main() {
     commonNamespace: string;
     namespaces?: string[];
     outDir?: string;
-    Cfg: string;
+    config: string;
   };
 
-  const { namespaces, outDir, commonNamespace, Cfg: configPath } = options;
+  const { namespaces, outDir, commonNamespace, config: configPath } = options;
 
   if (!namespaces) {
     throw new Error('please provide namespaces');
@@ -126,7 +126,7 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
 
 async function readConfig(path: string): Promise<Config> {
   try {
-    const configFile = await readFile(path, { encoding: 'utf-8' });
+    const configFile = require(path);
     const isConfig = (configFile: unknown): configFile is Config => {
       return (configFile as Config).rules !== undefined;
     };
