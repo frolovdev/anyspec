@@ -1102,8 +1102,12 @@ AcDocument2 {
         ],
       };
       const printed = printModels(ast);
+
       expect(printed).toEqual(dedent`
-A ( f | b )
+      A (
+        f |
+        b
+      )
 `);
     });
     it('correctly print model with long named enum', () => {
@@ -1462,14 +1466,21 @@ AcDocument < Kek, Lel !{
       };
 
       const printed = printModels(ast);
+
       expect(printed).toEqual(dedent`
-A ( f | b )
-
-MyModel {
-  color: A,
-}
-
-B ( c | d )
+      A (
+        f |
+        b
+      )
+      
+      MyModel {
+        color: A,
+      }
+      
+      B (
+        c |
+        d
+      )
 `);
     });
   });

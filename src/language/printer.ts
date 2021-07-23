@@ -88,11 +88,7 @@ const printDocASTReducerModel: ASTReducer<string> = {
   },
   EnumTypeDefinition: {
     leave: ({ name, values }) => {
-      const str = `${name} ( ${join(values, ' | ')} )`;
-      if (str.length > MAX_LINE_LENGTH) {
-        return `${name} ${enumBlock(values)}`;
-      }
-      return str;
+      return `${name} ${enumBlock(values)}`;
     },
   },
 };
