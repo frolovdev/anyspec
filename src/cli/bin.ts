@@ -23,7 +23,7 @@ async function main() {
       'name of common namespace where shared definitions stored',
       'common',
     )
-    .option('-cfg, --config <path>', 'path to config file', './anyspec.config.js')
+    .option('-c, --config <path>', 'path to config file', './anyspec.config.js')
     .arguments('<specFiles>');
 
   program.parse();
@@ -127,7 +127,7 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
   return sources;
 }
 
-async function readConfig(path: string): Promise<Config> {
+function readConfig(path: string): Config {
   try {
     const configFile = require(path);
     const isConfig = (configFile: unknown): configFile is Config => {
