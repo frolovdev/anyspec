@@ -15,6 +15,9 @@ type Config = { rules: Record<string, 'error' | 'off'> };
 
 async function main() {
   const program = new Command();
+
+  const anyspecConfigPath = getPath.resolve(process.cwd(), 'anyspec.config');
+
   program
     .option('-o, --outDir <dir>', 'path to a directory for a generated openapi')
     .option('-ns, --namespaces [namespaces...]', 'array of existed namespaces')
@@ -23,7 +26,7 @@ async function main() {
       'name of common namespace where shared definitions stored',
       'common',
     )
-    .option('-c, --config <path>', 'path to config file', './anyspec.config.js')
+    .option('-c, --config <path>', 'path to config file', anyspecConfigPath)
     .arguments('<specFiles>');
 
   program.parse();
@@ -34,7 +37,7 @@ async function main() {
     commonNamespace: string;
     namespaces?: string[];
     outDir?: string;
-    config?: string;
+    config: string;
   };
 
   const { namespaces, outDir, commonNamespace, config: configPath } = options;
@@ -139,9 +142,8 @@ const isConfig = (configFile: unknown): configFile is Config => {
   return (configFile as Config).rules !== undefined;
 };
 
-function readConfig(passedPath?: string): ConfigRes {
+function readConfig(path: string): ConfigRes {
   try {
-    const path = getPath.resolve(process.cwd(), passedPath ?? '', 'anyspec.config');
     const configFile = require(path);
 
     if (!isConfig(configFile)) {
@@ -149,7 +151,6 @@ function readConfig(passedPath?: string): ConfigRes {
     }
     return { res: configFile, err: null };
   } catch (e) {
-    const path = getPath.resolve(process.cwd(), passedPath ?? '', 'anyspec.config');
     return { err: `Can't find anyspec.config.js in ${path}`, res: null };
   }
 }
