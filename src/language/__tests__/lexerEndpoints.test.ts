@@ -1,4 +1,4 @@
-import { TokenKind, Lexer, Source } from './language';
+import { TokenKind, Lexer, Source } from '..';
 
 const getFullTokenList = (source: Source) => {
   const lexer = new Lexer(source);

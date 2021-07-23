@@ -9,6 +9,7 @@ coverage
 
 .idea
 .vscode
+.now
 
 **/*.log
 
@@ -17,3 +18,4 @@ coverage
 src/cli/spec
 ./temp/openapi.json
 openapi.json
+tsconfig.tsbuildinfo

@@ -1,6 +1,6 @@
-import { Source, Lexer, isPunctuatorTokenKind, Token, TokenKind } from './language';
+import { Source, Lexer, isPunctuatorTokenKind, Token, TokenKind } from '../../language';
 import { inspect } from 'util';
-import { dedent } from './__testsUtils__/dedent';
+import { dedent } from '../../__testsUtils__/dedent';
 
 function lexFirst(str: string) {
   const lexer = new Lexer(new Source({ body: str }));

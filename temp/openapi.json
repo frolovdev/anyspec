@@ -23,112 +23,59 @@
     }
   },
   "paths": {
-    "/industries": {
-      "get": {
-        "summary": "**List** _industries_",
-        "description": "**List** _industries_",
-        "operationId": "GET--industries",
+    "/documents": {
+      "post": {
+        "summary": "**Send**",
+        "description": "**Send**",
+        "operationId": "POST--documents",
         "responses": {
           "200": {
             "description": "",
             "schema": {
               "type": "object",
               "properties": {
-                "industries": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/Industry"
-                  }
+                "document": {
+                  "$ref": "#/definitions/Document"
                 }
               },
               "required": [
-                "industries"
+                "document"
               ]
             }
           }
         },
-        "tags": [
-          "`/industries`"
+        "security": [
+          {
+            "token": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DocumentNew"
+            },
+            "in": "body"
+          }
         ]
       }
     }
   },
-  "tags": [
-    {
-      "name": "`/industries`"
-    }
-  ],
   "definitions": {
-    "Document": {
-      "type": "object"
-    },
-    "PermissionType": {
-      "enum": [
-        "own:companies:write",
-        "own:documents:write",
-        "own:conversations:write",
-        ""
-      ]
-    },
-    "C": {
+    "DocumentNew": {
       "type": "object",
       "properties": {
-        "pathParameters": {
-          "type": "object",
-          "properties": {
-            "a": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "a"
-          ],
-          "additionalProperties": false
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
         }
       },
       "required": [
-        "pathParameters"
-      ]
-    },
-    "CompanyBankStatementSummaryQuery": {
-      "type": "object"
-    },
-    "WSEventsFromServerForAgent": {
-      "title": "вуыск",
-      "description": "вуыск",
-      "type": "object",
-      "properties": {
-        "messages:new": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/WSOnNewMessageForAgent"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "messages:update": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Enum"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        }
-      }
-    },
-    "Enum": {
-      "title": "вуыск",
-      "description": "вуыск",
-      "enum": [
-        "'Aaa'",
-        "'Bb'",
-        "'Cccc'",
-        "'BBB'",
-        ""
+        "id",
+        "name"
       ]
     }
   }
