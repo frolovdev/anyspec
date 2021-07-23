@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { RecommendedFilterPostfix } from '../recommended/recommendedFilterPostfix.rule';
+import { recommendedFilterPostfix } from '../recommended/recommendedFilterPostfix.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(RecommendedFilterPostfix, queryStr);
+  return expectValidationErrors(recommendedFilterPostfix, queryStr);
 }
 
 function expectValid(queryStr: string) {

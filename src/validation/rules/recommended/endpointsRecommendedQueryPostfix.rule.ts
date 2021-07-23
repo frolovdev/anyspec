@@ -17,7 +17,7 @@ const POSTFIX = 'RequestQuery';
  * POST /endpoint?SomeType
  * ```
  */
-export function EndpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
+export function endpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
   return {
     EndpointParameterQuery(node) {
       if (!node.type.name.value?.endsWith(POSTFIX)) {
