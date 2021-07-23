@@ -11,5 +11,6 @@ module.exports = {
     'recommended/model-body-field-postfix': 'off',
     'recommended/postfix-for-create-models': 'off',
     'recommended/postfix-for-update-models': 'off',
+    'recommended/endpoints-update-request-response-match': 'off',
   },
 };

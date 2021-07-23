@@ -18,10 +18,11 @@ import { ValidationContext } from '../../validationContext';
  * In PATCH RequestBody primitive types should match with Response primitive types
  *
  * good ✅
- *
+ * ```
  * PATCH /endpoint ConnectionUpdateRequestBody
  *  => ConnectionResponse
- *
+ * ```
+ * ```
  * ConnectionUpdateRequestBody {
  *  field: string
  *  field2: string
@@ -31,12 +32,14 @@ import { ValidationContext } from '../../validationContext';
  *  field: string
  *  field2: string
  * }
+ * ```
  *
  * bad ❌
- *
+ * ```
  * PATCH /endpoint ConnectionCreateRequestBody
  *  => ConnectionResponse
- *
+ * ```
+ * ```
  * ConnectionCreateRequestBody {
  *  field: string
  *  field2: number
@@ -46,7 +49,7 @@ import { ValidationContext } from '../../validationContext';
  *  field: number
  *  field2: number
  * }
- *
+ * ```
  */
 export function EndpointsUpdateRequestResponseMatch(context: ValidationContext): ASTVisitor {
   const findModelDefinition = (name?: string): ModelTypeDefinitionNode | undefined => {

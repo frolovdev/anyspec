@@ -194,6 +194,56 @@ PATCH /endpoint ConnectionUpdateRequestBody
 
       expect(errors).toEqual([]);
     });
+    it('should ignore named model types', () => {
+      const endpointString = `
+PATCH /endpoint ModelUpdate
+  => ModelResponse
+`;
+
+      const modelString = `
+ModelResponse {
+  entity: Model,
+}
+
+Model {
+  field1: number,
+  field2: number
+}
+
+ModelUpdate {
+  entity: {
+    field1: string,
+    field2: number
+  },
+}
+  `;
+
+      const sourceEndpoints = new Source({
+        body: endpointString,
+        name: 'endpoints-source',
+        sourceType: 'endpoints',
+      });
+
+      const sourceModels = new Source({
+        body: modelString,
+        name: 'endpoints-model',
+        sourceType: 'models',
+      });
+
+      const astEndpoints = parse(sourceEndpoints);
+      const astModels = parse(sourceModels);
+
+      const combined = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [...astEndpoints.definitions, ...astModels.definitions],
+      };
+
+      const schema = new AnySpecSchema({ ast: combined });
+
+      const errors = validate(schema, combined, [EndpointsUpdateRequestResponseMatch]);
+
+      expect(errors).toEqual([]);
+    });
   });
   describe('invalid', () => {
     it('should be invalid', () => {
