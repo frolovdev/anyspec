@@ -52,7 +52,12 @@ async function main() {
   try {
     const sources = await mapPathsToSources(specFilePaths);
 
-    const config = await readConfig(configPath);
+    const { res: config, err: configErr } = readConfig(configPath);
+    if (configErr || !config) {
+      console.error(configErr);
+      return;
+    }
+
     const groupedSources = groupSourcesByNamespaces({ sources, commonNamespace, namespaces });
 
     const { groupedParsedDocuments, parsingErrors } = getGroupedDocuments(
@@ -127,18 +132,20 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
   return sources;
 }
 
-function readConfig(path: string): Config {
+type ConfigRes = { res: Config; err: null } | { err: string; res: null };
+
+function readConfig(path: string): ConfigRes {
   try {
     const configFile = require(path);
     const isConfig = (configFile: unknown): configFile is Config => {
       return (configFile as Config).rules !== undefined;
     };
     if (!isConfig(configFile)) {
-      throw new Error(`Invalid config file`);
+      return { err: `Invalid config file`, res: null };
     }
-    return configFile;
+    return { res: configFile, err: null };
   } catch (e) {
-    throw e;
+    return { err: `Can't find anyspec.config.js in root of your project`, res: null };
   }
 }
 
