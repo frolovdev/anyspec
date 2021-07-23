@@ -79,7 +79,10 @@ async function main() {
     const unitedASTs = groupedParsedDocuments.map((documents) => concatAST(documents));
     const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
     const errors = schemas.map((s, index) => validate(s, unitedASTs[index], enabledRulesFns));
-    errors.flat().forEach((e) => console.error(printCliError(printError(e))));
+    errors.flat().forEach((e) => {
+      const errorString = printError(e);
+      console.error(errorString);
+    });
     invalidRules.forEach((e) => console.error(printCliError(`Invalid Rule: ${e}`)));
     processingSpinner.succeed();
   } catch (e) {
