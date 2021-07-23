@@ -1,5 +1,6 @@
 import { validate } from '../..';
 import { ASTNodeKind, parse, Source } from '../../../language';
+import { concatAST } from '../../../language/concatAST';
 import { AnySpecSchema } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
 import { recommendedPostfixForUpdateModels } from '../recommended/recommendedPostfixForUpdateModels.rule';
@@ -32,11 +33,7 @@ RequestModel {
     const astEndpoints = parse(sourceEndpoints);
     const astModels = parse(sourceModels);
 
-    const combined = {
-      kind: ASTNodeKind.DOCUMENT,
-      definitions: [...astEndpoints.definitions, ...astModels.definitions],
-    };
-
+    const combined = concatAST([astEndpoints, astModels]);
     const schema = new AnySpecSchema({ ast: combined });
 
     const errors = validate(schema, combined, [recommendedPostfixForUpdateModels]);
@@ -72,10 +69,7 @@ RequestModel {
     const astEndpoints = parse(sourceEndpoints);
     const astModels = parse(sourceModels);
 
-    const combined = {
-      kind: ASTNodeKind.DOCUMENT,
-      definitions: [...astEndpoints.definitions, ...astModels.definitions],
-    };
+    const combined = concatAST([astEndpoints, astModels]);
 
     const schema = new AnySpecSchema({ ast: combined });
 
@@ -112,10 +106,7 @@ RequestModel {
     const astEndpoints = parse(sourceEndpoints);
     const astModels = parse(sourceModels);
 
-    const combined = {
-      kind: ASTNodeKind.DOCUMENT,
-      definitions: [...astEndpoints.definitions, ...astModels.definitions],
-    };
+    const combined = concatAST([astEndpoints, astModels]);
 
     const schema = new AnySpecSchema({ ast: combined });
 
