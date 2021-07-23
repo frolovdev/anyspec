@@ -1,5 +1,5 @@
 import { ASTVisitor } from '../../visitor';
-import { ValidationContext } from '../ValidationContext';
+import { ValidationContext } from '../validationContext';
 import * as base from './base';
 import * as recommended from './recommended';
 
