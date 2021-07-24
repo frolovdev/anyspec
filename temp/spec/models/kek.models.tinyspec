@@ -1,13 +1,8 @@
-Document {}
+DocumentNew {
+  name: s, 
+}
 
-PermissionType (
-  "own:companies:write" |
-  own:documents:write |
-  own:conversations:write  |
-)
-
-C {
-  pathParameters: !{
-    a: string
-  }
+DocumentNew {
+  id: i,
+  name: s,
 }
