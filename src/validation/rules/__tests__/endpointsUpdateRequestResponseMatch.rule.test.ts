@@ -58,10 +58,24 @@ PATCH /endpoint ConnectionUpdateRequestBody
   ConnectionUpdateRequestBody {
       field,
       field2: i,
+      field3: b,
+      field4: o,
+      field5: f,
+      field6: d,
+      field7: t,
+      field8: j,
+      field9: s,
   }
   ConnectionResponse {
       field: string,
       field2: integer,
+      field3: boolean,
+      field4: object,
+      field5: float,
+      field6: date,
+      field7: text,
+      field8: json,
+      field8: string,
   }
   `;
 

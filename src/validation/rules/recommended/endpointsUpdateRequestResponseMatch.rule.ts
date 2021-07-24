@@ -1,3 +1,4 @@
+import { getNormalizedScalar } from './../../../runtypes/specifiedScalarTypes';
 import { AnySpecError } from '../../../error';
 import {
   ASTNode,
@@ -113,21 +114,23 @@ export function endpointsUpdateRequestResponseMatch(context: ValidationContext):
   };
 }
 
-// TODO: get rig of typecasting
+// find EndpointTypeDefinitionNode in ancestors
 function findEndpointTypeDefinitionNode(
   ancestors: readonly (ASTNode | readonly ASTNode[])[],
 ): EndpointTypeDefinitionNode {
+  const isManyASTNodes = (node: ASTNode | readonly ASTNode[]): node is readonly ASTNode[] =>
+    Array.isArray(node);
+
   const [endpointTypeDefinition] = ancestors.filter((ancestor) => {
-    if (Array.isArray(ancestor)) {
+    if (isManyASTNodes(ancestor)) {
       return false;
     }
-    return isEndpointTypeDefinitionNode(ancestor as ASTNode);
+    return isEndpointTypeDefinitionNode(ancestor);
   }) as EndpointTypeDefinitionNode[];
 
   return endpointTypeDefinition;
 }
 
-// TODO: get rig of typecasting
 function findEndpointParameterBodyNode(
   endpointNode: EndpointTypeDefinitionNode,
 ): EndpointParameterBodyNode | undefined {
@@ -135,11 +138,11 @@ function findEndpointParameterBodyNode(
     (parameter) => parameter.type.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY,
   );
 
-  const requestNodeParameterBody = requestNodeParameter?.type as
-    | EndpointParameterBodyNode
-    | undefined;
+  const endpointParameterType = requestNodeParameter.type;
 
-  return requestNodeParameterBody;
+  if (endpointParameterType.kind === ASTNodeKind.ENDPOINT_PARAMETER_BODY) {
+    return endpointParameterType;
+  }
 }
 
 function isFieldDefinitionsMatches(
@@ -162,17 +165,32 @@ function isFieldDefinitionsMatches(
 }
 
 function isNamedTypesPrimitiveMatch(t1: TypeNode, t2: TypeNode) {
-  if (t1.kind !== ASTNodeKind.NAMED_TYPE && t2.kind !== ASTNodeKind.NAMED_TYPE) {
-    // if TypeNodes not Named type not go deeper and compare only kind match
+  if (
+    t1.kind === ASTNodeKind.OBJECT_TYPE_DEFINITION ||
+    t1.kind === ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION ||
+    t1.kind === ASTNodeKind.LIST_TYPE
+  ) {
+    // can check only primitive types
+    // skip this - { field: { model } | ( enum ) | *[] }
     return true;
   }
 
   if (
-    specifiedScalarTypes.includes(t1.name.value ?? '') &&
-    specifiedScalarTypes.includes(t2.name.value ?? '')
+    t2.kind === ASTNodeKind.OBJECT_TYPE_DEFINITION ||
+    t2.kind === ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION ||
+    t2.kind === ASTNodeKind.LIST_TYPE
   ) {
-    return t1.name.value === t2.name.value;
+    // can check only primitive types
+    // skip this - { field: { model } | ( enum ) | *[] }
+    return true;
   }
 
-  return true;
+  // if no type name its default string type
+  const t1NameValue = t1.name.value ?? 's';
+  const t2NameValue = t2.name.value ?? 's';
+
+  const normalizedScalar1 = getNormalizedScalar(t1NameValue);
+  const normalizedScalar2 = getNormalizedScalar(t2NameValue);
+
+  return normalizedScalar1 === normalizedScalar2;
 }
