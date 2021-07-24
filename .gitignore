@@ -9,10 +9,14 @@ coverage
 
 .idea
 .vscode
+.now
 
 **/*.log
 
 .huskyrc.local.js
 
 src/cli/spec
-temp/openapi.json
+./temp/openapi.json
+openapi.json
+tsconfig.tsbuildinfo
+docs/rules
