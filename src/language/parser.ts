@@ -229,9 +229,6 @@ export class ModelParser {
     switch (braces.kind) {
       case TokenKind.BRACE_L:
         return this.parseModelTypeDefinition(description);
-    }
-
-    switch (braces.kind) {
       case TokenKind.PAREN_L:
         return this.parseEnumTypeDefinition(description);
     }
