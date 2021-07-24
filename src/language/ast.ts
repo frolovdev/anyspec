@@ -253,6 +253,7 @@ export interface EnumTypeDefinitionNode {
   readonly kind: 'EnumTypeDefinition';
   readonly name: NameNode;
   readonly loc?: Location;
+  readonly description?: DescriptionNode;
   readonly values: ReadonlyArray<EnumValueDefinitionNode>;
 }
 

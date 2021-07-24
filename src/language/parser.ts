@@ -176,7 +176,7 @@ export class ModelParser {
 
   parseDefinition(): TypeDefinitionNode {
     if (this.peek(TokenKind.DESCRIPTION)) {
-      return this.parseModelTypeDefinition();
+      return this.parseTypeSystemDefinition();
     }
 
     if (this.peek(TokenKind.NAME)) {
@@ -223,17 +223,20 @@ export class ModelParser {
 
   parseTypeSystemDefinition(): TypeDefinitionNode {
     // Many definitions begin with a description and require a lookahead.
+    const description = this.parseDescription();
     const braces = this.lexer.lookahead();
 
     switch (braces.kind) {
       case TokenKind.BRACE_L:
-        return this.parseModelTypeDefinition();
+        return this.parseModelTypeDefinition(description);
+      case TokenKind.PAREN_L:
+        return this.parseEnumTypeDefinition(description);
     }
 
     throw this.unexpected();
   }
 
-  parseEnumTypeDefinition(): EnumTypeDefinitionNode {
+  parseEnumTypeDefinition(description?: DescriptionNode): EnumTypeDefinitionNode {
     const start = this.lexer.token;
     const name = this.parseName();
     const kind = ASTNodeKind.ENUM_TYPE_DEFINITION;
@@ -243,12 +246,12 @@ export class ModelParser {
       kind,
       name,
       values,
+      description,
     });
   }
 
-  parseModelTypeDefinition(): ModelTypeDefinitionNode {
+  parseModelTypeDefinition(description?: DescriptionNode): ModelTypeDefinitionNode {
     const start = this.lexer.token;
-    const description = this.parseDescription();
     const name = this.parseName();
     const extendsModels = this.parseExtendsModels();
 

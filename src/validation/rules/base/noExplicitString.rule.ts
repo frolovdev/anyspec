@@ -24,14 +24,14 @@ import { AnySpecError } from '../../../error';
  * ```
  *
  */
-export function NoExplicitStringRule(context: ValidationContext): ASTVisitor {
+export function noExplicitStringRule(context: ValidationContext): ASTVisitor {
   return {
     FieldDefinition(node, _1, parent, _2, ancestors) {
       if (node.type.kind === ASTNodeKind.NAMED_TYPE) {
         if (!node.type.name.value) {
           return;
         }
-        if (stringAliases.includes(node.type.name.value)) {
+        if (stringAliases.has(node.type.name.value)) {
           context.reportError(
             new AnySpecError(
               `No need to explicitly specify string type since it is the default`,

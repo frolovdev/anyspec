@@ -21,7 +21,7 @@ const HTTP_REQUEST_METHODS = [
  * [https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
  *
  */
-export function EndpointsKnownHttpVerbs(context: ValidationContext): ASTVisitor {
+export function endpointsKnownHttpVerbs(context: ValidationContext): ASTVisitor {
   const set = new Set(HTTP_REQUEST_METHODS);
 
   return {

@@ -24,7 +24,7 @@ import { ValidationContext } from '../../validationContext';
  * ```
  *
  */
-export function RecommendedBodyModelName(context: ValidationContext): ASTVisitor {
+export function recommendedBodyModelName(context: ValidationContext): ASTVisitor {
   return {
     ModelTypeDefinition(node) {
       if (!node.fields.some((fieldDefinition) => fieldDefinition.name.value === 'body')) {
@@ -45,7 +45,7 @@ export function RecommendedBodyModelName(context: ValidationContext): ASTVisitor
       if (!fieldTypeName) {
         return;
       }
-      if (specifiedScalarTypes.includes(fieldTypeName)) {
+      if (specifiedScalarTypes.has(fieldTypeName)) {
         return;
       }
 

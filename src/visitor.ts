@@ -90,7 +90,7 @@ const QueryDocumentKeys = {
   EndpointNamespaceTypeDefinition: ['tag', 'endpoints'],
   EndpointTypeDefinition: ['verb', 'url', 'responses'],
   EndpointResponse: ['type'],
-  EnumTypeDefinition: ['name', 'values'],
+  EnumTypeDefinition: ['name', 'values', 'description'],
   EndpointVerb: ['name'],
   EndpointUrl: ['name', 'parameters'],
   EndpointParameter: ['type'],

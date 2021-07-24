@@ -3,7 +3,8 @@
 import { Command } from 'commander';
 import { default as getPath } from 'path';
 import { readFile, writeFile } from 'fs/promises';
-import { parse, Source, printModels } from '../language';
+import { parse, Source } from '../language';
+import { printModels } from '../printer';
 
 async function main() {
   const program = new Command();

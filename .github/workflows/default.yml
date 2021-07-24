@@ -1,14 +1,14 @@
-name: Build and Deploy docs
-<<<<<<< HEAD
-=======
+name: Default pipeline
 
->>>>>>> d4131b83e733e1ccab6c10e9e184d2545b85aee4
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
+
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Cancel previous workflow runs
@@ -42,11 +42,8 @@ jobs:
       - name: Install dependencies 🔧
         run: npm ci
 
-      - name: Build docs 📖
-        run: npm run docs:typedoc
+      - name: Static checks ⚙️
+        run: npm run static-checks
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: docs
-          folder: docs/rules
+      - name: Tests
+        run: npm run test:ci

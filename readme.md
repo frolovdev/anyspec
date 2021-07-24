@@ -7,7 +7,7 @@ The main problem we are trying to solve is the verbosity of open API.
 * **Write less code** - get rid of boileprate in your daily routine. 
 * **Enforce best practices** - use predefined or write your own rules for specs.
 * **Prettify (WIP)** - format your code without pain.
-* **Compilation (WIP)** - the result json fully compatible with openapi specification.
+* **Compilation (WIP)** - the result json is fully compatible with openapi specification.
 
 <table>
     <tbody>
@@ -128,9 +128,20 @@ After
 }
 ```
 
+## Table of contents
+
 ## List of rules
 
 [Watch docs](https://frolovdev.github.io/anyspec/modules.html)
+
+## Inspiration section
+
+The main idea of library - DSL on top of openapi comes from [tinyspec](https://github.com/Ajaxy/tinyspec). The syntax constructions comes from tinyspec too. 
+
+Also authors were inspired and use a lot of findings and ideas from:
+
+* [Graphqljs implementation](https://github.com/graphql/graphql-js)
+* [python lexer and parser](https://github.com/python)
 
 ## License
 
