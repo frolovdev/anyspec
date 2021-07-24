@@ -1225,7 +1225,7 @@ POST /endpoint RequestModel
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
 
-    it('can parse multiple namespaces v2', () => {
+    it('can parse multiple namespaces without tag', () => {
       const sourceString = `
 \`/analytics_events\`:
     POST /endpoint RequestModel
@@ -1332,7 +1332,7 @@ HEAD /pechkin/mandrill/event
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
 
-    it('can parse basic endpoint with description', () => {
+    it('can parse basic endpoint with multiline description', () => {
       const sourceString = `
 // lol
 // kek
@@ -1403,7 +1403,7 @@ POST /endpoint RequestModel
 
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
-    it('can parse basic endpoint with description v2', () => {
+    it('can parse basic endpoint with description', () => {
       const sourceString = `
 // lol
 POST /endpoint RequestModel
@@ -1472,7 +1472,7 @@ POST /endpoint RequestModel
 
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
-    it('can parse multiple descriptions', () => {
+    it('can parse descriptions for endpoint inside tag', () => {
       const sourceString = `
 \`/analytics_events\`:
     // kek
