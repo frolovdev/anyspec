@@ -7,7 +7,7 @@ The main problem we are trying to solve is the verbosity of open API.
 * **Write less code** - get rid of boileprate in your daily routine. 
 * **Enforce best practices** - use predefined or write your own rules for specs.
 * **Prettify (WIP)** - format your code without pain.
-* **Compilation (WIP)** - the result json fully compatible with openapi specification.
+* **Compilation (WIP)** - the result json is fully compatible with openapi specification.
 
 <table>
     <tbody>
