@@ -1,12 +1,13 @@
 import { validate } from '../..';
 import { ASTNodeKind, parse, Source } from '../../../language';
+import { concatAST } from '../../../language/concatAST';
 import { AnySpecSchema, specifiedScalarTypes } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
-import { KnownTypeNamesRule } from '../base/knownTypeNames.rule';
+import { knownTypeNamesRule } from '../base/knownTypeNames.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(KnownTypeNamesRule, queryStr);
+  return expectValidationErrors(knownTypeNamesRule, queryStr);
 }
 
 function expectValid(queryStr: string) {
@@ -127,14 +128,11 @@ RequestModel {a: string, c: b, s}
     const astEndpoints = parse(sourceEndpoints);
     const astModels = parse(sourceModels);
 
-    const combined = {
-      kind: ASTNodeKind.DOCUMENT,
-      definitions: [...astEndpoints.definitions, ...astModels.definitions],
-    };
+    const combined = concatAST([astEndpoints, astModels]);
 
     const schema = new AnySpecSchema({ ast: combined });
 
-    const errors = validate(schema, combined, [KnownTypeNamesRule]);
+    const errors = validate(schema, combined, [knownTypeNamesRule]);
 
     expect(errors).toEqual([]);
   });
@@ -164,14 +162,11 @@ ResponseModel {a: string, c: b, s}
     const astEndpoints = parse(sourceEndpoints);
     const astModels = parse(sourceModels);
 
-    const combined = {
-      kind: ASTNodeKind.DOCUMENT,
-      definitions: [...astEndpoints.definitions, ...astModels.definitions],
-    };
+    const combined = concatAST([astEndpoints, astModels]);
 
     const schema = new AnySpecSchema({ ast: combined });
 
-    const errors = validate(schema, combined, [KnownTypeNamesRule]);
+    const errors = validate(schema, combined, [knownTypeNamesRule]);
 
     expect(toJSONDeep(errors)).toMatchObject([
       {

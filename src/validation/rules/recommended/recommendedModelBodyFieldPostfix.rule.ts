@@ -26,7 +26,7 @@ const POSTFIX = 'RequestBody';
  * ```
  *
  */
-export function RecommendedModelBodyFieldPostfix(context: ValidationContext): ASTVisitor {
+export function recommendedModelBodyFieldPostfix(context: ValidationContext): ASTVisitor {
   return {
     FieldDefinition(node) {
       if (node.name.value === 'body') {
@@ -34,7 +34,7 @@ export function RecommendedModelBodyFieldPostfix(context: ValidationContext): AS
           if (!node.type.name.value) {
             return;
           }
-          if (specifiedScalarTypes.includes(node.type.name.value)) {
+          if (specifiedScalarTypes.has(node.type.name.value)) {
             return;
           }
           if (!node.type.name.value?.endsWith(POSTFIX)) {

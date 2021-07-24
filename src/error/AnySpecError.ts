@@ -1,6 +1,6 @@
 import { Source, ASTNode, getLocation, SourceLocation } from '../language';
 import { isObjectLike } from '../utils';
-import { printLocation, printSourceLocation } from '../printLocation';
+import { printLocation, printSourceLocation } from './printLocation';
 export class AnySpecError extends Error {
   /**
    * An array of { line, column } locations within the source AnySpec document

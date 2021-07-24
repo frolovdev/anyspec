@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { RecommendedBodyModelName } from '../recommended/recommendedBodyModelName.rule';
+import { recommendedBodyModelName } from '../recommended/recommendedBodyModelName.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(RecommendedBodyModelName, queryStr);
+  return expectValidationErrors(recommendedBodyModelName, queryStr);
 }
 
 function expectValid(queryStr: string) {

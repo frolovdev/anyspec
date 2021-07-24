@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import { default as getPath } from 'path';
+import { default as nodePath } from 'path';
 import { readFile } from 'fs/promises';
 import { parse, Source, DocumentNode } from '../language';
 import { AnySpecSchema } from '../runtypes';
@@ -10,11 +10,11 @@ import { AnySpecError, printError } from '../error';
 import { sync as glob } from 'globby';
 import ora from 'ora';
 import { concatAST } from '../language/concatAST';
-
-type Config = { rules: Record<string, 'error' | 'off'> };
+import { parseConfig, readConfig } from './config';
 
 async function main() {
   const program = new Command();
+
   program
     .option('-o, --outDir <dir>', 'path to a directory for a generated openapi')
     .option('-ns, --namespaces [namespaces...]', 'array of existed namespaces')
@@ -23,7 +23,7 @@ async function main() {
       'name of common namespace where shared definitions stored',
       'common',
     )
-    .option('-c, --config <path>', 'path to config file', './anyspec.config.js')
+    .option('-c, --config <path>', 'path to config file')
     .arguments('<specFiles>');
 
   program.parse();
@@ -34,7 +34,7 @@ async function main() {
     commonNamespace: string;
     namespaces?: string[];
     outDir?: string;
-    config: string;
+    config?: string;
   };
 
   const { namespaces, outDir, commonNamespace, config: configPath } = options;
@@ -43,7 +43,7 @@ async function main() {
     throw new Error('please provide namespaces');
   }
 
-  const argPaths = args.map((arg) => getPath.resolve(process.cwd(), arg));
+  const argPaths = args.map((arg) => nodePath.resolve(process.cwd(), arg));
 
   const argumentPath = argPaths[0];
   const processingSpinner = ora(`Processing spec: ${argumentPath}`).start();
@@ -83,13 +83,13 @@ async function main() {
 
     const enabledRulesFns = enabledRules.map((rule) => rulesMap[rule]);
     const unitedASTs = groupedParsedDocuments.map((documents) => concatAST(documents));
+
     const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
     const errors = schemas.map((s, index) => validate(s, unitedASTs[index], enabledRulesFns));
-    errors.flat().forEach((e) => {
-      const errorString = printError(e);
-      console.error(errorString);
-    });
+
+    errors.flat().forEach((e) => console.error(printCliError(printError(e))));
     invalidRules.forEach((e) => console.error(printCliError(`Invalid Rule: ${e}`)));
+
     processingSpinner.succeed();
   } catch (e) {
     console.error(e);
@@ -133,31 +133,6 @@ async function mapPathsToSources(paths: string[]): Promise<Source[]> {
   return sources;
 }
 
-type ConfigRes = { res: Config; err: null } | { err: string; res: null };
-
-function readConfig(path: string): ConfigRes {
-  try {
-    const configFile = require(path);
-    const isConfig = (configFile: unknown): configFile is Config => {
-      return (configFile as Config).rules !== undefined;
-    };
-    if (!isConfig(configFile)) {
-      return { err: `Invalid config file`, res: null };
-    }
-    return { res: configFile, err: null };
-  } catch (e) {
-    return { err: `Can't find anyspec.config.js in root of your project`, res: null };
-  }
-}
-
-function parseConfig({ rules }: Config): { enabledRules: string[]; invalidRules: string[] } {
-  const existingRules = Object.keys(rulesMap);
-  const enabled = Object.keys(rules).filter((key) => rules[key] === 'error');
-  const invalidRules = enabled.filter((rule) => !existingRules.includes(rule));
-  const validRules = enabled.filter((rule) => existingRules.includes(rule));
-  return { enabledRules: validRules, invalidRules };
-}
-
 function groupSourcesByNamespaces({
   sources,
   namespaces,
@@ -174,9 +149,9 @@ function groupSourcesByNamespaces({
   );
   const commonSources = sources.filter((s) => commonRegexp.test(s.name));
 
-  const namespaceSources = namespacesRegexps.map((regexp) =>
-    sources.filter((s) => regexp.test(s.name)),
-  );
+  const namespaceSources = namespacesRegexps
+    .map((regexp) => sources.filter((s) => regexp.test(s.name)))
+    .filter((sources) => sources.length > 0);
 
   return namespaceSources.map((sourceArray) => sourceArray.concat(commonSources));
 }

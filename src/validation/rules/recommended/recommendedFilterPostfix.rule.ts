@@ -26,7 +26,7 @@ const POSTFIX = 'Filter';
  * ```
  *
  */
-export function RecommendedFilterPostfix(context: ValidationContext): ASTVisitor {
+export function recommendedFilterPostfix(context: ValidationContext): ASTVisitor {
   return {
     FieldDefinition(node) {
       if (node.name.value === 'filter') {
@@ -34,7 +34,7 @@ export function RecommendedFilterPostfix(context: ValidationContext): ASTVisitor
           if (!node.type.name.value) {
             return;
           }
-          if (specifiedScalarTypes.includes(node.type.name.value)) {
+          if (specifiedScalarTypes.has(node.type.name.value)) {
             return;
           }
           if (!node.type.name.value?.endsWith(POSTFIX)) {
