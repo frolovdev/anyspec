@@ -1,0 +1,2 @@
+PATCH /billing/subscriptions/:id SubscriptionUpdate
+  => SubscriptionResponse
