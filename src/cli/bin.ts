@@ -83,6 +83,7 @@ async function main() {
 
     const enabledRulesFns = enabledRules.map((rule) => rulesMap[rule]);
     const unitedASTs = groupedParsedDocuments.map((documents) => concatAST(documents));
+
     const schemas = unitedASTs.map((ast) => new AnySpecSchema({ ast }));
     const errors = schemas.map((s, index) => validate(s, unitedASTs[index], enabledRulesFns));
 
