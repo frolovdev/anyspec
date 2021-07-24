@@ -76,7 +76,7 @@ describe(__filename, () => {
     ]);
   });
 
-  it('known model type definitoon is valid', () => {
+  it('known model type definition is valid', () => {
     expectValid(`
 
 
