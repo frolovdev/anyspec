@@ -128,6 +128,8 @@ After
 }
 ```
 
+## Table of contents
+
 ## List of rules
 
 [Watch docs](https://frolovdev.github.io/anyspec/modules.html)
