@@ -109,7 +109,7 @@ $CRUDL /roles
 
       expect(() => parse(source)).toThrow('Syntax Error: Expected Name, found =>.');
     });
-    it('endpoint with inline enums are not supported v2', () => {
+    it('endpoint with inline enums are not supported', () => {
       const sourceString = `
 GET /examples?sort&limit?:i
   => {examples: Example[], totalCount?: i}
@@ -123,7 +123,7 @@ GET /examples?sort&limit?:i
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
     });
-    it('endpoint with inline enums are not supported v1', () => {
+    it('endpoint with inline enums are not supported with inline query without &', () => {
       const sourceString = `
 GET /examples?sort:i
   => {examples: Example[], totalCount?: i}
@@ -137,7 +137,7 @@ GET /examples?sort:i
 
       expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
     });
-    it('endpoint with inline enums are not supported v2', () => {
+    it('endpoint with inline enums are not supported with inline query started with capital letter', () => {
       const sourceString = `
 GET /examples?Sort:i
   => {examples: Example[], totalCount?: i}

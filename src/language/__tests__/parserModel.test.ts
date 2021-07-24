@@ -484,7 +484,7 @@ describe(__filename, () => {
       });
     });
 
-    it('correctly parse field multi arrays v2', () => {
+    it('correctly parse field multi with deeper arrays', () => {
       const model = `
           AcDocument {
             surname: b[][][],

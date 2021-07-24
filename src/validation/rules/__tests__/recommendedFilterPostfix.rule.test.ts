@@ -23,14 +23,14 @@ describe(__filename, () => {
 `);
   });
 
-  it('should be valid v2', () => {
+  it('should be valid with default type', () => {
     expectValid(`
     BkConnectionIndexRequestQuery !{
         filter,
     }
 `);
   });
-  it('should be valid v3', () => {
+  it('should be valid with scalar type', () => {
     expectValid(`
     BkConnectionIndexRequestQuery !{
         filter: s,

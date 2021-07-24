@@ -141,7 +141,7 @@ describe('lexer can understand endpoints', () => {
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);
   });
 
-  it('lexer can understand endpoints basic v2', () => {
+  it('lexer can understand multiple endpoints namespaces', () => {
     const sourceString = `
 \`/analytics_events\`:
     // **Create**
@@ -182,7 +182,7 @@ POST /analytics_events AnalyticsEventNewRequest
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);
   });
 
-  it('lexer can understand endpoints basic v3', () => {
+  it('lexer can understand multiple endpoints namespaces with tag names', () => {
     const sourceString = `
 GET /hero/exchangeRates?HrGetExchangeRateRequestQuery
     => HrGetExchangeRateListResponse
@@ -226,7 +226,7 @@ HEAD /pechkin/mandrill/event
 
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);
   });
-  it('lexer can understand endpoints basic v4', () => {
+  it('lexer can understand broken syntax with Description tag at top lvl', () => {
     const sourceString = `
   
 HEAD /pechkin/mandrill/event
