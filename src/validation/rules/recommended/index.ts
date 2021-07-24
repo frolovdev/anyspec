@@ -6,3 +6,4 @@ export * from './recommendedFilterPostfix.rule';
 export * from './recommendedModelBodyFieldPostfix.rule';
 export * from './recommendedPostfixForCreateModels.rule';
 export * from './recommendedPostfixForUpdateModels.rule';
+export * from './endpointsUpdateRequestResponseMatch.rule';

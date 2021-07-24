@@ -19,4 +19,6 @@ export const rulesMap: Record<string, (context: ValidationContext) => ASTVisitor
   'recommended/model-body-field-postfix': recommended.recommendedModelBodyFieldPostfix,
   'recommended/postfix-for-create-models': recommended.recommendedPostfixForCreateModels,
   'recommended/postfix-for-update-models': recommended.recommendedPostfixForUpdateModels,
+  'recommended/endpoints-update-request-response-match':
+    recommended.endpointsUpdateRequestResponseMatch,
 };
