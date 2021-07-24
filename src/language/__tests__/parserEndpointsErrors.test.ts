@@ -1,4 +1,4 @@
-import { parse as defaultParse, Source } from './language';
+import { parse as defaultParse, Source } from '../';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -126,6 +126,20 @@ GET /examples?sort&limit?:i
     it('endpoint with inline enums are not supported v1', () => {
       const sourceString = `
 GET /examples?sort:i
+  => {examples: Example[], totalCount?: i}
+  => 404
+`;
+
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
+
+      expect(() => parse(source)).toThrow('Syntax Error: Not supported inline query');
+    });
+    it('endpoint with inline enums are not supported v2', () => {
+      const sourceString = `
+GET /examples?Sort:i
   => {examples: Example[], totalCount?: i}
   => 404
 `;

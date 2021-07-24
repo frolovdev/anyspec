@@ -1,5 +1,5 @@
-import { ASTNode, ASTNodeKind, parse as defaultParse, Source } from './language';
-import { toJSONDeep, log } from './utils';
+import { ASTNode, ASTNodeKind, parse as defaultParse, Source } from '../../language';
+import { toJSONDeep, log } from '../../utils';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -120,6 +120,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -170,6 +177,13 @@ GET /endpoint
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -232,6 +246,13 @@ POST /endpoint {}
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -327,6 +348,13 @@ POST /endpoint {name: s, surname}
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -403,6 +431,13 @@ POST /endpoint (f | b |)
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -464,6 +499,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       strict: false,
@@ -523,6 +565,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       strict: false,
@@ -615,6 +664,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION,
@@ -689,7 +745,7 @@ POST /endpoint RequestModel
                 responses: [
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
-                    type: {
+                    status: {
                       kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
                       name: {
                         kind: ASTNodeKind.NAME,
@@ -754,6 +810,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -830,10 +893,17 @@ POST /endpoint RequestModel
                         value: 'ResponseModel',
                       },
                     },
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                   },
                   {
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
-                    type: {
+                    status: {
                       kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
                       name: {
                         kind: ASTNodeKind.NAME,
@@ -842,6 +912,13 @@ POST /endpoint RequestModel
                     },
                   },
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       strict: false,
@@ -903,6 +980,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -969,6 +1053,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -993,6 +1084,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1060,6 +1158,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1090,6 +1195,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       strict: false,
@@ -1153,6 +1265,13 @@ HEAD /pechkin/mandrill/event
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1182,6 +1301,13 @@ HEAD /pechkin/mandrill/event
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       strict: false,
@@ -1245,6 +1371,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1308,6 +1441,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1377,6 +1517,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1408,6 +1555,13 @@ POST /endpoint RequestModel
                 description: { kind: ASTNodeKind.DESCRIPTION, value: 'lol\nkek' },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       strict: false,
@@ -1471,6 +1625,13 @@ POST /endpoint RequestModel
                 },
                 responses: [
                   {
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: {
+                        kind: ASTNodeKind.NAME,
+                        value: '200',
+                      },
+                    },
                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
                     type: {
                       kind: ASTNodeKind.NAMED_TYPE,
@@ -1497,5 +1658,77 @@ POST /endpoint RequestModel
 
       expect(toJSONDeep(ast)).toEqual(expectedAST);
     });
+  });
+
+  it('can parse endpoint that return status and model', () => {
+    const sourceString = `
+\`/analytics_events\`:
+  POST /endpoint RequestModel
+      => 422 ResponseModel
+`;
+    const expectedAST: ASTNode = {
+      kind: ASTNodeKind.DOCUMENT,
+      definitions: [
+        {
+          kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+          tag: { kind: ASTNodeKind.NAME, value: '/analytics_events' },
+          endpoints: [
+            {
+              kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+              verb: {
+                kind: ASTNodeKind.ENDPOINT_VERB,
+                name: { kind: ASTNodeKind.NAME, value: 'POST' },
+              },
+              description: undefined,
+              url: {
+                kind: ASTNodeKind.ENDPOINT_URL,
+                name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
+                parameters: [
+                  {
+                    kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                    type: {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
+                      type: {
+                        kind: ASTNodeKind.NAMED_TYPE,
+                        name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
+                      },
+                    },
+                  },
+                ],
+              },
+              responses: [
+                {
+                  kind: ASTNodeKind.ENDPOINT_RESPONSE,
+                  status: {
+                    kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: '422',
+                    },
+                  },
+                  type: {
+                    kind: ASTNodeKind.NAMED_TYPE,
+                    name: {
+                      kind: ASTNodeKind.NAME,
+                      value: 'ResponseModel',
+                    },
+                  },
+                  description: undefined,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
+    const source = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
+
+    const ast = parse(source);
+
+    expect(toJSONDeep(ast)).toEqual(expectedAST);
   });
 });

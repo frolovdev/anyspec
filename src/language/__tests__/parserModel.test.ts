@@ -5,9 +5,9 @@ import {
   ModelTypeDefinitionNode,
   parse as defaultParse,
   Source,
-} from './language';
-import { AnySpecError } from './error/AnySpecError';
-import { toJSONDeep, log } from './utils';
+} from '../';
+import { AnySpecError } from '../../error/AnySpecError';
+import { toJSONDeep, log } from '../../utils';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -1188,7 +1188,7 @@ describe(__filename, () => {
       });
     });
 
-    it('should parse strict nested types coorectly', () => {
+    it('should parse strict nested types correctly', () => {
       const model = `
       AcDocument < Kek, Lel !{
             pathParameters: !{
@@ -1258,10 +1258,51 @@ describe(__filename, () => {
   });
 
   describe('enum', () => {
-    it('correctly parse model with named enum', () => {
+    it('correctly parse model with named enum and descriptions', () => {
       const model = `
+          // лул
+          // kek
           A (
             f | b | 
+          )
+        `;
+
+      const EnumA: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'f',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'A',
+        },
+        description: { kind: ASTNodeKind.DESCRIPTION, value: 'лул\nkek' },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA],
+      });
+    });
+
+    it('correctly parse model with named enum and  " " ', () => {
+      const model = `
+          A (
+            "f" | "b" | 
           )
         `;
 
@@ -1296,10 +1337,10 @@ describe(__filename, () => {
       });
     });
 
-    it('correctly parse model with named enum and  " " ', () => {
+    it('correctly parse model with named enum with ":"', () => {
       const model = `
           A (
-            "f" | "b" | 
+            f:a:b | b:c:v | 
           )
         `;
 
@@ -1309,14 +1350,52 @@ describe(__filename, () => {
             kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
             name: {
               kind: ASTNodeKind.NAME,
-              value: 'f',
+              value: 'f:a:b',
             },
           },
           {
             kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
             name: {
               kind: ASTNodeKind.NAME,
-              value: 'b',
+              value: 'b:c:v',
+            },
+          },
+        ],
+        name: {
+          kind: ASTNodeKind.NAME,
+          value: 'A',
+        },
+        kind: ASTNodeKind.ENUM_TYPE_DEFINITION,
+      };
+
+      const ast = parse(model);
+      expect(toJSONDeep(ast)).toEqual({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [EnumA],
+      });
+    });
+
+    it('correctly parse model with named enum with ":" and " "', () => {
+      const model = `
+          A (
+            "f:a:b" | "b:c:v" | 
+          )
+        `;
+
+      const EnumA: EnumTypeDefinitionNode = {
+        values: [
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'f:a:b',
+            },
+          },
+          {
+            kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'b:c:v',
             },
           },
         ],
@@ -1833,6 +1912,24 @@ describe(__filename, () => {
       expect(() => parse(enumString)).toThrow(
         'Syntax Error: parenthesis should be balanced inside enum definition',
       );
+    });
+  });
+
+  describe('unexpected symbols', () => {
+    it('no unexpected symbols at enums definition', () => {
+      const enumString = `
+      A = (b | c)
+      `;
+
+      expect(() => parse(enumString)).toThrow('Syntax Error: Unexpected "="');
+    });
+
+    it('no unexpected symbols at model definition', () => {
+      const enumString = `
+      Model = {}
+      `;
+
+      expect(() => parse(enumString)).toThrow('Syntax Error: Unexpected "="');
     });
   });
 });

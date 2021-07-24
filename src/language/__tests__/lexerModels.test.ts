@@ -1,6 +1,6 @@
-import { Source, Lexer, isPunctuatorTokenKind, Token, TokenKind } from './language';
+import { Source, Lexer, isPunctuatorTokenKind, Token, TokenKind } from '../../language';
 import { inspect } from 'util';
-import { dedent } from './__testsUtils__/dedent';
+import { dedent } from '../../__testsUtils__/dedent';
 
 function lexFirst(str: string) {
   const lexer = new Lexer(new Source({ body: str }));
@@ -580,12 +580,31 @@ describe('isPunctuatorTokenKind', () => {
 });
 
 describe('lexer understands enums', () => {
-  it('lexer understand normal enum', () => {
-    const enumString = new Source({ body: `A (f | b)` });
+  it('lexer understand normal enum with description', () => {
+    const enumString = new Source({
+      body: `// description
+    A (f | b)`,
+    });
 
     const tokens = getFullTokenList(enumString);
 
-    expect(tokens).toEqual(['A', '(', 'f', '|', 'b', ')']);
+    expect(tokens).toEqual(['Description', 'A', '(', 'f', '|', 'b', ')']);
+  });
+
+  it('lexer understand normal enum with ":"', () => {
+    const enumString = new Source({ body: `A (f:f | b:b )` });
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual(['A', '(', 'f:f', '|', 'b:b', ')']);
+  });
+
+  it('lexer understand normal enum with ":" and ""', () => {
+    const enumString = new Source({ body: `A ("f:f" | "b:b" )` });
+
+    const tokens = getFullTokenList(enumString);
+
+    expect(tokens).toEqual(['A', '(', 'f:f', '|', 'b:b', ')']);
   });
 
   it('lexer understand enum with spaces and symbols', () => {

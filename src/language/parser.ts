@@ -60,11 +60,18 @@ export class ModelParser {
    */
   many<T>(openKind: TokenKindEnum, parseFn: () => T, closeKind: TokenKindEnum): Array<T> {
     this.expectToken(openKind);
-
+    let count = 0;
     const nodes = [];
     do {
       const curResult = parseFn.call(this);
-
+      count++;
+      if (count === 999999) {
+        throw syntaxError(
+          this.lexer.source,
+          this.lexer.token.end,
+          `Unexpected token or not closed block`,
+        );
+      }
       nodes.push(curResult);
     } while (!this.expectOptionalToken(closeKind));
 
@@ -74,7 +81,16 @@ export class ModelParser {
   optionalMany<T>(openKind: TokenKindEnum, parseFn: () => T, closeKind: TokenKindEnum): Array<T> {
     if (this.expectOptionalToken(openKind)) {
       const nodes = [];
+      let count = 0;
       while (!this.expectOptionalToken(closeKind)) {
+        count++;
+        if (count === 999999) {
+          throw syntaxError(
+            this.lexer.source,
+            this.lexer.token.end,
+            `Unexpected token or not closed block`,
+          );
+        }
         nodes.push(parseFn.call(this));
       }
 
@@ -160,7 +176,7 @@ export class ModelParser {
 
   parseDefinition(): TypeDefinitionNode {
     if (this.peek(TokenKind.DESCRIPTION)) {
-      return this.parseModelTypeDefinition();
+      return this.parseTypeSystemDefinition();
     }
 
     if (this.peek(TokenKind.NAME)) {
@@ -176,6 +192,8 @@ export class ModelParser {
         return this.parseEnumTypeDefinition();
       }
     }
+
+    this.lexer.advance();
 
     throw this.unexpected();
   }
@@ -205,17 +223,20 @@ export class ModelParser {
 
   parseTypeSystemDefinition(): TypeDefinitionNode {
     // Many definitions begin with a description and require a lookahead.
+    const description = this.parseDescription();
     const braces = this.lexer.lookahead();
 
     switch (braces.kind) {
       case TokenKind.BRACE_L:
-        return this.parseModelTypeDefinition();
+        return this.parseModelTypeDefinition(description);
+      case TokenKind.PAREN_L:
+        return this.parseEnumTypeDefinition(description);
     }
 
     throw this.unexpected();
   }
 
-  parseEnumTypeDefinition(): EnumTypeDefinitionNode {
+  parseEnumTypeDefinition(description?: DescriptionNode): EnumTypeDefinitionNode {
     const start = this.lexer.token;
     const name = this.parseName();
     const kind = ASTNodeKind.ENUM_TYPE_DEFINITION;
@@ -225,12 +246,12 @@ export class ModelParser {
       kind,
       name,
       values,
+      description,
     });
   }
 
-  parseModelTypeDefinition(): ModelTypeDefinitionNode {
+  parseModelTypeDefinition(description?: DescriptionNode): ModelTypeDefinitionNode {
     const start = this.lexer.token;
-    const description = this.parseDescription();
     const name = this.parseName();
     const extendsModels = this.parseExtendsModels();
 
@@ -340,6 +361,8 @@ export class ModelParser {
       type: this.parseListReference(name, startToken),
     });
   }
+
+  // Name, (, {
 
   parseTypeReference(): TypeNode {
     const startToken = this.lexer.token;
@@ -502,9 +525,16 @@ export class EndpointsParser extends ModelParser {
    * parse status code (404, 202, etc)
    */
   parseEndpointStatusCode(): EndpointStatusCodeNode {
+    const status = this.peek(TokenKind.NUMBER)
+      ? this.parseNumber()
+      : this.node<NameNode>(this.lexer.token, {
+          kind: ASTNodeKind.NAME,
+          value: '200',
+        });
+
     return this.node<EndpointStatusCodeNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
-      name: this.parseNumber(),
+      name: status,
     });
   }
 
@@ -520,19 +550,17 @@ export class EndpointsParser extends ModelParser {
       throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or empty response`);
     }
 
-    if (this.peek(TokenKind.NUMBER)) {
-      return this.node<EndpointResponseNode>(this.lexer.token, {
-        kind: ASTNodeKind.ENDPOINT_RESPONSE,
-        type: this.parseEndpointStatusCode(),
-      });
-    }
-
-    const type = this.parseTypeReference();
+    const status = this.parseEndpointStatusCode();
+    const type =
+      this.peek(TokenKind.NAME) || this.peek(TokenKind.BRACE_L) || this.peek(TokenKind.PAREN_L)
+        ? this.parseTypeReference()
+        : undefined;
 
     return this.node<EndpointResponseNode>(this.lexer.token, {
       kind: ASTNodeKind.ENDPOINT_RESPONSE,
-      description,
       type,
+      status,
+      description,
     });
   }
 
@@ -587,7 +615,7 @@ export class EndpointsParser extends ModelParser {
       throw syntaxError(this.lexer.source, this.lexer.token.start, `incorrect or missed url`);
     }
 
-    if (url.value.includes('&')) {
+    if (url.value.includes('&') || url.value.includes(';') || url.value.includes('=')) {
       throw this.throwNoInlineQuery();
     }
 
@@ -627,6 +655,10 @@ export class EndpointsParser extends ModelParser {
           }
 
           if (isLowerCase(q.charAt(0))) {
+            throw this.throwNoInlineQuery();
+          }
+
+          if (q.includes(':')) {
             throw this.throwNoInlineQuery();
           }
 
