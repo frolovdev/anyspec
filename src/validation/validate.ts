@@ -8,6 +8,7 @@ import { ValidationRule } from './validationContext';
 import { ValidationContext } from './validationContext';
 import { assert } from '../utils';
 
+console.log('qweqw')
 /**
  * Implements the "Validation" section of the spec.
  *
