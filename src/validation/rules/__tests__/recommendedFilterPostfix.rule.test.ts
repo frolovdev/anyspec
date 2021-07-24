@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { RecommendedFilterPostfix } from '../recommended/recomendedFilterPostfix.rule';
+import { recommendedFilterPostfix } from '../recommended/recommendedFilterPostfix.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(RecommendedFilterPostfix, queryStr);
+  return expectValidationErrors(recommendedFilterPostfix, queryStr);
 }
 
 function expectValid(queryStr: string) {
@@ -23,6 +23,20 @@ describe(__filename, () => {
 `);
   });
 
+  it('should be valid v2', () => {
+    expectValid(`
+    BkConnectionIndexRequestQuery !{
+        filter,
+    }
+`);
+  });
+  it('should be valid v3', () => {
+    expectValid(`
+    BkConnectionIndexRequestQuery !{
+        filter: s,
+    }
+`);
+  });
   it('should be invalid', () => {
     const errors = getErrors(
       `

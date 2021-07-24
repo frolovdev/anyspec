@@ -1,10 +1,13 @@
-import { specifiedScalarTypes } from '../../../runtypes';
+import { validate } from '../..';
+import { ASTNodeKind, parse, Source } from '../../../language';
+import { concatAST } from '../../../language/concatAST';
+import { AnySpecSchema, specifiedScalarTypes } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
-import { KnownTypeNamesRule } from '../knownTypeNames.rule';
+import { knownTypeNamesRule } from '../base/knownTypeNames.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(KnownTypeNamesRule, queryStr);
+  return expectValidationErrors(knownTypeNamesRule, queryStr);
 }
 
 function expectValid(queryStr: string) {
@@ -22,7 +25,7 @@ describe(__filename, () => {
     `);
   });
 
-  it('all knwon types are valid', () => {
+  it('all known types are valid', () => {
     specifiedScalarTypes.forEach((type) =>
       expectValid(`
     Doc {
@@ -32,7 +35,7 @@ describe(__filename, () => {
     );
   });
 
-  it('unkown type names are invalid', () => {
+  it('unknown type names are invalid', () => {
     const errors = getErrors(`
       Doc {
         name: ew,
@@ -98,6 +101,81 @@ describe(__filename, () => {
       {
         locations: [{ line: 2, column: 18 }],
         message: 'Unknown type "Document". Did you mean "AcDocument"?',
+      },
+    ]);
+  });
+
+  it('known-type-names rule are work with endpoints, valid', () => {
+    const endpointString = `
+POST /endpoint RequestModel
+  => {a: string, c: b, s}
+`;
+    const modelString = `
+RequestModel {a: string, c: b, s}
+`;
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = concatAST([astEndpoints, astModels]);
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [knownTypeNamesRule]);
+
+    expect(errors).toEqual([]);
+  });
+
+  it('known-type-names rule are work with endpoints, invalid', () => {
+    const endpointString = `
+POST /endpoint Model
+  => RespModel
+`;
+    const modelString = `
+RequestModel {a: string, c: b, s}
+ResponseModel {a: string, c: b, s}
+`;
+
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = concatAST([astEndpoints, astModels]);
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [knownTypeNamesRule]);
+
+    expect(toJSONDeep(errors)).toMatchObject([
+      {
+        locations: [{ line: 2, column: 16 }],
+        message: 'Unknown type "Model".',
+      },
+      {
+        locations: [{ line: 3, column: 6 }],
+        message: 'Unknown type "RespModel". Did you mean "RequestModel" or "ResponseModel"?',
       },
     ]);
   });

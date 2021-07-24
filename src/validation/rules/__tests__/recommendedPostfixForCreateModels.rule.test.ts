@@ -1,0 +1,122 @@
+import { validate } from '../..';
+import { ASTNodeKind, parse, Source } from '../../../language';
+import { concatAST } from '../../../language/concatAST';
+import { AnySpecSchema } from '../../../runtypes';
+import { toJSONDeep } from '../../../utils';
+import { recommendedPostfixForCreateModels } from '../recommended/recommendedPostfixForCreateModels.rule';
+
+describe(__filename, () => {
+  it('should be valid', () => {
+    const endpointString = `
+POST /endpoint RequestModel
+    => ResponseModel
+`;
+
+    const modelString = `
+RequestModel {
+    connection: ConnectionNew
+}
+`;
+
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = concatAST([astEndpoints, astModels]);
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [recommendedPostfixForCreateModels]);
+
+    expect(errors).toEqual([]);
+  });
+
+  it('should be valid with scalar types', () => {
+    const endpointString = `
+POST /endpoint RequestModel
+    => ResponseModel
+`;
+
+    const modelString = `
+RequestModel {
+    connection: s,
+    referralCode
+}
+`;
+
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = concatAST([astEndpoints, astModels]);
+
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [recommendedPostfixForCreateModels]);
+
+    expect(errors).toEqual([]);
+  });
+
+  it('should be invalid', () => {
+    const endpointString = `
+POST /endpoint RequestModel
+    => ResponseModel
+`;
+
+    const modelString = `
+RequestModel {
+    connection: Connection
+}
+`;
+
+    const sourceEndpoints = new Source({
+      body: endpointString,
+      name: 'endpoints-source',
+      sourceType: 'endpoints',
+    });
+
+    const sourceModels = new Source({
+      body: modelString,
+      name: 'endpoints-model',
+      sourceType: 'models',
+    });
+
+    const astEndpoints = parse(sourceEndpoints);
+    const astModels = parse(sourceModels);
+
+    const combined = concatAST([astEndpoints, astModels]);
+    const schema = new AnySpecSchema({ ast: combined });
+
+    const errors = validate(schema, combined, [recommendedPostfixForCreateModels]);
+
+    expect(toJSONDeep(errors)).toEqual([
+      {
+        locations: [{ line: 3, column: 17 }],
+        message:
+          'Type name of create field should ends with New postfix, did you mean ConnectionNew',
+      },
+    ]);
+  });
+});

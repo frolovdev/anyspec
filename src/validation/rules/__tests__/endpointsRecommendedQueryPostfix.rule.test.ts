@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { EndpointsRecommendedQueryPostfix } from '../recommended/endpointsRecommendedQueryPostfix.rule';
+import { endpointsRecommendedQueryPostfix } from '../recommended/endpointsRecommendedQueryPostfix.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(EndpointsRecommendedQueryPostfix, queryStr, 'endpoints');
+  return expectValidationErrors(endpointsRecommendedQueryPostfix, queryStr, 'endpoints');
 }
 
 function expectValid(queryStr: string) {

@@ -4,7 +4,20 @@ import { ValidationContext } from '../../validationContext';
 
 const POSTFIX = 'RequestQuery';
 
-export function EndpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
+/**
+ *
+ *
+ * good ✅
+ * ```
+ * POST /endpoint?SomeTypeRequestQuery
+ * ```
+ *
+ * bad ❌
+ * ```
+ * POST /endpoint?SomeType
+ * ```
+ */
+export function endpointsRecommendedQueryPostfix(context: ValidationContext): ASTVisitor {
   return {
     EndpointParameterQuery(node) {
       if (!node.type.name.value?.endsWith(POSTFIX)) {

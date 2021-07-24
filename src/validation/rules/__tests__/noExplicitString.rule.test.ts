@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { endpointsRecommendedResponsePostfix } from '../recommended/endpointsRecommendedResponsePostfix.rule';
+import { noExplicitStringRule } from '../base';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(endpointsRecommendedResponsePostfix, queryStr, 'endpoints');
+  return expectValidationErrors(noExplicitStringRule, queryStr);
 }
 
 function expectValid(queryStr: string) {
@@ -15,23 +15,25 @@ function expectValid(queryStr: string) {
 describe(__filename, () => {
   it('should be valid', () => {
     expectValid(`
-GET /endpoint
-  => ResponseModelResponse
+    AcDocument {
+        field
+    }
 `);
   });
 
   it('should be invalid', () => {
     const errors = getErrors(
       `
-GET /endpoint
-  => ResponseModel
+      Document {
+        field: s
+      }
 `,
     );
 
     expect(toJSONDeep(errors)).toMatchObject([
       {
-        locations: [{ line: 3, column: 19 }],
-        message: 'Request model should ends with Response postfix, e.g. SomeTypeResponse',
+        locations: [{ line: 3, column: 16 }],
+        message: 'No need to explicitly specify string type since it is the default',
       },
     ]);
   });

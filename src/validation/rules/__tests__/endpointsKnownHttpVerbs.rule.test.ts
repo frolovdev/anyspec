@@ -1,9 +1,9 @@
 import { toJSONDeep } from '../../../utils';
-import { EndpointsKnownHttpVerbs } from '../base/endpointsKnownHttpVerbs.rule';
+import { endpointsKnownHttpVerbs } from '../base/endpointsKnownHttpVerbs.rule';
 import { expectValidationErrors } from './fixtures';
 
 function getErrors(queryStr: string) {
-  return expectValidationErrors(EndpointsKnownHttpVerbs, queryStr, 'endpoints');
+  return expectValidationErrors(endpointsKnownHttpVerbs, queryStr, 'endpoints');
 }
 
 function expectValid(queryStr: string) {
