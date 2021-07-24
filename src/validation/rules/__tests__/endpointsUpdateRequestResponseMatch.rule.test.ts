@@ -75,7 +75,7 @@ PATCH /endpoint ConnectionUpdateRequestBody
       field6: date,
       field7: text,
       field8: json,
-      field8: string,
+      field9: string,
   }
   `;
 
