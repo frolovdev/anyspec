@@ -10,7 +10,6 @@ import {
   ModelTypeDefinitionNode,
   TypeNode,
 } from '../../../language';
-import { specifiedScalarTypes } from '../../../runtypes';
 import { ASTVisitor, visit } from '../../../visitor';
 import { ValidationContext } from '../../validationContext';
 
