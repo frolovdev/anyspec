@@ -1,0 +1,1 @@
+![Visualization of this repo](./assets/diagram.svg)
