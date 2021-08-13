@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es2020",
+    "lib": ["es2020"],
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "noEmitOnError": false,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "skipLibCheck": true,
+  },
+  "exclude": ["node_modules", "dist"]
+}

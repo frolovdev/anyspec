@@ -1,5 +1,7 @@
-import { ASTReducer, visit } from '../visitor';
-import { ASTNode, ASTNodeKind } from '../language/ast';
+import { ASTReducer, visit } from '../../../visitor';
+import { ASTNode, ASTNodeKind, DocumentNode } from '../../../language/ast';
+import { Doc, FastPath, ParserOptions, Printer } from 'prettier';
+import { PrinterDocumentNode } from './types/types';
 
 /**
  * Converts an AST into a string, using one set of reasonable
@@ -125,3 +127,54 @@ function wrap(start: string, maybeString: $Maybe<string>, end: string = ''): str
 function indent(str: string): string {
   return wrap('  ', str.replace(/\n/g, '\n  '));
 }
+
+function genericPrint<T extends PrinterDocumentNode>(
+  path: FastPath<T>,
+  options: ParserOptions<T>,
+  print: (path: FastPath<T>) => Doc,
+): Doc | string {
+  const node = path.getValue();
+  if (!node) {
+    return '';
+  }
+
+  if (typeof node === 'string') {
+    return node;
+  }
+
+  return 'qweqw';
+}
+
+function hasPrettierIgnore<T extends PrinterDocumentNode>(path: FastPath<T>) {
+  const node = path.getValue();
+  return (
+    node &&
+    Array.isArray(node.comments) &&
+    node.comments.some((comment) => comment.value.trim() === 'prettier-ignore')
+  );
+}
+
+function canAttachComment(node: any) {
+  return node.kind && node.kind !== 'Comment';
+}
+
+function printComment(commentPath: any) {
+  const comment = commentPath.getValue();
+  if (comment.kind === 'Comment') {
+    return '#' + comment.value.trimEnd();
+  }
+
+  /* istanbul ignore next */
+  throw new Error('Not a comment: ' + JSON.stringify(comment));
+}
+
+function clean(/*node, newNode , parent*/) {}
+clean.ignoredProperties = new Set(['loc', 'comments']);
+
+export const printer: Printer<PrinterDocumentNode> = {
+  print: genericPrint,
+  massageAstNode: clean,
+  hasPrettierIgnore,
+  printComment,
+  canAttachComment,
+};
