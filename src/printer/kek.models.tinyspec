@@ -2,12 +2,14 @@
 
 # qwelqw
 
+// jej
+// lol
 AcModel {
 
-
-
-
-
+# deprecate
+-a: string,
+b?: AcModel,
+c: !{examples: Example[], totalCount?: i}
 
 
 
@@ -20,6 +22,11 @@ AcModel {
 
 
 }
+
+
+// jej
+// lol
+Kek ()
 
 
 AcModel {
