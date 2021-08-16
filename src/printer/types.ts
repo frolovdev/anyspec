@@ -1,4 +1,4 @@
-import { DocumentNode } from '../../../../language';
+import { DocumentNode } from '../../language';
 
 export type CommentNode = {
   value: string;

@@ -1,5 +1,5 @@
-import { ASTReducer, visit } from '../../../visitor';
-import { ASTNode, ASTNodeKind, DocumentNode } from '../../../language/ast';
+import { ASTReducer, visit } from '../visitor';
+import { ASTNode, ASTNodeKind, DocumentNode } from '../language/ast';
 import { Doc, FastPath, ParserOptions, Printer } from 'prettier';
 import { PrinterDocumentNode } from './types/types';
 

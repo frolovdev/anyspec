@@ -1,6 +1,6 @@
-import { AnySpecError } from '../../../error';
-import { ASTNode, DocumentNode, SourceLocation } from '../../../language';
-import { parse as anyspecParse } from '../../../language/parser';
+import { AnySpecError } from '../error';
+import { ASTNode, DocumentNode, SourceLocation } from '../language';
+import { parse as anyspecParse } from '../language/parser';
 import { printerName } from './consts';
 
 import { locStart, locEnd } from './loc';
