@@ -1,3 +1,7 @@
+#kek
+
+# qwelqw
+
 AcModel {
 
 
@@ -7,7 +11,14 @@ AcModel {
 
 
 
-  a: string
+}
+
+
+AcModel {
+
+
+
+
 }
 
 
@@ -20,18 +31,4 @@ AcModel {
 
 
 
-  a: string
-}
-
-
-AcModel {
-
-
-
-
-
-
-
-
-  a: string
 }

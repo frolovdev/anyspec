@@ -1,13 +1,19 @@
 import { ASTReducer, visit } from '../visitor';
 import { ASTNode, ASTNodeKind, DocumentNode } from '../language/ast';
-import { Doc, FastPath, ParserOptions, Printer } from 'prettier';
-import { PrinterDocumentNode } from './types/types';
+import { Doc, FastPath, ParserOptions, Printer, doc, util } from 'prettier';
+import { PrinterAstNode, PrinterDocumentNode } from './types';
+import { locEnd } from './loc';
+
+const {
+  builders: { group, hardline },
+} = doc;
+
+const { isNextLineEmpty } = util;
 
 /**
  * Converts an AST into a string, using one set of reasonable
  * formatting rules.
  */
-
 const MAX_LINE_LENGTH = 80;
 
 export function printModels(ast: ASTNode): string {
@@ -128,11 +134,11 @@ function indent(str: string): string {
   return wrap('  ', str.replace(/\n/g, '\n  '));
 }
 
-function genericPrint<T extends PrinterDocumentNode>(
-  path: FastPath<T>,
-  options: ParserOptions<T>,
-  print: (path: FastPath<T>) => Doc,
-): Doc | string {
+function genericPrint(
+  path: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
   const node = path.getValue();
   if (!node) {
     return '';
@@ -142,16 +148,45 @@ function genericPrint<T extends PrinterDocumentNode>(
     return node;
   }
 
-  return 'qweqw';
+  switch (node.kind) {
+    case 'Document': {
+      const parts: Doc[] = [];
+      // @ts-ignore
+      path.each((pathChild, index, definitions) => {
+        parts.push(print());
+        if (index !== definitions.length - 1) {
+          parts.push(hardline);
+          if (isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd)) {
+            parts.push(hardline);
+          }
+        }
+      }, 'definitions');
+      return [...parts, hardline];
+    }
+
+    case 'ModelTypeDefinition': {
+      return [print('description'), node.description ? hardline : '', print('name')];
+    }
+
+    case 'FieldDefinition': {
+      return [];
+    }
+
+    case 'Name': {
+      return node.value ?? '';
+    }
+  }
 }
 
 function hasPrettierIgnore<T extends PrinterDocumentNode>(path: FastPath<T>) {
   const node = path.getValue();
-  return (
+
+  const result =
     node &&
     Array.isArray(node.comments) &&
-    node.comments.some((comment) => comment.value.trim() === 'prettier-ignore')
-  );
+    node.comments.some((comment) => comment.value.trim() === 'prettier-ignore');
+
+  return result;
 }
 
 function canAttachComment(node: any) {
@@ -160,6 +195,7 @@ function canAttachComment(node: any) {
 
 function printComment(commentPath: any) {
   const comment = commentPath.getValue();
+
   if (comment.kind === 'Comment') {
     return '#' + comment.value.trimEnd();
   }
@@ -171,7 +207,8 @@ function printComment(commentPath: any) {
 function clean(/*node, newNode , parent*/) {}
 clean.ignoredProperties = new Set(['loc', 'comments']);
 
-export const printer: Printer<PrinterDocumentNode> = {
+export const printer: Printer = {
+  // @ts-expect-error incompatible types and implementation in prettier
   print: genericPrint,
   massageAstNode: clean,
   hasPrettierIgnore,

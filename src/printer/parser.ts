@@ -1,10 +1,11 @@
+import { Parser, ParserOptions } from 'prettier';
 import { AnySpecError } from '../error';
 import { ASTNode, DocumentNode, SourceLocation } from '../language';
 import { parse as anyspecParse } from '../language/parser';
 import { printerName } from './consts';
 
 import { locStart, locEnd } from './loc';
-import { PrinterDocumentNode } from './types/types';
+import { PrinterAstNode, PrinterDocumentNode } from './types';
 
 function parseComments(ast: DocumentNode) {
   const comments = [];
@@ -63,7 +64,9 @@ function createParseError(error: unknown) {
 function parse(text: string) {
   try {
     const ast = anyspecParse(text) as PrinterDocumentNode;
+
     ast.comments = parseComments(ast);
+
     removeTokens(ast);
     return ast;
   } catch (error) {
@@ -71,7 +74,7 @@ function parse(text: string) {
   }
 }
 
-export const parser = {
+export const parser: Parser = {
   parse,
   astFormat: printerName,
   locStart,
