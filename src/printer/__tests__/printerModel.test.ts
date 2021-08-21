@@ -376,4 +376,56 @@ AcDocument {}\n`,
     `);
     });
   });
+
+  describe('handle comments', () => {
+    it('success', () => {
+      const source = `
+      # comment1
+      AcDocument < Kek, Lel !{
+        -name?: s[],
+        # comment2
+        type?: ( standard | service ),
+        # comment4
+        kek: {
+          conversationId: i,
+          users: {
+            id: i,
+            nickname,
+            avatar?,
+          }[],
+        },
+        surname: b[],
+      }
+      
+      # comment3
+      Lel ( kek  | lol )
+      `;
+
+      const printed = print(source);
+
+      expect(dedentString(printed)).toEqual(dedent`
+      # comment1
+      AcDocument < Kek, Lel !{
+        -name?: s[],
+        # comment2
+        type?: ( standard | service ),
+        # comment4
+        kek: {
+          conversationId: i,
+          users: {
+            id: i,
+            nickname,
+            avatar?,
+          }[],
+        },
+        surname: b[],
+      }
+
+      # comment3
+      Lel (
+        kek |
+        lol
+      )`);
+    });
+  });
 });
