@@ -30,9 +30,7 @@ function genericPrint(
         parts.push(print());
         if (index !== definitions.length - 1) {
           parts.push(hardline);
-          if (isNextLineEmpty(options.originalText, pathChild.getValue(), locEnd)) {
-            parts.push(hardline);
-          }
+          parts.push(hardline);
         }
       }, 'definitions');
       return [...parts, hardline];
@@ -102,7 +100,7 @@ function genericPrint(
         print('name'),
         node.fields.length > 0
           ? [
-              ` ${strict}{`,
+              `${strict}{`,
               indent([
                 // @ts-expect-error prettier has incompatible types
                 hardline,
@@ -145,7 +143,7 @@ function genericPrint(
         print('name'),
         node.values.length > 0
           ? [
-              ' {',
+              ' (',
               indent([
                 // @ts-expect-error prettier has incompatible types
                 hardline,
@@ -153,11 +151,11 @@ function genericPrint(
                 join(
                   hardline,
                   // @ts-expect-error prettier has incompatible types
-                  path.call((valuesPath) => printSequence(valuesPath, options, print), 'values'),
+                  path.call((valuesPath) => printEnumValues(valuesPath, options, print), 'values'),
                 ),
               ]),
               hardline,
-              '}',
+              ')',
             ]
           : [' ', '()'],
       ];
@@ -213,7 +211,24 @@ function printInlineEnumValues(
 //  standard |
 //  type
 // )
-function printEnumValues() {}
+function printEnumValues(
+  sequencePath: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
+  // @ts-expect-error
+  const count = sequencePath.getValue().length;
+
+  return sequencePath.map((path, i) => {
+    const printed = print();
+
+    if (i < count - 1) {
+      return [printed, ' |'];
+    }
+
+    return [printed];
+  });
+}
 
 function hasPrettierIgnore<T extends PrinterDocumentNode>(path: FastPath<T>) {
   const node = path.getValue();

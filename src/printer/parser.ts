@@ -1,11 +1,11 @@
-import { Parser, ParserOptions } from 'prettier';
+import { Parser } from 'prettier';
 import { AnySpecError } from '../error';
-import { ASTNode, DocumentNode, SourceLocation } from '../language';
+import { DocumentNode, SourceLocation } from '../language';
 import { parse as anyspecParse } from '../language/parser';
 import { printerName } from './consts';
 
 import { locStart, locEnd } from './loc';
-import { PrinterAstNode, PrinterDocumentNode } from './types';
+import { PrinterDocumentNode } from './types';
 
 function parseComments(ast: DocumentNode) {
   const comments = [];
