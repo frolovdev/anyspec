@@ -1,7 +1,5 @@
-import { ASTNodeKind, EnumTypeDefinitionNode, ModelTypeDefinitionNode } from '../../language';
 import { print } from '../index';
 import { dedent, dedentString } from '../../__testsUtils__';
-import { visualizeEndOfLine } from '../../__testsUtils__/visualizeEndOfLine';
 
 describe(__filename, () => {
   describe('models', () => {
@@ -377,62 +375,5 @@ AcDocument {}\n`,
 
     `);
     });
-  });
-  describe('throw error', () => {
-    //     it('should throw error if trying use print on ast with EndpointNamespaceTypeDefinition', () => {
-    //       const ast = {
-    //         kind: ASTNodeKind.DOCUMENT,
-    //         definitions: [
-    //           {
-    //             kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
-    //             endpoints: [
-    //               {
-    //                 kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
-    //                 verb: {
-    //                   kind: ASTNodeKind.ENDPOINT_VERB,
-    //                   name: { kind: ASTNodeKind.NAME, value: 'POST' },
-    //                 },
-    //                 url: {
-    //                   kind: ASTNodeKind.ENDPOINT_URL,
-    //                   name: { kind: ASTNodeKind.NAME, value: '/endpoint' },
-    //                   parameters: [
-    //                     {
-    //                       kind: ASTNodeKind.ENDPOINT_PARAMETER,
-    //                       type: {
-    //                         kind: ASTNodeKind.ENDPOINT_PARAMETER_BODY,
-    //                         type: {
-    //                           kind: ASTNodeKind.NAMED_TYPE,
-    //                           name: { kind: ASTNodeKind.NAME, value: 'RequestModel' },
-    //                         },
-    //                       },
-    //                     },
-    //                   ],
-    //                 },
-    //                 responses: [
-    //                   {
-    //                     status: {
-    //                       kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
-    //                       name: {
-    //                         kind: ASTNodeKind.NAME,
-    //                         value: '200',
-    //                       },
-    //                     },
-    //                     kind: ASTNodeKind.ENDPOINT_RESPONSE,
-    //                     type: {
-    //                       kind: ASTNodeKind.NAMED_TYPE,
-    //                       name: {
-    //                         kind: ASTNodeKind.NAME,
-    //                         value: 'ResponseModel',
-    //                       },
-    //                     },
-    //                   },
-    //                 ],
-    //               },
-    //             ],
-    //           },
-    //         ],
-    //       };
-    //       expect(() => print(ast)).toThrow();
-    //     });
   });
 });
