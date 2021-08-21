@@ -125,19 +125,15 @@ function genericPrint(
         print('name'),
         node.values.length > 0
           ? [
-              ' {',
+              '( ',
               indent([
                 // @ts-expect-error prettier has incompatible types
-                hardline,
-                // @ts-expect-error prettier has incompatible types
-                join(
-                  hardline,
-                  // @ts-expect-error prettier has incompatible types
-                  path.call((valuesPath) => printSequence(valuesPath, options, print), 'values'),
+                path.call(
+                  (valuesPath) => printInlineEnumValues(valuesPath, options, print),
+                  'values',
                 ),
               ]),
-              hardline,
-              '}',
+              ' )',
             ]
           : [' ', '()'],
       ];
@@ -192,6 +188,32 @@ function printSequence(
     return printed;
   });
 }
+
+// AcDoc { lol: (standard | type) }
+function printInlineEnumValues(
+  sequencePath: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
+  // @ts-expect-error
+  const count = sequencePath.getValue().length;
+
+  return sequencePath.map((path, i) => {
+    const printed = print();
+
+    if (i < count - 1) {
+      return [printed, ' | '];
+    }
+
+    return [printed];
+  });
+}
+
+// Enum (
+//  standard |
+//  type
+// )
+function printEnumValues() {}
 
 function hasPrettierIgnore<T extends PrinterDocumentNode>(path: FastPath<T>) {
   const node = path.getValue();

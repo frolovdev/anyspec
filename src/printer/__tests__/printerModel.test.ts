@@ -192,102 +192,24 @@ AcDocument {}\n`,
     `);
     });
 
-    //     it('correctly print model with inline enum', () => {
-    //       const ast = {
-    //         kind: ASTNodeKind.DOCUMENT,
-    //         definitions: [
-    //           {
-    //             fields: [
-    //               {
-    //                 omitted: true,
-    //                 optional: true,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'name',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 's',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //               {
-    //                 omitted: false,
-    //                 optional: true,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'type',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.ENUM_INLINE_TYPE_DEFINITION,
-    //                   values: [
-    //                     {
-    //                       kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-    //                       name: { kind: ASTNodeKind.NAME, value: 'standard' },
-    //                     },
-    //                     {
-    //                       kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
-    //                       name: { kind: ASTNodeKind.NAME, value: 'service' },
-    //                     },
-    //                   ],
-    //                 },
-    //               },
-    //               {
-    //                 omitted: false,
-    //                 optional: false,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'surname',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 'b',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //             ],
-    //             name: {
-    //               kind: ASTNodeKind.NAME,
-    //               value: 'AcDocument',
-    //             },
-    //             extendsModels: [
-    //               {
-    //                 kind: ASTNodeKind.NAMED_TYPE,
-    //                 name: { kind: ASTNodeKind.NAME, value: 'Kek' },
-    //               },
-    //               {
-    //                 kind: ASTNodeKind.NAMED_TYPE,
-    //                 name: { kind: ASTNodeKind.NAME, value: 'Lel' },
-    //               },
-    //             ],
-    //             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-    //             strict: true,
-    //             description: undefined,
-    //           },
-    //         ],
-    //       };
-    //       const printed = print(ast);
-    //       expect(printed).toEqual(dedent`
-    // AcDocument < Kek, Lel !{
-    //   -name?: s[],
-    //   type?: ( standard | service ),
-    //   surname: b[],
-    // }
-    // `);
-    //     });
+    it('correctly print model with inline enum', () => {
+      const source = `
+      AcDocument < Kek, Lel !{
+        -name?: s[],
+        type?: ( standard | service ),
+        surname: b[],
+      }
+      `;
+      const printed = print(source);
+      expect(dedentString(printed)).toEqual(dedent`
+    AcDocument < Kek, Lel !{
+      -name?: s[],
+      type?: ( standard | service ),
+      surname: b[],
+    }
+    `);
+    });
+
     //     it('correctly print model with inline type definitions', () => {
     //       const ast = {
     //         kind: ASTNodeKind.DOCUMENT,
