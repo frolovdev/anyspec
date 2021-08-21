@@ -35,14 +35,14 @@ export function knownTypeNamesRule(context: ValidationContext): ASTVisitor {
       if (!definedTypes[typeName]) {
         const definitionNode = ancestors[2] ?? parent;
 
-        const isSDL = definitionNode != null && isSDLNode(definitionNode);
-        if (isSDL && standardTypeNames.has(typeName)) {
+        const isDefinition = definitionNode != null && isDefinitionNode(definitionNode);
+        if (isDefinition && standardTypeNames.has(typeName)) {
           return;
         }
 
         const suggestedTypes = suggestionList(
           typeName,
-          isSDL ? [...standardTypeNames].concat(typeNames) : typeNames,
+          isDefinition ? [...standardTypeNames].concat(typeNames) : typeNames,
         );
         context.reportError(
           new AnySpecError(`Unknown type "${typeName}".` + didYouMean(suggestedTypes), node),
@@ -52,7 +52,7 @@ export function knownTypeNamesRule(context: ValidationContext): ASTVisitor {
   };
 }
 
-function isSDLNode(value: ASTNode | ReadonlyArray<ASTNode>): boolean {
+function isDefinitionNode(value: ASTNode | ReadonlyArray<ASTNode>): boolean {
   return (
     'kind' in value &&
     (isModelDomainDefinitionNode(value) || isEndpointNamespaceTypeDefinitionNode(value))
