@@ -1,23 +1,12 @@
-import { ASTReducer, visit } from '../visitor';
-import { ASTNode, ASTNodeKind, DocumentNode } from '../language/ast';
 import { Doc, FastPath, ParserOptions, Printer, doc, util } from 'prettier';
 import { PrinterAstNode, PrinterDocumentNode } from './types';
 import { locEnd } from './loc';
 
 const {
-  builders: { group, hardline, indent, join, softline },
+  builders: { hardline, indent, join },
 } = doc;
 
 const { isNextLineEmpty } = util;
-
-/**
- * Converts an AST into a string, using one set of reasonable
- * formatting rules.
- */
-
-export function printModels(ast: ASTNode): string {
-  return visit(ast, printDocASTReducerModel);
-}
 
 function genericPrint(
   path: FastPath<PrinterAstNode>,
@@ -66,9 +55,12 @@ function genericPrint(
           ? [
               ` ${strict}{`,
               indent([
+                // @ts-expect-error prettier has incompatible types
                 hardline,
+                // @ts-expect-error prettier has incompatible types
                 join(
                   hardline,
+                  // @ts-expect-error prettier has incompatible types
                   path.call((fieldsPath) => printSequence(fieldsPath, options, print), 'fields'),
                 ),
               ]),
@@ -82,7 +74,10 @@ function genericPrint(
     case 'FieldDefinition': {
       const omittedSymbol = node.omitted ? '-' : '';
       const opt = node.optional ? '?' : '';
-      return [omittedSymbol, print('name'), opt, ': ', print('type')];
+      const isBlank = node.type.kind === 'NamedType' && typeof node.type.name.value === 'undefined';
+      return [omittedSymbol, print('name'), opt].concat(
+        isBlank ? [','] : [': ', print('type'), ','],
+      );
     }
 
     case 'Name': {
@@ -106,9 +101,12 @@ function genericPrint(
           ? [
               ` ${strict}{`,
               indent([
+                // @ts-expect-error prettier has incompatible types
                 hardline,
+                // @ts-expect-error prettier has incompatible types
                 join(
                   hardline,
+                  // @ts-expect-error prettier has incompatible types
                   path.call((fieldsPath) => printSequence(fieldsPath, options, print), 'fields'),
                 ),
               ]),
@@ -126,9 +124,12 @@ function genericPrint(
           ? [
               ' {',
               indent([
+                // @ts-expect-error prettier has incompatible types
                 hardline,
+                // @ts-expect-error prettier has incompatible types
                 join(
                   hardline,
+                  // @ts-expect-error prettier has incompatible types
                   path.call((valuesPath) => printSequence(valuesPath, options, print), 'values'),
                 ),
               ]),
@@ -147,9 +148,12 @@ function genericPrint(
           ? [
               ' {',
               indent([
+                // @ts-expect-error prettier has incompatible types
                 hardline,
+                // @ts-expect-error prettier has incompatible types
                 join(
                   hardline,
+                  // @ts-expect-error prettier has incompatible types
                   path.call((valuesPath) => printSequence(valuesPath, options, print), 'values'),
                 ),
               ]),

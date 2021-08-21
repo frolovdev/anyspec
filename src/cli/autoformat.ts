@@ -4,7 +4,6 @@ import { Command } from 'commander';
 import { default as getPath } from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { parse, Source } from '../language';
-import { printModels } from '../printer';
 
 async function main() {
   const program = new Command();
@@ -23,9 +22,9 @@ async function main() {
 
     const parsed = getParsed(sources);
 
-    const printed = printModels(parsed);
+    // const printed = printModels(parsed);
 
-    await writeFile(argumentPath, printed);
+    // await writeFile(argumentPath, printed);
   } catch (e) {
     console.error(e);
   }
