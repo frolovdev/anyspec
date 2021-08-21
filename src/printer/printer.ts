@@ -75,9 +75,7 @@ function genericPrint(
       const omittedSymbol = node.omitted ? '-' : '';
       const opt = node.optional ? '?' : '';
       const isBlank = node.type.kind === 'NamedType' && typeof node.type.name.value === 'undefined';
-      return [omittedSymbol, print('name'), opt].concat(
-        isBlank ? [','] : [': ', print('type'), ','],
-      );
+      return [omittedSymbol, print('name'), opt].concat(isBlank ? [','] : [': ', print('type')]);
     }
 
     case 'Name': {
