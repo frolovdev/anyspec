@@ -141,218 +141,56 @@ AcDocument {}\n`,
     `);
     });
 
-    //     it('correctly print strict mode models', () => {
-    //       const ast = {
-    //         kind: ASTNodeKind.DOCUMENT,
-    //         definitions: [
-    //           {
-    //             fields: [
-    //               {
-    //                 omitted: false,
-    //                 optional: true,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'name',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 's',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //               {
-    //                 omitted: false,
-    //                 optional: false,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'surname',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 'b',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //             ],
-    //             name: {
-    //               kind: ASTNodeKind.NAME,
-    //               value: 'AcDocument',
-    //             },
-    //             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-    //             strict: true,
-    //             description: undefined,
-    //             extendsModels: [],
-    //           },
-    //         ],
-    //       };
+    it('correctly print strict mode models', () => {
+      const source = `
+      AcDocument !{
+        name?: s[],
+        surname: b[],
+      }
+      `;
 
-    //       const printed = print(ast);
+      const printed = print(source);
 
-    //       expect(printed).toEqual(dedent`
-    // AcDocument !{
-    //   name?: s[],
-    //   surname: b[],
-    // }
-    // `);
-    //     });
+      expect(dedentString(printed)).toEqual(dedent`
+    AcDocument !{
+      name?: s[],
+      surname: b[],
+    }
+    `);
+    });
 
-    //     it('correctly print extends model', () => {
-    //       const ast = {
-    //         kind: ASTNodeKind.DOCUMENT,
-    //         definitions: [
-    //           {
-    //             fields: [
-    //               {
-    //                 omitted: false,
-    //                 optional: true,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'name',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 's',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //               {
-    //                 omitted: false,
-    //                 optional: false,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'surname',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 'b',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //             ],
-    //             name: {
-    //               kind: ASTNodeKind.NAME,
-    //               value: 'AcDocument',
-    //             },
-    //             extendsModels: [
-    //               {
-    //                 kind: ASTNodeKind.NAMED_TYPE,
-    //                 name: { kind: ASTNodeKind.NAME, value: 'Kek' },
-    //               },
-    //             ],
-    //             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-    //             strict: false,
-    //             description: undefined,
-    //           },
-    //         ],
-    //       };
-    //       const printed = print(ast);
+    it('correctly print extends model', () => {
+      const source = `
+      
+      AcDocument < Kek {
+        name?: s[],
+        surname: b[],
+      }
+      `;
+      const printed = print(source);
 
-    //       expect(printed).toEqual(dedent`
-    // AcDocument < Kek {
-    //   name?: s[],
-    //   surname: b[],
-    // }
-    // `);
-    //     });
+      expect(dedentString(printed)).toEqual(dedent`
+    AcDocument < Kek {
+      name?: s[],
+      surname: b[],
+    }
+    `);
+    });
 
-    //     it('correctly print with multiple extends model and strict model', () => {
-    //       const ast = {
-    //         kind: ASTNodeKind.DOCUMENT,
-    //         definitions: [
-    //           {
-    //             fields: [
-    //               {
-    //                 omitted: false,
-    //                 optional: true,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'name',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 's',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //               {
-    //                 omitted: false,
-    //                 optional: false,
-    //                 kind: ASTNodeKind.FIELD_DEFINITION,
-    //                 name: {
-    //                   kind: ASTNodeKind.NAME,
-    //                   value: 'surname',
-    //                 },
-    //                 type: {
-    //                   kind: ASTNodeKind.LIST_TYPE,
-    //                   type: {
-    //                     kind: ASTNodeKind.NAMED_TYPE,
-    //                     name: {
-    //                       kind: ASTNodeKind.NAME,
-    //                       value: 'b',
-    //                     },
-    //                   },
-    //                 },
-    //               },
-    //             ],
-    //             name: {
-    //               kind: ASTNodeKind.NAME,
-    //               value: 'AcDocument',
-    //             },
-    //             extendsModels: [
-    //               {
-    //                 kind: ASTNodeKind.NAMED_TYPE,
-    //                 name: { kind: ASTNodeKind.NAME, value: 'Kek' },
-    //               },
-    //               {
-    //                 kind: ASTNodeKind.NAMED_TYPE,
-    //                 name: { kind: ASTNodeKind.NAME, value: 'Lel' },
-    //               },
-    //             ],
-    //             kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
-    //             strict: true,
-    //             description: undefined,
-    //           },
-    //         ],
-    //       };
-    //       const printed = print(ast);
+    it('correctly print with multiple extends model and strict model', () => {
+      const source = `AcDocument < Kek, Lel !{
+        name?: s[],
+        surname: b[],
+      }`;
+      const printed = print(source);
 
-    //       expect(printed).toEqual(dedent`
-    // AcDocument < Kek, Lel !{
-    //   name?: s[],
-    //   surname: b[],
-    // }
-    // `);
-    //     });
+      expect(dedentString(printed)).toEqual(dedent`
+    AcDocument < Kek, Lel !{
+      name?: s[],
+      surname: b[],
+    }
+    `);
+    });
 
     //     it('correctly print model with inline enum', () => {
     //       const ast = {

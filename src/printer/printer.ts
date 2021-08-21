@@ -45,12 +45,15 @@ function genericPrint(
 
     case 'ModelTypeDefinition': {
       const extendsModels =
-        node.extendsModels.length > 0 ? ` < ${node.extendsModels.join(', ')}` : '';
+        node.extendsModels.length > 0
+          ? ` < ${node.extendsModels.map((v) => v.name.value).join(', ')}`
+          : '';
       const strict = node.strict ? '!' : '';
 
       return [
         print('description'),
         print('name'),
+        extendsModels,
         node.fields.length > 0
           ? [
               ` ${strict}{`,
@@ -75,7 +78,9 @@ function genericPrint(
       const omittedSymbol = node.omitted ? '-' : '';
       const opt = node.optional ? '?' : '';
       const isBlank = node.type.kind === 'NamedType' && typeof node.type.name.value === 'undefined';
-      return [omittedSymbol, print('name'), opt].concat(isBlank ? [','] : [': ', print('type')]);
+      return [omittedSymbol, print('name'), opt].concat(
+        isBlank ? [','] : [': ', print('type'), ', '],
+      );
     }
 
     case 'Name': {
@@ -83,11 +88,11 @@ function genericPrint(
     }
 
     case 'NamedType': {
-      return [print('name'), ', '];
+      return [print('name')];
     }
 
     case 'ListType': {
-      return ['[', print('type'), ']'];
+      return [print('type'), '[]'];
     }
 
     case 'ObjectTypeDefinition': {
