@@ -22,7 +22,8 @@
     "lint": "eslint --max-warnings 0 'src/**/*.ts'",
     "lint:fix": "eslint --fix 'src/**/*.ts'",
     "docs:typedoc": "typedoc --entryPoints src/validation/rules --exclude \"**/*+(index|.spec|.e2e|.test).ts\" --exclude \"**/__tests__/*\" --highlightTheme github-light --out docs/rules",
-    "static-checks": "npm run build && npm run lint"
+    "static-checks": "npm run build && npm run lint",
+    "check:spelling": "cspell --no-progress 'src/**/*'"
   },
   "author": "",
   "license": "MIT",
@@ -31,6 +32,7 @@
     "@types/node": "^14.14.35",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
+    "cspell": "^5.7.2",
     "eslint": "^7.30.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
