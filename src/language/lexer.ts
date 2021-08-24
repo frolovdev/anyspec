@@ -349,9 +349,6 @@ function readToken(lexer: Lexer, start: number): Token {
     throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
   }
 
-  const line = lexer.line;
-  const col = 1 + position - lexer.lineStart;
-
   // at EOF before we emit <EOF> we need to check if indentReader have non empty stack
   // and create DEDENT tokens if need to
   lexer.indentReader.eofHandler(lexer, position, position + 1);
