@@ -132,9 +132,9 @@ function readToken(lexer: Lexer, start: number): Token {
       //
       // Comma :: ,
       case 0xfeff: // <BOM> Short for byte order mark, BOM
-      case 9: //   \t
-      case 32: //  <space>
-      case 44: //  ,
+      case 0x0009: //   \t
+      case 0x0020: //  <space>
+      case 0x002c: //  ,
         ++position;
         continue;
       case 10:
