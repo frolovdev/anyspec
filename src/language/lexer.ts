@@ -137,7 +137,7 @@ function readToken(lexer: Lexer, start: number): Token {
       case 0x002c: //  ,
         ++position;
         continue;
-      case 10:
+      case 0x000a:
         //  \n
 
         const token = lexer.indentReader.readInsideIndent(lexer, position);
@@ -152,9 +152,9 @@ function readToken(lexer: Lexer, start: number): Token {
 
         continue;
 
-      case 13: //  \r
+      case 0x000d: //  \r
         // \n
-        if (body.charCodeAt(position + 1) === 10) {
+        if (body.charCodeAt(position + 1) === 0x000a) {
           position += 2;
         } else {
           ++position;
@@ -162,25 +162,26 @@ function readToken(lexer: Lexer, start: number): Token {
         ++lexer.line;
         lexer.lineStart = position;
         continue;
-      case 33: //  !
+      case 0x0021: //  !
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
         return createToken(lexer, TokenKind.BANG, position, position + 1);
-      case 35: //  #
+      case 0x0023: //  #
         return readComment(lexer, position);
-      case 36: //  $
+      case 0x0024: //  $
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
         return createToken(lexer, TokenKind.DOLLAR, position, position + 1);
-      case 38: //  &
+      case 0x0026: //  &
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
         return createToken(lexer, TokenKind.AMP, position, position + 1);
-      case 40: {
+      case 0x0028: {
         //  (
+
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
@@ -189,54 +190,47 @@ function readToken(lexer: Lexer, start: number): Token {
         return createToken(lexer, TokenKind.PAREN_L, position, position + 1);
       }
 
-      case 41: //  )
+      case 0x0029: //  )
         lexer.isInsideEnum = false;
 
         return createToken(lexer, TokenKind.PAREN_R, position, position + 1);
-      case 46: //  .
+      case 0x002e: //  .
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
-      case 47: // /
-        if (body.charCodeAt(position + 1) === 47) {
+      case 0x002f: // /
+        if (body.charCodeAt(position + 1) === 0x002f) {
           return readDescription(lexer, position);
         }
         if (lexer.source.sourceType === 'endpoints') {
           return readNameAfterSlash(lexer, position);
         }
 
-      case 58: //  :
+      case 0x003a: //  :
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
         return createToken(lexer, TokenKind.COLON, position, position + 1);
-      case 61: //  =
-        if (body.charCodeAt(position + 1) === 62) {
+      case 0x003d: //  =
+        if (body.charCodeAt(position + 1) === 0x003e) {
           // =>
           return createToken(lexer, TokenKind.RETURN, position, position + 2);
         }
         return createToken(lexer, TokenKind.EQUALS, position, position + 1);
-      case 64: //  @
+      case 0x0040: //  @
         return createToken(lexer, TokenKind.AT, position, position + 1);
-      case 91: //  [
+      case 0x005b: //  [
         return createToken(lexer, TokenKind.BRACKET_L, position, position + 1);
-      case 93: //  ]
+      case 0x005d: //  ]
         return createToken(lexer, TokenKind.BRACKET_R, position, position + 1);
-      case 123: // {
+      case 0x007b: // {
         return createToken(lexer, TokenKind.BRACE_L, position, position + 1);
-      case 124: // |
+      case 0x007c: // |
         return createToken(lexer, TokenKind.PIPE, position, position + 1);
-      case 125: // }
+      case 0x007d: // }
         return createToken(lexer, TokenKind.BRACE_R, position, position + 1);
-      case 34: //  "
-        // if (
-        //   body.charCodeAt(position + 1) === 34 &&
-        //   body.charCodeAt(position + 2) === 34
-        // ) {
-        //   return readBlockString(source, position, line, col, prev, lexer);
-        // }
-
+      case 0x0022: //  "
         // for now we dont support strings
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
@@ -244,7 +238,7 @@ function readToken(lexer: Lexer, start: number): Token {
 
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
 
-      case 43: {
+      case 0x002b: {
         // +
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
@@ -252,7 +246,7 @@ function readToken(lexer: Lexer, start: number): Token {
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
 
-      case 96: {
+      case 0x0060: {
         // `
         if (lexer.source.sourceType === 'endpoints') {
           return readNameWithGraveAccentMarks(lexer, position);
@@ -260,18 +254,18 @@ function readToken(lexer: Lexer, start: number): Token {
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
 
-      case 45: //  - for now we allow dashes to in words
+      case 0x002d: //  - for now we allow dashes to in words
         return readName(lexer, position, lexer.isInsideEnum);
-      case 48: //  0
-      case 49: //  1
-      case 50: //  2
-      case 51: //  3
-      case 52: //  4
-      case 53: //  5
-      case 54: //  6
-      case 55: //  7
-      case 56: //  8
-      case 57: //  9
+      case 0x0030: //  0
+      case 0x0031: //  1
+      case 0x0032: //  2
+      case 0x0033: //  3
+      case 0x0034: //  4
+      case 0x0035: //  5
+      case 0x0036: //  6
+      case 0x0037: //  7
+      case 0x0038: //  8
+      case 0x0039: //  9
         if (lexer.source.sourceType === 'endpoints') {
           return readNumber(lexer, position);
         } else {
@@ -279,67 +273,67 @@ function readToken(lexer: Lexer, start: number): Token {
           throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
         }
 
-      case 60: // <
+      case 0x003c: // <
         return createToken(lexer, TokenKind.EXTENDS, position, position + 1);
 
-      case 63: // ?
+      case 0x003f: // ?
         if (lexer.isInsideEnum) {
           return readName(lexer, position, lexer.isInsideEnum);
         }
         return createToken(lexer, TokenKind.QUESTION_MARK, position, position + 1);
-      case 65: //  A
-      case 66: //  B
-      case 67: //  C
-      case 68: //  D
-      case 69: //  E
-      case 70: //  F
-      case 71: //  G
-      case 72: //  H
-      case 73: //  I
-      case 74: //  J
-      case 75: //  K
-      case 76: //  L
-      case 77: //  M
-      case 78: //  N
-      case 79: //  O
-      case 80: //  P
-      case 81: //  Q
-      case 82: //  R
-      case 83: //  S
-      case 84: //  T
-      case 85: //  U
-      case 86: //  V
-      case 87: //  W
-      case 88: //  X
-      case 89: //  Y
-      case 90: //  Z
-      case 95: //  _
-      case 97: //  a
-      case 98: //  b
-      case 99: //  c
-      case 100: // d
-      case 101: // e
-      case 102: // f
-      case 103: // g
-      case 104: // h
-      case 105: // i
-      case 106: // j
-      case 107: // k
-      case 108: // l
-      case 109: // m
-      case 110: // n
-      case 111: // o
-      case 112: // p
-      case 113: // q
-      case 114: // r
-      case 115: // s
-      case 116: // t
-      case 117: // u
-      case 118: // v
-      case 119: // w
-      case 120: // x
-      case 121: // y
-      case 122: // z
+      case 0x0041: //  A
+      case 0x0042: //  B
+      case 0x0043: //  C
+      case 0x0044: //  D
+      case 0x0045: //  E
+      case 0x0046: //  F
+      case 0x0047: //  G
+      case 0x0048: //  H
+      case 0x0049: //  I
+      case 0x004a: //  J
+      case 0x004b: //  K
+      case 0x004c: //  L
+      case 0x004d: //  M
+      case 0x004e: //  N
+      case 0x004f: //  O
+      case 0x0050: //  P
+      case 0x0051: //  Q
+      case 0x0052: //  R
+      case 0x0053: //  S
+      case 0x0054: //  T
+      case 0x0055: //  U
+      case 0x0056: //  V
+      case 0x0057: //  W
+      case 0x0058: //  X
+      case 0x0059: //  Y
+      case 0x005a: //  Z
+      case 0x005f: //  _
+      case 0x0061: //  a
+      case 0x0062: //  b
+      case 0x0063: //  c
+      case 0x0064: // d
+      case 0x0065: // e
+      case 0x0066: // f
+      case 0x0067: // g
+      case 0x0068: // h
+      case 0x0069: // i
+      case 0x006a: // j
+      case 0x006b: // k
+      case 0x006d: // l
+      case 0x006d: // m
+      case 0x006e: // n
+      case 0x006f: // o
+      case 0x0070: // p
+      case 0x0071: // q
+      case 0x0072: // r
+      case 0x0073: // s
+      case 0x0074: // t
+      case 0x0075: // u
+      case 0x0076: // v
+      case 0x0077: // w
+      case 0x0078: // x
+      case 0x0079: // y
+      case 0x007a: // z
         return readName(lexer, position, lexer.isInsideEnum);
     }
 
@@ -377,17 +371,6 @@ function readComment(lexer: ILexer, start: number): Token {
   );
 
   return createToken(lexer, TokenKind.COMMENT, start, position, body.slice(start + 1, position));
-}
-
-/**
- * SourceCharacter ::
- *   - U+0009 (Horizontal Tab)
- *   - U+000A (New Line)
- *   - U+000D (Carriage Return)
- *   - U+0020-U+FFFF
- */
-function isSourceCharacter(code: number): boolean {
-  return code >= 0x0020 || code === 0x0009 || code === 0x000a || code === 0x000d;
 }
 
 /**
