@@ -115,9 +115,6 @@ function readToken(lexer: Lexer, start: number): Token {
     // getting char code
     const code = body.charCodeAt(position);
 
-    const line = lexer.line;
-    const col = 1 + position - lexer.lineStart;
-
     // SourceCharacter
     switch (code) {
       // Ignored ::
