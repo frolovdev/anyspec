@@ -117,6 +117,20 @@ function readToken(lexer: Lexer, start: number): Token {
     // getting char code
     const code = body.charCodeAt(position);
 
+    if (
+      lexer.state === 'insideEnum' &&
+      (code === 0x0021 ||
+        code === 0x0024 ||
+        code === 0x0026 ||
+        code === 0x0028 ||
+        code === 0x002e ||
+        code === 0x003a ||
+        code === 0x0022 ||
+        code === 0x002b ||
+        code === 0x003f)
+    ) {
+      return readName(lexer, position, lexer.state);
+    }
     // SourceCharacter
     switch (code) {
       // Ignored ::
@@ -165,28 +179,15 @@ function readToken(lexer: Lexer, start: number): Token {
         lexer.lineStart = position;
         continue;
       case 0x0021: //  !
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
         return createToken(lexer, TokenKind.BANG, position, position + 1);
       case 0x0023: //  #
         return readComment(lexer, position);
       case 0x0024: //  $
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
         return createToken(lexer, TokenKind.DOLLAR, position, position + 1);
       case 0x0026: //  &
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
         return createToken(lexer, TokenKind.AMP, position, position + 1);
       case 0x0028: {
         //  (
-
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
 
         lexer.state = 'insideEnum';
         return createToken(lexer, TokenKind.PAREN_L, position, position + 1);
@@ -197,9 +198,6 @@ function readToken(lexer: Lexer, start: number): Token {
 
         return createToken(lexer, TokenKind.PAREN_R, position, position + 1);
       case 0x002e: //  .
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       case 0x002f: // /
         if (body.charCodeAt(position + 1) === 0x002f) {
@@ -210,9 +208,6 @@ function readToken(lexer: Lexer, start: number): Token {
         }
 
       case 0x003a: //  :
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
         return createToken(lexer, TokenKind.COLON, position, position + 1);
       case 0x003d: //  =
         if (body.charCodeAt(position + 1) === 0x003e) {
@@ -234,17 +229,12 @@ function readToken(lexer: Lexer, start: number): Token {
         return createToken(lexer, TokenKind.BRACE_R, position, position + 1);
       case 0x0022: //  "
         // for now we dont support strings
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
 
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
 
       case 0x002b: {
         // +
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
+
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
 
@@ -258,11 +248,7 @@ function readToken(lexer: Lexer, start: number): Token {
 
       case 0x003c: // <
         return createToken(lexer, TokenKind.EXTENDS, position, position + 1);
-
       case 0x003f: // ?
-        if (lexer.state === 'insideEnum') {
-          return readName(lexer, position, lexer.state);
-        }
         return createToken(lexer, TokenKind.QUESTION_MARK, position, position + 1);
     }
 
