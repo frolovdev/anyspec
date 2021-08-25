@@ -407,46 +407,34 @@ function readNameInsideEnum(lexer: ILexer, start: number): Token {
   const bodyLength = body.length;
   let position = start;
   let parenthesisCount = 0;
-  let code = 0;
 
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    (code === 95 || // _
-      code === 45 || // -
-      (code >= 48 && code <= 57) || // 0-9
-      (code >= 65 && code <= 90) || // A-Z
-      (code >= 97 && code <= 122) || // a-z
-      code === 32 || //  <space>
-      code === 44 || //  ,
-      code === 33 || //  !
-      code === 36 || //  $
-      code === 38 || //  &
-      code === 39 || // '
-      code === 58 || // :
-      code === 40 || // (
-      code === 41 || // )
-      code === 46 || //  .
-      code === 47 || // /
-      code === 34 || // "
-      code === 43) // +
-  ) {
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+    // \n \r |
+    if (code === 0x000a || code === 0x000d || code === 0x007c) {
+      break;
+    }
+
     // )
-    if (code === 41 && parenthesisCount === 0) {
+    if (code === 0x0029 && parenthesisCount === 0) {
       break;
     }
 
     // (
-    if (code === 40) {
+    if (code === 0x0028) {
       parenthesisCount++;
     }
 
     // )
-    if (code === 41) {
+    if (code === 0x0029) {
       parenthesisCount--;
     }
 
-    ++position;
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
 
   if (parenthesisCount !== 0) {
