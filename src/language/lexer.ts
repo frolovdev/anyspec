@@ -356,8 +356,6 @@ function printCharCode(code: number): string {
  * [_A-Za-z][_0-9A-Za-z]*
  */
 function readName(lexer: ILexer, start: number, state?: LexerState): Token {
-  const { source } = lexer;
-
   if (state === 'insideEnum') {
     return readNameInsideEnum(lexer, start);
   }
@@ -527,22 +525,32 @@ function readNameAfterSlash(lexer: ILexer, start: number) {
 function readDescription(lexer: ILexer, start: number) {
   const { source } = lexer;
   const body = source.body;
-  let code;
+  const bodyLength = body.length;
+  // let code;
   let position = start;
 
   const nextPosition = position + 1;
   const nextCode = body.charCodeAt(nextPosition);
-  if (nextCode !== 47) {
+  if (nextCode !== 0x002f) {
+    // /
     throw syntaxError(source, nextPosition, unexpectedCharacterMessage(nextCode));
   }
 
-  do {
-    code = body.charCodeAt(++position);
-  } while (
-    !isNaN(code) &&
-    // SourceCharacter but not LineTerminator
-    (code > 0x001f || code === 0x0009)
-  );
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    // LineTerminator (\n | \r)  | space
+    if (code === 0x000a || code === 0x000d) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
+  }
 
   return createToken(
     lexer,
