@@ -463,7 +463,7 @@ export class ModelParser {
     return undefined;
   }
 
-  expectKeyword(value: string) {
+  expectKeyword(value: string): void {
     const token = this.lexer.token;
     if (token.kind === TokenKind.NAME && token.value === value) {
       this.lexer.advance();
