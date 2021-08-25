@@ -291,18 +291,25 @@ function readToken(lexer: Lexer, start: number): Token {
  * #[\u0009\u0020-\uFFFF]*
  */
 function readComment(lexer: ILexer, start: number): Token {
-  const { source } = lexer;
-  const body = source.body;
-  let code;
-  let position = start;
+  const body = lexer.source.body;
+  const bodyLength = body.length;
+  let position = start + 1;
 
-  do {
-    code = body.charCodeAt(++position);
-  } while (
-    !isNaN(code) &&
-    // SourceCharacter but not LineTerminator
-    (code > 0x001f || code === 0x0009)
-  );
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    // LineTerminator (\n | \r)
+    if (code === 0x000a || code === 0x000d) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
+  }
 
   return createToken(lexer, TokenKind.COMMENT, start, position, body.slice(start + 1, position));
 }
@@ -355,21 +362,18 @@ function readName(lexer: ILexer, start: number, state?: LexerState): Token {
     return readNameInsideEnum(lexer, start);
   }
 
-  const body = source.body;
+  const body = lexer.source.body;
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    (code === 95 || // _
-      code === 45 || // -
-      (code >= 48 && code <= 57) || // 0-9
-      (code >= 65 && code <= 90) || // A-Z
-      (code >= 97 && code <= 122)) // a-z
-  ) {
-    ++position;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+    // NameContinue
+    if (isLetter(code) || isDigit(code) || code === 0x005f || code === 0x002d) {
+      ++position;
+    } else {
+      break;
+    }
   }
   return createToken(lexer, TokenKind.NAME, start, position, body.slice(start, position));
 }
@@ -547,6 +551,17 @@ function isNameStart(code: number): boolean {
   const downDash = 0x005f; // _
   const dash = 0x002d;
   return isLetter(code) || code === downDash || code === dash;
+}
+
+/**
+ * SourceCharacter ::
+ *   - U+0009 (Horizontal Tab)
+ *   - U+000A (New Line)
+ *   - U+000D (Carriage Return)
+ *   - U+0020-U+FFFF
+ */
+function isSourceCharacter(code: number): boolean {
+  return code >= 0x0020 || code === 0x0009 || code === 0x000a || code === 0x000d;
 }
 
 /**
