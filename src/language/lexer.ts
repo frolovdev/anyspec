@@ -319,7 +319,7 @@ function readToken(lexer: Lexer, start: number): Token {
       case 0x0069: // i
       case 0x006a: // j
       case 0x006b: // k
-      case 0x006d: // l
+      case 0x006c: // l
       case 0x006d: // m
       case 0x006e: // n
       case 0x006f: // o

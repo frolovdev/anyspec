@@ -1,127 +1,269 @@
-import { ASTReducer, visit } from '../visitor';
-import { ASTNode, ASTNodeKind } from '../language/ast';
+import { Doc, FastPath, ParserOptions, Printer, doc, util } from 'prettier';
+import { PrinterAstNode, PrinterDocumentNode } from './types';
+import { locEnd } from './loc';
 
-/**
- * Converts an AST into a string, using one set of reasonable
- * formatting rules.
- */
+const {
+  builders: { hardline, indent, join },
+} = doc;
 
-const MAX_LINE_LENGTH = 80;
+const { isNextLineEmpty } = util;
 
-export function printModels(ast: ASTNode): string {
-  return visit(ast, printDocASTReducerModel);
-}
+function genericPrint(
+  path: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
+  const node = path.getValue();
+  if (!node) {
+    return '';
+  }
 
-const printDocASTReducerModel: ASTReducer<string> = {
-  EndpointNamespaceTypeDefinition: {
-    leave: () => {
-      throw new Error("Can't parse AST with EndpointNamespaceTypeDefinition");
-    },
-  },
+  if (typeof node === 'string') {
+    return node;
+  }
 
-  Name: { leave: (node) => node.value ?? '' },
+  switch (node.kind) {
+    case 'Document': {
+      const parts: Doc[] = [];
+      // @ts-ignore
+      path.each((pathChild, index, definitions) => {
+        parts.push(print());
+        if (index !== definitions.length - 1) {
+          parts.push(hardline);
+          parts.push(hardline);
+        }
+      }, 'definitions');
+      return [...parts, hardline];
+    }
 
-  NamedType: { leave: (node) => node.name },
-
-  Document: {
-    leave: (node) => join(node.definitions, '\n\n'),
-  },
-
-  ModelTypeDefinition: {
-    leave: ({ name, description, fields, strict, extendsModels }) => {
-      const extModels = extendsModels.length > 0 ? ` < ${extendsModels.join(', ')}` : '';
-      const strct = strict ? '!' : '';
-      if (fields.length === 0) {
-        return `${description ?? ''}${name}${extModels} ${strct}{}`;
-      }
-      return `${description ?? ''}${name}${extModels} ${strct}${block(fields)}`;
-    },
-  },
-  Description: {
-    leave: (node) => {
+    case 'Description': {
       const descriptions = node.value.split('\n');
-      return `${descriptions.map((description) => `// ${description}`).join('\n')}\n`;
-    },
-  },
-  FieldDefinition: {
-    leave: ({ name, type, optional, omitted }) => {
-      const ommtd = omitted ? '-' : '';
-      const opt = optional ? '?' : '';
-      if (type.length === 0) {
-        return `${ommtd}${name}${opt}`;
-      }
-      return `${ommtd}${name}${opt}: ${type}`;
-    },
-  },
-  ListType: {
-    leave: (node) => {
-      const arraySymbol = '[]';
-      let list: string[] = [];
-      let currentNode: any = node;
-      while (currentNode.kind === ASTNodeKind.LIST_TYPE) {
-        list.push(arraySymbol);
-        currentNode = node.type;
-      }
-      return `${node.type}${list.join()}`;
-    },
-  },
-  EnumValueDefinition: {
-    leave: ({ name }) => name,
-  },
-  EnumInlineTypeDefinition: {
-    leave: ({ values }) => {
-      const str = `( ${join(values, ' | ')} )`;
-      if (str.length > MAX_LINE_LENGTH) {
-        return enumBlock(values);
-      }
-      return str;
-    },
-  },
-  ObjectTypeDefinition: {
-    leave: ({ fields, strict }) => {
-      const strct = strict ? '!' : '';
-      if (fields.length === 0) {
-        return `${strct}{}`;
-      }
-      return `${strct}${block(fields)}`;
-    },
-  },
-  EnumTypeDefinition: {
-    leave: ({ name, values, description }) => {
-      return `${description ?? ''}${name} ${enumBlock(values)}`;
-    },
-  },
+      return descriptions.map((description) => ['//', ' ', description, hardline]);
+    }
+
+    case 'ModelTypeDefinition': {
+      const extendsModels =
+        node.extendsModels.length > 0
+          ? ` < ${node.extendsModels.map((v) => v.name.value).join(', ')}`
+          : '';
+      const strict = node.strict ? '!' : '';
+
+      return [
+        print('description'),
+        print('name'),
+        extendsModels,
+        node.fields.length > 0
+          ? [
+              ` ${strict}{`,
+              indent([
+                // @ts-expect-error prettier has incompatible types
+                hardline,
+                // @ts-expect-error prettier has incompatible types
+                join(
+                  hardline,
+                  // @ts-expect-error prettier has incompatible types
+                  path.call((fieldsPath) => printSequence(fieldsPath, options, print), 'fields'),
+                ),
+              ]),
+              hardline,
+              '}',
+            ]
+          : [` ${strict}{}`],
+      ];
+    }
+
+    case 'FieldDefinition': {
+      const omittedSymbol = node.omitted ? '-' : '';
+      const opt = node.optional ? '?' : '';
+      const isBlank = node.type.kind === 'NamedType' && typeof node.type.name.value === 'undefined';
+      return [omittedSymbol, print('name'), opt].concat(
+        isBlank ? [','] : [': ', print('type'), ', '],
+      );
+    }
+
+    case 'Name': {
+      return node.value ?? '';
+    }
+
+    case 'NamedType': {
+      return [print('name')];
+    }
+
+    case 'ListType': {
+      return [print('type'), '[]'];
+    }
+
+    case 'ObjectTypeDefinition': {
+      const strict = node.strict ? '!' : '';
+
+      return [
+        print('name'),
+        node.fields.length > 0
+          ? [
+              `${strict}{`,
+              indent([
+                // @ts-expect-error prettier has incompatible types
+                hardline,
+                // @ts-expect-error prettier has incompatible types
+                join(
+                  hardline,
+                  // @ts-expect-error prettier has incompatible types
+                  path.call((fieldsPath) => printSequence(fieldsPath, options, print), 'fields'),
+                ),
+              ]),
+              hardline,
+              '}',
+            ]
+          : `${strict}{}`,
+      ];
+    }
+
+    case 'EnumInlineTypeDefinition': {
+      return [
+        print('name'),
+        node.values.length > 0
+          ? [
+              '( ',
+              indent([
+                // @ts-expect-error prettier has incompatible types
+                path.call(
+                  (valuesPath) => printInlineEnumValues(valuesPath, options, print),
+                  'values',
+                ),
+              ]),
+              ' )',
+            ]
+          : [' ', '()'],
+      ];
+    }
+
+    case 'EnumTypeDefinition': {
+      return [
+        print('description'),
+        print('name'),
+        node.values.length > 0
+          ? [
+              ' (',
+              indent([
+                // @ts-expect-error prettier has incompatible types
+                hardline,
+                // @ts-expect-error prettier has incompatible types
+                join(
+                  hardline,
+                  // @ts-expect-error prettier has incompatible types
+                  path.call((valuesPath) => printEnumValues(valuesPath, options, print), 'values'),
+                ),
+              ]),
+              hardline,
+              ')',
+            ]
+          : [' ', '()'],
+      ];
+    }
+
+    case 'EnumValueDefinition': {
+      return [print('name')];
+    }
+  }
+}
+
+function printSequence(
+  sequencePath: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
+  // TODO: check what is sequencePath really
+  // @ts-expect-error
+  const count = sequencePath.getValue().length;
+
+  return sequencePath.map((path, i) => {
+    const printed = print();
+
+    if (isNextLineEmpty(options.originalText, path.getValue(), locEnd) && i < count - 1) {
+      return [printed, hardline];
+    }
+
+    return printed;
+  });
+}
+
+// AcDoc { lol: (standard | type) }
+function printInlineEnumValues(
+  sequencePath: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
+  // @ts-expect-error
+  const count = sequencePath.getValue().length;
+
+  return sequencePath.map((path, i) => {
+    const printed = print();
+
+    if (i < count - 1) {
+      return [printed, ' | '];
+    }
+
+    return [printed];
+  });
+}
+
+// Enum (
+//  standard |
+//  type
+// )
+function printEnumValues(
+  sequencePath: FastPath<PrinterAstNode>,
+  options: ParserOptions<PrinterAstNode>,
+  print: (path?: string) => Doc,
+) {
+  // @ts-expect-error
+  const count = sequencePath.getValue().length;
+
+  return sequencePath.map((path, i) => {
+    const printed = print();
+
+    if (i < count - 1) {
+      return [printed, ' |'];
+    }
+
+    return [printed];
+  });
+}
+
+function hasPrettierIgnore<T extends PrinterDocumentNode>(path: FastPath<T>) {
+  const node = path.getValue();
+
+  const result =
+    node &&
+    Array.isArray(node.comments) &&
+    node.comments.some((comment) => comment.value.trim() === 'prettier-ignore');
+
+  return result;
+}
+
+function canAttachComment(node: any) {
+  return node.kind && node.kind !== 'Comment';
+}
+
+function printComment(commentPath: any) {
+  const comment = commentPath.getValue();
+
+  if (comment.kind === 'Comment') {
+    return '#' + comment.value.trimEnd();
+  }
+
+  /* istanbul ignore next */
+  throw new Error('Not a comment: ' + JSON.stringify(comment));
+}
+
+function clean(/*node, newNode , parent*/) {}
+clean.ignoredProperties = new Set(['loc', 'comments']);
+
+export const printer: Printer = {
+  // @ts-expect-error incompatible types and implementation in prettier
+  print: genericPrint,
+  massageAstNode: clean,
+  hasPrettierIgnore,
+  printComment,
+  canAttachComment,
 };
-
-/**
- * Given maybeArray, print an empty string if it is null or empty, otherwise
- * print all items together separated by separator if provided
- */
-function join(maybeArray: $Maybe<ReadonlyArray<string | undefined>>, separator = ''): string {
-  return maybeArray?.filter((x) => x).join(separator) ?? '';
-}
-
-/**
- * Given array, print each item on its own line, wrapped in an indented `{ }` block.
- */
-function block(array: $Maybe<ReadonlyArray<string | undefined>>): string {
-  return wrap('{\n', indent(join(array, ',\n')), ',\n}');
-}
-
-/**
- * Given array, print each item on its own line, wrapped in an indented `( )` block with `|` separator.
- */
-function enumBlock(array: $Maybe<ReadonlyArray<string | undefined>>): string {
-  return wrap('(\n', indent(join(array, ' |\n')), '\n)');
-}
-
-/**
- * If maybeString is not null or empty, then wrap with start and end, otherwise print an empty string.
- */
-function wrap(start: string, maybeString: $Maybe<string>, end: string = ''): string {
-  return maybeString != null && maybeString !== '' ? start + maybeString + end : '';
-}
-
-function indent(str: string): string {
-  return wrap('  ', str.replace(/\n/g, '\n  '));
-}
