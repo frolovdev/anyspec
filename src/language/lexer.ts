@@ -385,16 +385,16 @@ function readNumber(lexer: ILexer, start: number): Token {
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    code >= 48 &&
-    code <= 57
-  ) {
-    // 0-9
-    ++position;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    if (isDigit(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
+
   return createToken(lexer, TokenKind.NUMBER, start, position, body.slice(start, position));
 }
 
