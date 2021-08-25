@@ -477,13 +477,20 @@ function readNameWithGraveAccentMarks(lexer: ILexer, start: number) {
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    code !== 96 // `
-  ) {
-    ++position;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    // LineTerminator (\n | \r)  | (`)
+    if (code === 0x000a || code === 0x000d || code === 0x0060) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
   return createToken(lexer, TokenKind.NAME, start, position + 1, body.slice(start + 1, position));
 }
