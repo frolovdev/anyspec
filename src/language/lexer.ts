@@ -498,15 +498,22 @@ function readNameAfterSlash(lexer: ILexer, start: number) {
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
 
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    !(code === 32 || code === (10 as number))
-  ) {
-    ++position;
+    // LineTerminator (\n | \r)  | space
+    if (code === 0x000a || code === 0x000d || code === 0x0020) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
+
   return createToken(lexer, TokenKind.NAME, start, position, body.slice(start, position));
 }
 
