@@ -4,13 +4,14 @@ import { syntaxError } from '../error';
 import { IndentReader } from './indentReader';
 import { createToken } from './createToken';
 
+type LexerState = 'insideEnum' | 'base';
 export interface ILexer {
   source: Source;
   lastToken: Token;
   token: Token;
   line: number;
   lineStart: number;
-  isInsideEnum: boolean;
+  state: LexerState;
   indentReader: IndentReader;
 }
 
@@ -40,7 +41,7 @@ export class Lexer implements ILexer {
   /**
    * is Lexer read insides of Enum?.
    */
-  isInsideEnum = false;
+  state: LexerState;
 
   /**
    * for endpoints only
@@ -55,6 +56,7 @@ export class Lexer implements ILexer {
     this.token = startOfFileToken;
     this.line = 1;
     this.lineStart = 0;
+    this.state = 'base';
     this.indentReader = new IndentReader({
       isEnabled: source.sourceType === 'endpoints',
     });
@@ -163,40 +165,40 @@ function readToken(lexer: Lexer, start: number): Token {
         lexer.lineStart = position;
         continue;
       case 0x0021: //  !
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         return createToken(lexer, TokenKind.BANG, position, position + 1);
       case 0x0023: //  #
         return readComment(lexer, position);
       case 0x0024: //  $
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         return createToken(lexer, TokenKind.DOLLAR, position, position + 1);
       case 0x0026: //  &
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         return createToken(lexer, TokenKind.AMP, position, position + 1);
       case 0x0028: {
         //  (
 
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
 
-        lexer.isInsideEnum = true;
+        lexer.state = 'insideEnum';
         return createToken(lexer, TokenKind.PAREN_L, position, position + 1);
       }
 
       case 0x0029: //  )
-        lexer.isInsideEnum = false;
+        lexer.state = 'base';
 
         return createToken(lexer, TokenKind.PAREN_R, position, position + 1);
       case 0x002e: //  .
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       case 0x002f: // /
@@ -208,8 +210,8 @@ function readToken(lexer: Lexer, start: number): Token {
         }
 
       case 0x003a: //  :
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         return createToken(lexer, TokenKind.COLON, position, position + 1);
       case 0x003d: //  =
@@ -232,16 +234,16 @@ function readToken(lexer: Lexer, start: number): Token {
         return createToken(lexer, TokenKind.BRACE_R, position, position + 1);
       case 0x0022: //  "
         // for now we dont support strings
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
 
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
 
       case 0x002b: {
         // +
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
@@ -258,21 +260,21 @@ function readToken(lexer: Lexer, start: number): Token {
         return createToken(lexer, TokenKind.EXTENDS, position, position + 1);
 
       case 0x003f: // ?
-        if (lexer.isInsideEnum) {
-          return readName(lexer, position, lexer.isInsideEnum);
+        if (lexer.state === 'insideEnum') {
+          return readName(lexer, position, lexer.state);
         }
         return createToken(lexer, TokenKind.QUESTION_MARK, position, position + 1);
     }
 
     if (isNameStart(code)) {
-      return readName(lexer, position, lexer.isInsideEnum);
+      return readName(lexer, position, lexer.state);
     }
 
     // IntValue | FloatValue (Digit | -)
     if (isDigit(code) || code === 0x002d) {
       //  - for now we allow dashes to in words
       if (code === 0x002d) {
-        return readName(lexer, position, lexer.isInsideEnum);
+        return readName(lexer, position, lexer.state);
       }
 
       if (lexer.source.sourceType === 'endpoints') {
@@ -360,10 +362,10 @@ function printCharCode(code: number): string {
  *
  * [_A-Za-z][_0-9A-Za-z]*
  */
-function readName(lexer: ILexer, start: number, isInsideEnum?: boolean): Token {
+function readName(lexer: ILexer, start: number, state?: LexerState): Token {
   const { source } = lexer;
 
-  if (isInsideEnum) {
+  if (state === 'insideEnum') {
     return readNameInsideEnum(lexer, start);
   }
 
