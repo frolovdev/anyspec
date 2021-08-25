@@ -318,7 +318,7 @@ AcDocument {}\n`,
             type?: (
               + amount |
               - amount |
-              summ + |
+              sum + |
               Private Company 'Limited' by Shares (Pte. Ltd.)
             ),
             kek: {
@@ -335,7 +335,7 @@ AcDocument {}\n`,
       expect(dedentString(printed)).toEqual(dedent`
     AcDocument < Kek, Lel !{
       -name?: s[],
-      type?: ( + amount | - amount | summ + | Private Company 'Limited' by Shares (Pte. Ltd.) ),
+      type?: ( + amount | - amount | sum + | Private Company 'Limited' by Shares (Pte. Ltd.) ),
       kek: {
         conversationId: i,
         users: {

@@ -45,5 +45,8 @@ jobs:
       - name: Static checks ⚙️
         run: npm run static-checks
 
+      - name: Spelling ⚙️
+        run: npm run check:spelling
+
       - name: Tests
         run: npm run test:ci

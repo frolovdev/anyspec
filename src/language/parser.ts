@@ -295,7 +295,7 @@ export class ModelParser {
   parseFieldDefinition(): FieldDefinitionNode {
     const start = this.lexer.token;
 
-    // FIXME: delete omited functionality at all because it really sucks
+    // FIXME: delete omitted functionality at all because it really sucks
     const { node: name, omitted } = this.parseNameInFieldDefinition();
     const isOptionalField = Boolean(this.expectOptionalToken(TokenKind.QUESTION_MARK));
 
@@ -320,7 +320,7 @@ export class ModelParser {
     });
   }
 
-  // FIXME: delete omited functionality at all because it really sucks
+  // FIXME: delete omitted functionality at all because it really sucks
   parseNameInFieldDefinition(): { node: NameNode; omitted: boolean } {
     const token = this.expectToken(TokenKind.NAME);
 
@@ -496,7 +496,7 @@ export class ModelParser {
   }
 
   // FIXME: in futrue
-  // becuase of tinyspec allows to use syntatic sugar around string
+  // because of tinyspec allows to use syntactic sugar around string
 
   // {
   //  s,
@@ -512,7 +512,7 @@ export class ModelParser {
 
 export class EndpointsParser extends ModelParser {
   /**
-   * parse multiple endpoint responses (model or names after multiple => at same indent lvls)
+   * parse multiple endpoint responses (model or names after multiple => at same indent levels)
    */
   parseEndpointResponses(): EndpointResponseNode[] {
     if (this.peek(TokenKind.INDENT)) {

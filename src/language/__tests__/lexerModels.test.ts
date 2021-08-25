@@ -259,7 +259,7 @@ describe(__filename, () => {
   // TODO: add logic to parse `` controllers string
   it('respects `` string in controllers specs', () => {});
 
-  it('doesnt lex strings - it should throws error', () => {
+  it(`doesn't lex strings - it should throws error`, () => {
     expectSyntaxErrorFirst('""', {
       message: 'Syntax Error: Cannot parse the unexpected character (").',
       locations: [{ line: 1, column: 1 }],
@@ -516,18 +516,18 @@ describe(__filename, () => {
   it('throws errors in wrong description syntax', () => {});
 
   it('respects descriptions', () => {
-    expect(lexFirst('// qweqweqweqweqw qwe').toJSON()).toMatchObject({
+    expect(lexFirst('// my life').toJSON()).toMatchObject({
       kind: TokenKind.DESCRIPTION,
       start: 0,
-      end: 21,
-      value: 'qweqweqweqweqw qwe',
+      end: 10,
+      value: 'my life',
     });
 
-    expect(lexFirst('// qweqw///eqweqweqw qwe').toJSON()).toMatchObject({
+    expect(lexFirst('// my life///my life').toJSON()).toMatchObject({
       kind: TokenKind.DESCRIPTION,
       start: 0,
-      end: 24,
-      value: 'qweqw///eqweqweqw qwe',
+      end: 20,
+      value: 'my life///my life',
     });
   });
 

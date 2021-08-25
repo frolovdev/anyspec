@@ -29,7 +29,7 @@ A # comment {
   -b?: i,
 }
 
-MyModel {ekek: b[],kek: i[] }
+MyModel {lol: b[],kek: i[] }
 
 # inline enum
 MyModel {color: (sample|42|true)}
