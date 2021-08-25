@@ -39,7 +39,7 @@ describe(__filename, () => {
     const errors = getErrors(`
       Doc {
         name: ew,
-        m: eqweqw,
+        m: e,
         c: integerr
       }
     `);
@@ -50,7 +50,7 @@ describe(__filename, () => {
         locations: [{ line: 3, column: 15 }],
       },
       {
-        message: 'Unknown type "eqweqw".',
+        message: `Unknown type \"e\". Did you mean \"b\", \"d\", \"f\", \"i\", or \"j\"?`,
         locations: [{ line: 4, column: 12 }],
       },
       {

@@ -1,0 +1,27 @@
+language: en
+ignorePaths:
+  # Copied from '.gitignore', please keep it in sync.
+  - .eslintcache
+  - node_modules
+  - coverage
+  - npm
+  - src/cli/spec/**
+  - src/cli/dist/**
+  - src/cli/package.json
+  - src/cli/package-lock.json
+  - package.json
+
+allowCompoundWords: true
+
+dictionaries:
+  - cpp
+  - java
+  - html
+
+words:
+  - runtypes
+  - Damerau
+  - CRUDL
+  - globby
+  - pechkin
+
