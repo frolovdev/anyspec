@@ -291,18 +291,25 @@ function readToken(lexer: Lexer, start: number): Token {
  * #[\u0009\u0020-\uFFFF]*
  */
 function readComment(lexer: ILexer, start: number): Token {
-  const { source } = lexer;
-  const body = source.body;
-  let code;
-  let position = start;
+  const body = lexer.source.body;
+  const bodyLength = body.length;
+  let position = start + 1;
 
-  do {
-    code = body.charCodeAt(++position);
-  } while (
-    !isNaN(code) &&
-    // SourceCharacter but not LineTerminator
-    (code > 0x001f || code === 0x0009)
-  );
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    // LineTerminator (\n | \r)
+    if (code === 0x000a || code === 0x000d) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
+  }
 
   return createToken(lexer, TokenKind.COMMENT, start, position, body.slice(start + 1, position));
 }
@@ -349,27 +356,22 @@ function printCharCode(code: number): string {
  * [_A-Za-z][_0-9A-Za-z]*
  */
 function readName(lexer: ILexer, start: number, state?: LexerState): Token {
-  const { source } = lexer;
-
   if (state === 'insideEnum') {
     return readNameInsideEnum(lexer, start);
   }
 
-  const body = source.body;
+  const body = lexer.source.body;
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    (code === 95 || // _
-      code === 45 || // -
-      (code >= 48 && code <= 57) || // 0-9
-      (code >= 65 && code <= 90) || // A-Z
-      (code >= 97 && code <= 122)) // a-z
-  ) {
-    ++position;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+    // NameContinue
+    if (isLetter(code) || isDigit(code) || code === 0x005f || code === 0x002d) {
+      ++position;
+    } else {
+      break;
+    }
   }
   return createToken(lexer, TokenKind.NAME, start, position, body.slice(start, position));
 }
@@ -383,16 +385,16 @@ function readNumber(lexer: ILexer, start: number): Token {
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    code >= 48 &&
-    code <= 57
-  ) {
-    // 0-9
-    ++position;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    if (isDigit(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
+
   return createToken(lexer, TokenKind.NUMBER, start, position, body.slice(start, position));
 }
 
@@ -405,46 +407,34 @@ function readNameInsideEnum(lexer: ILexer, start: number): Token {
   const bodyLength = body.length;
   let position = start;
   let parenthesisCount = 0;
-  let code = 0;
 
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    (code === 95 || // _
-      code === 45 || // -
-      (code >= 48 && code <= 57) || // 0-9
-      (code >= 65 && code <= 90) || // A-Z
-      (code >= 97 && code <= 122) || // a-z
-      code === 32 || //  <space>
-      code === 44 || //  ,
-      code === 33 || //  !
-      code === 36 || //  $
-      code === 38 || //  &
-      code === 39 || // '
-      code === 58 || // :
-      code === 40 || // (
-      code === 41 || // )
-      code === 46 || //  .
-      code === 47 || // /
-      code === 34 || // "
-      code === 43) // +
-  ) {
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+    // \n \r |
+    if (code === 0x000a || code === 0x000d || code === 0x007c) {
+      break;
+    }
+
     // )
-    if (code === 41 && parenthesisCount === 0) {
+    if (code === 0x0029 && parenthesisCount === 0) {
       break;
     }
 
     // (
-    if (code === 40) {
+    if (code === 0x0028) {
       parenthesisCount++;
     }
 
     // )
-    if (code === 41) {
+    if (code === 0x0029) {
       parenthesisCount--;
     }
 
-    ++position;
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
 
   if (parenthesisCount !== 0) {
@@ -473,13 +463,20 @@ function readNameWithGraveAccentMarks(lexer: ILexer, start: number) {
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    code !== 96 // `
-  ) {
-    ++position;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    // LineTerminator (\n | \r)  | (`)
+    if (code === 0x000a || code === 0x000d || code === 0x0060) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
   return createToken(lexer, TokenKind.NAME, start, position + 1, body.slice(start + 1, position));
 }
@@ -494,37 +491,54 @@ function readNameAfterSlash(lexer: ILexer, start: number) {
   const bodyLength = body.length;
   let position = start + 1;
 
-  let code = 0;
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
 
-  while (
-    position !== bodyLength &&
-    !isNaN((code = body.charCodeAt(position))) &&
-    !(code === 32 || code === (10 as number))
-  ) {
-    ++position;
+    // LineTerminator (\n | \r)  | space
+    if (code === 0x000a || code === 0x000d || code === 0x0020) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
   }
+
   return createToken(lexer, TokenKind.NAME, start, position, body.slice(start, position));
 }
 
 function readDescription(lexer: ILexer, start: number) {
   const { source } = lexer;
   const body = source.body;
-  let code;
+  const bodyLength = body.length;
+  // let code;
   let position = start;
 
   const nextPosition = position + 1;
   const nextCode = body.charCodeAt(nextPosition);
-  if (nextCode !== 47) {
+  if (nextCode !== 0x002f) {
+    // /
     throw syntaxError(source, nextPosition, unexpectedCharacterMessage(nextCode));
   }
 
-  do {
-    code = body.charCodeAt(++position);
-  } while (
-    !isNaN(code) &&
-    // SourceCharacter but not LineTerminator
-    (code > 0x001f || code === 0x0009)
-  );
+  while (position < bodyLength) {
+    const code = body.charCodeAt(position);
+
+    // LineTerminator (\n | \r)  | space
+    if (code === 0x000a || code === 0x000d) {
+      break;
+    }
+
+    // SourceCharacter
+    if (isSourceCharacter(code)) {
+      ++position;
+    } else {
+      break;
+    }
+  }
 
   return createToken(
     lexer,
@@ -547,6 +561,17 @@ function isNameStart(code: number): boolean {
   const downDash = 0x005f; // _
   const dash = 0x002d;
   return isLetter(code) || code === downDash || code === dash;
+}
+
+/**
+ * SourceCharacter ::
+ *   - U+0009 (Horizontal Tab)
+ *   - U+000A (New Line)
+ *   - U+000D (Carriage Return)
+ *   - U+0020-U+FFFF
+ */
+function isSourceCharacter(code: number): boolean {
+  return code >= 0x0020 || code === 0x0009 || code === 0x000a || code === 0x000d;
 }
 
 /**
