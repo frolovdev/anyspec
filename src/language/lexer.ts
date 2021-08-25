@@ -254,25 +254,6 @@ function readToken(lexer: Lexer, start: number): Token {
         throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
 
-      case 0x002d: //  - for now we allow dashes to in words
-        return readName(lexer, position, lexer.isInsideEnum);
-      case 0x0030: //  0
-      case 0x0031: //  1
-      case 0x0032: //  2
-      case 0x0033: //  3
-      case 0x0034: //  4
-      case 0x0035: //  5
-      case 0x0036: //  6
-      case 0x0037: //  7
-      case 0x0038: //  8
-      case 0x0039: //  9
-        if (lexer.source.sourceType === 'endpoints') {
-          return readNumber(lexer, position);
-        } else {
-          // we don't support numbers in models files
-          throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
-        }
-
       case 0x003c: // <
         return createToken(lexer, TokenKind.EXTENDS, position, position + 1);
 
@@ -335,6 +316,21 @@ function readToken(lexer: Lexer, start: number): Token {
       case 0x0079: // y
       case 0x007a: // z
         return readName(lexer, position, lexer.isInsideEnum);
+    }
+
+    // IntValue | FloatValue (Digit | -)
+    if (isDigit(code) || code === 0x002d) {
+      //  - for now we allow dashes to in words
+      if (code === 0x002d) {
+        return readName(lexer, position, lexer.isInsideEnum);
+      }
+
+      if (lexer.source.sourceType === 'endpoints') {
+        return readNumber(lexer, position);
+      } else {
+        // we don't support numbers in models files
+        throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
+      }
     }
 
     throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
@@ -599,6 +595,14 @@ function readDescription(lexer: ILexer, start: number) {
     position,
     body.slice(start + 2, position).trim(),
   );
+}
+
+/**
+ * Digit :: one of
+ *   - `0` `1` `2` `3` `4` `5` `6` `7` `8` `9`
+ */
+function isDigit(code: number): boolean {
+  return code >= 0x0030 && code <= 0x0039;
 }
 
 /**
