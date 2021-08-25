@@ -1,89 +1,20 @@
 import { Token, TokenKind, TokenKindEnum } from './token';
 import { Source } from './source';
 import { syntaxError } from '../error';
+import { IndentReader } from './indentReader';
+import { createToken } from './createToken';
 
-class IndentReader {
-  private indents: number[] = [0];
-  private isEnabled: boolean;
-  private remaining: Token[] = [];
-
-  constructor({ isEnabled }: { isEnabled: boolean }) {
-    this.isEnabled = isEnabled;
-  }
-
-  readRemaining(): Token | undefined {
-    return this.remaining.pop();
-  }
-
-  // we need this to emit remaining DEDENT at EOF
-  eofHandler(source: Source, start: number, line: number, col: number, prev: Token | null) {
-    while (this.indents.length > 1) {
-      this.remaining.push(new Token(TokenKind.DEDENT, start, start + 1, line, col, prev));
-      this.indents.pop();
-    }
-  }
-
-  readInsideIndent(
-    source: Source,
-    start: number,
-    line: number,
-    col: number,
-    prev: Token | null,
-  ): Token | undefined {
-    // return if not endpoints
-    if (!this.isEnabled) {
-      return;
-    }
-
-    const body = source.body;
-    const bodyLength = body.length;
-    let position = start + 1;
-
-    let code = 0;
-    let column = 0;
-
-    while (
-      position !== bodyLength &&
-      !isNaN((code = body.charCodeAt(position))) &&
-      code === 32 /* <space> */
-    ) {
-      column += 1;
-      ++position;
-    }
-
-    // ignore line with only spaces
-    if (body.charCodeAt(position) === 10) {
-      return;
-    }
-
-    // emit INDENT tokens if spaces at start line more then spaces at prev line
-    if (column > this.indents[this.indents.length - 1]) {
-      this.indents.push(column);
-      return new Token(TokenKind.INDENT, start, position, line, col, prev);
-    }
-    let tokens: Token[] = [];
-
-    // if spaces at start line less then prev line create array of all DEDENT tokens
-    while (column < this.indents[this.indents.length - 1]) {
-      if (!this.indents.includes(column)) {
-        throw syntaxError(source, position, 'unindent does not match any outer indentation level');
-      }
-      this.indents.pop();
-
-      tokens.push(new Token(TokenKind.DEDENT, start, position, line, col, prev));
-    }
-
-    // store remaining tokens and return first
-    if (tokens.length > 0) {
-      this.remaining = tokens;
-      return this.remaining.pop();
-    }
-
-    return; // same indentation level
-  }
+export interface ILexer {
+  source: Source;
+  lastToken: Token;
+  token: Token;
+  line: number;
+  lineStart: number;
+  isInsideEnum: boolean;
+  indentReader: IndentReader;
 }
 
-export class Lexer {
+export class Lexer implements ILexer {
   source: Source;
 
   /**
@@ -117,14 +48,16 @@ export class Lexer {
   indentReader: IndentReader;
 
   constructor(source: Source) {
-    const startOfFileToken = new Token(TokenKind.SOF, 0, 0, 0, 0, null);
+    const startOfFileToken = new Token(TokenKind.SOF, 0, 0, 0, 0);
 
     this.source = source;
     this.lastToken = startOfFileToken;
     this.token = startOfFileToken;
     this.line = 1;
     this.lineStart = 0;
-    this.indentReader = new IndentReader({ isEnabled: source.sourceType === 'endpoints' });
+    this.indentReader = new IndentReader({
+      isEnabled: source.sourceType === 'endpoints',
+    });
   }
 
   /**
@@ -145,8 +78,17 @@ export class Lexer {
 
     if (token.kind !== TokenKind.EOF) {
       do {
-        // @ts-expect-error next is only mutable during parsing, so we cast to allow this.
-        token = token.next ?? (token.next = readToken(this, token));
+        if (token.next) {
+          token = token.next;
+        } else {
+          // Read the next token and form a link in the token linked-list.
+          const nextToken = readToken(this, token.end);
+          // @ts-expect-error next is only mutable during parsing.
+          token.next = nextToken;
+          // @ts-expect-error prev is only mutable during parsing.
+          nextToken.prev = token;
+          token = nextToken;
+        }
       } while (token.kind === TokenKind.COMMENT);
     }
 
@@ -156,12 +98,11 @@ export class Lexer {
 
 // private
 
-function readToken(lexer: Lexer, prev: Token): Token {
-  const source = lexer.source;
-  const body = source.body;
+function readToken(lexer: Lexer, start: number): Token {
+  const body = lexer.source.body;
   const bodyLength = body.length;
 
-  let pos = prev.end;
+  let position = start;
 
   // if indentReader has `remaining` we cant advance until we exhaust it
   const possibleRemaining = lexer.indentReader.readRemaining();
@@ -170,242 +111,244 @@ function readToken(lexer: Lexer, prev: Token): Token {
     return possibleRemaining;
   }
 
-  while (pos < bodyLength) {
+  while (position < bodyLength) {
     // getting char code
-    const code = body.charCodeAt(pos);
-
-    const line = lexer.line;
-    const col = 1 + pos - lexer.lineStart;
+    const code = body.charCodeAt(position);
 
     // SourceCharacter
     switch (code) {
+      // Ignored ::
+      //   - UnicodeBOM
+      //   - WhiteSpace
+      //   - LineTerminator
+      //   - Comment
+      //   - Comma
+      //
+      // UnicodeBOM :: "Byte Order Mark (U+FEFF)"
+      //
+      // WhiteSpace ::
+      //   - "Horizontal Tab (U+0009)"
+      //   - "Space (U+0020)"
+      //
+      // Comma :: ,
       case 0xfeff: // <BOM> Short for byte order mark, BOM
-      case 9: //   \t
-      case 32: //  <space>
-      case 44: //  ,
-        ++pos;
+      case 0x0009: //   \t
+      case 0x0020: //  <space>
+      case 0x002c: //  ,
+        ++position;
         continue;
-      case 10:
+      case 0x000a:
         //  \n
 
-        const token = lexer.indentReader.readInsideIndent(source, pos, line, col, prev);
+        const token = lexer.indentReader.readInsideIndent(lexer, position);
 
         if (token) {
           return token;
         }
 
-        ++pos;
+        ++position;
         ++lexer.line;
-        lexer.lineStart = pos;
+        lexer.lineStart = position;
 
         continue;
 
-      case 13: //  \r
+      case 0x000d: //  \r
         // \n
-        if (body.charCodeAt(pos + 1) === 10) {
-          pos += 2;
+        if (body.charCodeAt(position + 1) === 0x000a) {
+          position += 2;
         } else {
-          ++pos;
+          ++position;
         }
         ++lexer.line;
-        lexer.lineStart = pos;
+        lexer.lineStart = position;
         continue;
-      case 33: //  !
+      case 0x0021: //  !
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        return new Token(TokenKind.BANG, pos, pos + 1, line, col, prev);
-      case 35: //  #
-        return readComment(source, pos, line, col, prev);
-      case 36: //  $
+        return createToken(lexer, TokenKind.BANG, position, position + 1);
+      case 0x0023: //  #
+        return readComment(lexer, position);
+      case 0x0024: //  $
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        return new Token(TokenKind.DOLLAR, pos, pos + 1, line, col, prev);
-      case 38: //  &
+        return createToken(lexer, TokenKind.DOLLAR, position, position + 1);
+      case 0x0026: //  &
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        return new Token(TokenKind.AMP, pos, pos + 1, line, col, prev);
-      case 40: {
+        return createToken(lexer, TokenKind.AMP, position, position + 1);
+      case 0x0028: {
         //  (
+
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
 
         lexer.isInsideEnum = true;
-        return new Token(TokenKind.PAREN_L, pos, pos + 1, line, col, prev);
+        return createToken(lexer, TokenKind.PAREN_L, position, position + 1);
       }
 
-      case 41: //  )
+      case 0x0029: //  )
         lexer.isInsideEnum = false;
 
-        return new Token(TokenKind.PAREN_R, pos, pos + 1, line, col, prev);
-      case 46: //  .
+        return createToken(lexer, TokenKind.PAREN_R, position, position + 1);
+      case 0x002e: //  .
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
-      case 47: // /
-        if (body.charCodeAt(pos + 1) === 47) {
-          return readDescription(source, pos, line, col, prev);
+        throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
+      case 0x002f: // /
+        if (body.charCodeAt(position + 1) === 0x002f) {
+          return readDescription(lexer, position);
         }
         if (lexer.source.sourceType === 'endpoints') {
-          return readNameAfterSlash(source, pos, line, col, prev);
+          return readNameAfterSlash(lexer, position);
         }
 
-      case 58: //  :
+      case 0x003a: //  :
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        return new Token(TokenKind.COLON, pos, pos + 1, line, col, prev);
-      case 61: //  =
-        if (body.charCodeAt(pos + 1) === 62) {
+        return createToken(lexer, TokenKind.COLON, position, position + 1);
+      case 0x003d: //  =
+        if (body.charCodeAt(position + 1) === 0x003e) {
           // =>
-          return new Token(TokenKind.RETURN, pos, pos + 2, line, col, prev);
+          return createToken(lexer, TokenKind.RETURN, position, position + 2);
         }
-        return new Token(TokenKind.EQUALS, pos, pos + 1, line, col, prev);
-      case 64: //  @
-        return new Token(TokenKind.AT, pos, pos + 1, line, col, prev);
-      case 91: //  [
-        return new Token(TokenKind.BRACKET_L, pos, pos + 1, line, col, prev);
-      case 93: //  ]
-        return new Token(TokenKind.BRACKET_R, pos, pos + 1, line, col, prev);
-      case 123: // {
-        return new Token(TokenKind.BRACE_L, pos, pos + 1, line, col, prev);
-      case 124: // |
-        return new Token(TokenKind.PIPE, pos, pos + 1, line, col, prev);
-      case 125: // }
-        return new Token(TokenKind.BRACE_R, pos, pos + 1, line, col, prev);
-      case 34: //  "
-        // if (
-        //   body.charCodeAt(pos + 1) === 34 &&
-        //   body.charCodeAt(pos + 2) === 34
-        // ) {
-        //   return readBlockString(source, pos, line, col, prev, lexer);
-        // }
-
+        return createToken(lexer, TokenKind.EQUALS, position, position + 1);
+      case 0x0040: //  @
+        return createToken(lexer, TokenKind.AT, position, position + 1);
+      case 0x005b: //  [
+        return createToken(lexer, TokenKind.BRACKET_L, position, position + 1);
+      case 0x005d: //  ]
+        return createToken(lexer, TokenKind.BRACKET_R, position, position + 1);
+      case 0x007b: // {
+        return createToken(lexer, TokenKind.BRACE_L, position, position + 1);
+      case 0x007c: // |
+        return createToken(lexer, TokenKind.PIPE, position, position + 1);
+      case 0x007d: // }
+        return createToken(lexer, TokenKind.BRACE_R, position, position + 1);
+      case 0x0022: //  "
         // for now we dont support strings
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
 
-        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+        throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
 
-      case 43: {
+      case 0x002b: {
         // +
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+        throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
 
-      case 96: {
+      case 0x0060: {
         // `
         if (lexer.source.sourceType === 'endpoints') {
-          return readNameWithGraveAccentMarks(source, pos, line, col, prev);
+          return readNameWithGraveAccentMarks(lexer, position);
         }
-        throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+        throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
       }
 
-      case 45: //  - for now we allow dashes to in words
-        return readName(source, pos, line, col, prev, lexer.isInsideEnum);
-      case 48: //  0
-      case 49: //  1
-      case 50: //  2
-      case 51: //  3
-      case 52: //  4
-      case 53: //  5
-      case 54: //  6
-      case 55: //  7
-      case 56: //  8
-      case 57: //  9
+      case 0x002d: //  - for now we allow dashes to in words
+        return readName(lexer, position, lexer.isInsideEnum);
+      case 0x0030: //  0
+      case 0x0031: //  1
+      case 0x0032: //  2
+      case 0x0033: //  3
+      case 0x0034: //  4
+      case 0x0035: //  5
+      case 0x0036: //  6
+      case 0x0037: //  7
+      case 0x0038: //  8
+      case 0x0039: //  9
         if (lexer.source.sourceType === 'endpoints') {
-          return readNumber(source, pos, line, col, prev);
+          return readNumber(lexer, position);
         } else {
           // we don't support numbers in models files
-          throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+          throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
         }
 
-      case 60: // <
-        return new Token(TokenKind.EXTENDS, pos, pos + 1, line, col, prev);
+      case 0x003c: // <
+        return createToken(lexer, TokenKind.EXTENDS, position, position + 1);
 
-      case 63: // ?
+      case 0x003f: // ?
         if (lexer.isInsideEnum) {
-          return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+          return readName(lexer, position, lexer.isInsideEnum);
         }
-        return new Token(TokenKind.QUESTION_MARK, pos, pos + 1, line, col, prev);
-      case 65: //  A
-      case 66: //  B
-      case 67: //  C
-      case 68: //  D
-      case 69: //  E
-      case 70: //  F
-      case 71: //  G
-      case 72: //  H
-      case 73: //  I
-      case 74: //  J
-      case 75: //  K
-      case 76: //  L
-      case 77: //  M
-      case 78: //  N
-      case 79: //  O
-      case 80: //  P
-      case 81: //  Q
-      case 82: //  R
-      case 83: //  S
-      case 84: //  T
-      case 85: //  U
-      case 86: //  V
-      case 87: //  W
-      case 88: //  X
-      case 89: //  Y
-      case 90: //  Z
-      case 95: //  _
-      case 97: //  a
-      case 98: //  b
-      case 99: //  c
-      case 100: // d
-      case 101: // e
-      case 102: // f
-      case 103: // g
-      case 104: // h
-      case 105: // i
-      case 106: // j
-      case 107: // k
-      case 108: // l
-      case 109: // m
-      case 110: // n
-      case 111: // o
-      case 112: // p
-      case 113: // q
-      case 114: // r
-      case 115: // s
-      case 116: // t
-      case 117: // u
-      case 118: // v
-      case 119: // w
-      case 120: // x
-      case 121: // y
-      case 122: // z
-        return readName(source, pos, line, col, prev, lexer.isInsideEnum);
+        return createToken(lexer, TokenKind.QUESTION_MARK, position, position + 1);
+      case 0x0041: //  A
+      case 0x0042: //  B
+      case 0x0043: //  C
+      case 0x0044: //  D
+      case 0x0045: //  E
+      case 0x0046: //  F
+      case 0x0047: //  G
+      case 0x0048: //  H
+      case 0x0049: //  I
+      case 0x004a: //  J
+      case 0x004b: //  K
+      case 0x004c: //  L
+      case 0x004d: //  M
+      case 0x004e: //  N
+      case 0x004f: //  O
+      case 0x0050: //  P
+      case 0x0051: //  Q
+      case 0x0052: //  R
+      case 0x0053: //  S
+      case 0x0054: //  T
+      case 0x0055: //  U
+      case 0x0056: //  V
+      case 0x0057: //  W
+      case 0x0058: //  X
+      case 0x0059: //  Y
+      case 0x005a: //  Z
+      case 0x005f: //  _
+      case 0x0061: //  a
+      case 0x0062: //  b
+      case 0x0063: //  c
+      case 0x0064: // d
+      case 0x0065: // e
+      case 0x0066: // f
+      case 0x0067: // g
+      case 0x0068: // h
+      case 0x0069: // i
+      case 0x006a: // j
+      case 0x006b: // k
+      case 0x006c: // l
+      case 0x006d: // m
+      case 0x006e: // n
+      case 0x006f: // o
+      case 0x0070: // p
+      case 0x0071: // q
+      case 0x0072: // r
+      case 0x0073: // s
+      case 0x0074: // t
+      case 0x0075: // u
+      case 0x0076: // v
+      case 0x0077: // w
+      case 0x0078: // x
+      case 0x0079: // y
+      case 0x007a: // z
+        return readName(lexer, position, lexer.isInsideEnum);
     }
 
-    throw syntaxError(source, pos, unexpectedCharacterMessage(code));
+    throw syntaxError(lexer.source, position, unexpectedCharacterMessage(code));
   }
-
-  const line = lexer.line;
-  const col = 1 + pos - lexer.lineStart;
 
   // at EOF before we emit <EOF> we need to check if indentReader have non empty stack
   // and create DEDENT tokens if need to
-  lexer.indentReader.eofHandler(source, pos, line, col, prev);
+  lexer.indentReader.eofHandler(lexer, position, position + 1);
   const dedentToken = lexer.indentReader.readRemaining();
   if (dedentToken) {
     return dedentToken;
   }
 
-  return new Token(TokenKind.EOF, bodyLength, bodyLength, line, col, prev);
+  return createToken(lexer, TokenKind.EOF, bodyLength, bodyLength);
 }
 
 /**
@@ -413,13 +356,8 @@ function readToken(lexer: Lexer, prev: Token): Token {
  *
  * #[\u0009\u0020-\uFFFF]*
  */
-function readComment(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-): Token {
+function readComment(lexer: ILexer, start: number): Token {
+  const { source } = lexer;
   const body = source.body;
   let code;
   let position = start;
@@ -432,15 +370,7 @@ function readComment(
     (code > 0x001f || code === 0x0009)
   );
 
-  return new Token(
-    TokenKind.COMMENT,
-    start,
-    position,
-    line,
-    col,
-    prev,
-    body.slice(start + 1, position),
-  );
+  return createToken(lexer, TokenKind.COMMENT, start, position, body.slice(start + 1, position));
 }
 
 /**
@@ -484,16 +414,11 @@ function printCharCode(code: number): string {
  *
  * [_A-Za-z][_0-9A-Za-z]*
  */
-function readName(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-  isInsideEnum?: boolean,
-): Token {
+function readName(lexer: ILexer, start: number, isInsideEnum?: boolean): Token {
+  const { source } = lexer;
+
   if (isInsideEnum) {
-    return readNameInsideEnum(source, start, line, col, prev);
+    return readNameInsideEnum(lexer, start);
   }
 
   const body = source.body;
@@ -512,19 +437,14 @@ function readName(
   ) {
     ++position;
   }
-  return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
+  return createToken(lexer, TokenKind.NAME, start, position, body.slice(start, position));
 }
 
 /**
  * Reads a number.
  */
-function readNumber(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-): Token {
+function readNumber(lexer: ILexer, start: number): Token {
+  const { source } = lexer;
   const body = source.body;
   const bodyLength = body.length;
   let position = start + 1;
@@ -539,19 +459,14 @@ function readNumber(
     // 0-9
     ++position;
   }
-  return new Token(TokenKind.NUMBER, start, position, line, col, prev, body.slice(start, position));
+  return createToken(lexer, TokenKind.NUMBER, start, position, body.slice(start, position));
 }
 
 /**
  * Reads Name token inside Enum context
  */
-function readNameInsideEnum(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-): Token {
+function readNameInsideEnum(lexer: ILexer, start: number): Token {
+  const { source } = lexer;
   const body = source.body;
   const bodyLength = body.length;
   let position = start;
@@ -611,20 +526,15 @@ function readNameInsideEnum(
     value = value.substring(1, value.length - 1);
   }
 
-  return new Token(TokenKind.NAME, start, position, line, col, prev, value);
+  return createToken(lexer, TokenKind.NAME, start, position, value);
 }
 
 /**
  * Reads an any symbol inside `...` name from the source.
  *
  */
-function readNameWithGraveAccentMarks(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-) {
+function readNameWithGraveAccentMarks(lexer: ILexer, start: number) {
+  const { source } = lexer;
   const body = source.body;
   const bodyLength = body.length;
   let position = start + 1;
@@ -637,28 +547,15 @@ function readNameWithGraveAccentMarks(
   ) {
     ++position;
   }
-  return new Token(
-    TokenKind.NAME,
-    start,
-    position + 1,
-    line,
-    col,
-    prev,
-    body.slice(start + 1, position),
-  );
+  return createToken(lexer, TokenKind.NAME, start, position + 1, body.slice(start + 1, position));
 }
 
 /**
  * Reads an any symbol after '/' from the source.
  *
  */
-function readNameAfterSlash(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-) {
+function readNameAfterSlash(lexer: ILexer, start: number) {
+  const { source } = lexer;
   const body = source.body;
   const bodyLength = body.length;
   let position = start + 1;
@@ -672,16 +569,11 @@ function readNameAfterSlash(
   ) {
     ++position;
   }
-  return new Token(TokenKind.NAME, start, position, line, col, prev, body.slice(start, position));
+  return createToken(lexer, TokenKind.NAME, start, position, body.slice(start, position));
 }
 
-function readDescription(
-  source: Source,
-  start: number,
-  line: number,
-  col: number,
-  prev: Token | null,
-) {
+function readDescription(lexer: ILexer, start: number) {
+  const { source } = lexer;
   const body = source.body;
   let code;
   let position = start;
@@ -700,52 +592,13 @@ function readDescription(
     (code > 0x001f || code === 0x0009)
   );
 
-  return new Token(
+  return createToken(
+    lexer,
     TokenKind.DESCRIPTION,
     start,
     position,
-    line,
-    col,
-    prev,
     body.slice(start + 2, position).trim(),
   );
-}
-
-// _ A-Z a-z
-function isNameStart(code: number): boolean {
-  return code === 95 || (code >= 65 && code <= 90) || (code >= 97 && code <= 122);
-}
-
-/**
- * Converts four hexadecimal chars to the integer that the
- * string represents. For example, uniCharCode('0','0','0','f')
- * will return 15, and uniCharCode('0','0','f','f') returns 255.
- *
- * Returns a negative number on error, if a char was invalid.
- *
- * This is implemented by noting that char2hex() returns -1 on error,
- * which means the result of ORing the char2hex() will also be negative.
- */
-function uniCharCode(a: number, b: number, c: number, d: number): number {
-  return (char2hex(a) << 12) | (char2hex(b) << 8) | (char2hex(c) << 4) | char2hex(d);
-}
-
-/**
- * Converts a hex character to its integer value.
- * '0' becomes 0, '9' becomes 9
- * 'A' becomes 10, 'F' becomes 15
- * 'a' becomes 10, 'f' becomes 15
- *
- * Returns -1 on error.
- */
-function char2hex(a: number): number {
-  return a >= 48 && a <= 57
-    ? a - 48 // 0-9
-    : a >= 65 && a <= 70
-    ? a - 55 // A-F
-    : a >= 97 && a <= 102
-    ? a - 87 // a-f
-    : -1;
 }
 
 /**
