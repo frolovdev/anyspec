@@ -21,7 +21,9 @@ export async function print(specFilePath: string, options: Options) {
     for (const source of sources) {
       const result = printFn(source);
 
-      writeFile(source.name, result, 'utf-8');
+      if (source.sourceType === 'models') {
+        writeFile(source.name, result, 'utf-8');
+      }
     }
 
     processingSpinner.succeed();
