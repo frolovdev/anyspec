@@ -1,5 +1,6 @@
 import { print } from '../index';
 import { dedent, dedentString } from '../../__testsUtils__';
+import { Source } from '../../language';
 
 describe(__filename, () => {
   describe('models', () => {
@@ -278,11 +279,13 @@ AcDocument {}\n`,
 
   describe('enums', () => {
     it('correctly print model with short named enum and description', () => {
-      const source = `
+      const source = new Source({
+        body: `
       // лул
           // kek
           A ( f | b
-          )`;
+          )`,
+      });
       const printed = print(source);
       expect(dedentString(printed)).toEqual(dedent`
           // лул
@@ -295,12 +298,14 @@ AcDocument {}\n`,
     });
 
     it('correctly print model with long named enum', () => {
-      const source = `CompanyType (
+      const source = new Source({
+        body: `CompanyType (
         Branch Office Singapore |
         Private Company 'Limited' by Shares (Pte. Ltd.) |
         + amount |
               b-office-singapore
-      )`;
+      )`,
+      });
       const printed = print(source);
       expect(dedentString(printed)).toEqual(dedent`
     CompanyType (
@@ -313,7 +318,8 @@ AcDocument {}\n`,
     });
 
     it('correctly print model with complicated inline enums', () => {
-      const source = `AcDocument < Kek, Lel !{
+      const source = new Source({
+        body: `AcDocument < Kek, Lel !{
             -name?: s[],
             type?: (
               + amount |
@@ -330,7 +336,8 @@ AcDocument {}\n`,
               }[],
             },
             surname: b[],
-          }`;
+          }`,
+      });
       const printed = print(source);
       expect(dedentString(printed)).toEqual(dedent`
     AcDocument < Kek, Lel !{
@@ -349,13 +356,15 @@ AcDocument {}\n`,
     `);
     });
     it('correctly print model that uses named enum', () => {
-      const source = `  A (
+      const source = new Source({
+        body: `  A (
         f | b
       )
       MyModel {         color: A, }
       B (
         c | d
-      )`;
+      )`,
+      });
       const printed = print(source);
 
       expect(dedentString(printed)).toEqual(dedent`
