@@ -1,5 +1,5 @@
 import { ASTNode, ASTNodeKind, parse as defaultParse, Source } from '../../language';
-import { toJSONDeep, log } from '../../utils';
+import { toJSONDeep } from '../../utils';
 
 const parse = (source: string | Source) => defaultParse(source, { noLocation: true });
 
@@ -208,6 +208,104 @@ GET /endpoint
       const ast = parse(source);
 
       expect(toJSONDeep(ast)).toEqual(expectedAST);
+    });
+
+    it('can parse combination of endpoints', () => {
+      const sourceString = `
+POST /tickets/return_agent_tickets_to_group/:agentId
+
+GET /tickets/:id:i/extended
+  => TicketsExtendedResponse
+`;
+
+      const expectedAST: ASTNode = {
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+            endpoints: [
+              {
+                kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+                verb: {
+                  kind: ASTNodeKind.ENDPOINT_VERB,
+                  name: { kind: ASTNodeKind.NAME, value: 'POST' },
+                },
+                url: {
+                  kind: ASTNodeKind.ENDPOINT_URL,
+                  name: {
+                    kind: ASTNodeKind.NAME,
+                    value: '/tickets/return_agent_tickets_to_group/:agentId',
+                  },
+                  parameters: [
+                    {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
+                        type: { kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE },
+                        name: { kind: ASTNodeKind.NAME, value: 'agentId' },
+                      },
+                    },
+                  ],
+                },
+                responses: [],
+              },
+            ],
+          },
+
+          {
+            kind: ASTNodeKind.ENDPOINT_NAMESPACE_TYPE_DEFINITION,
+            endpoints: [
+              {
+                kind: ASTNodeKind.ENDPOINT_TYPE_DEFINITION,
+                verb: {
+                  kind: ASTNodeKind.ENDPOINT_VERB,
+                  name: { kind: ASTNodeKind.NAME, value: 'GET' },
+                },
+                url: {
+                  kind: ASTNodeKind.ENDPOINT_URL,
+                  name: { kind: ASTNodeKind.NAME, value: '/tickets/:id:i/extended' },
+                  parameters: [
+                    {
+                      kind: ASTNodeKind.ENDPOINT_PARAMETER,
+                      type: {
+                        kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH,
+                        type: {
+                          kind: ASTNodeKind.ENDPOINT_PARAMETER_PATH_TYPE,
+                          name: { kind: ASTNodeKind.NAME, value: 'i' },
+                        },
+                        name: { kind: ASTNodeKind.NAME, value: 'id' },
+                      },
+                    },
+                  ],
+                },
+                responses: [
+                  {
+                    kind: ASTNodeKind.ENDPOINT_RESPONSE,
+                    type: {
+                      kind: ASTNodeKind.NAMED_TYPE,
+                      name: { kind: ASTNodeKind.NAME, value: 'TicketsExtendedResponse' },
+                    },
+                    status: {
+                      kind: ASTNodeKind.ENDPOINT_STATUS_CODE,
+                      name: { kind: ASTNodeKind.NAME, value: '200' },
+                    },
+                    description: undefined,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const source = new Source({
+        body: sourceString,
+        sourceType: 'endpoints',
+      });
+
+      const ast = parse(source);
+
+      expect(toJSONDeep(ast)).toMatchObject(expectedAST);
     });
 
     it('can parse basic endpoint with empty inline model in request', () => {

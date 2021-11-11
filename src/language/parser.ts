@@ -228,6 +228,8 @@ export class ModelParser {
 
     switch (braces.kind) {
       case TokenKind.BRACE_L:
+      case TokenKind.BANG:
+      case TokenKind.EXTENDS:
         return this.parseModelTypeDefinition(description);
       case TokenKind.PAREN_L:
         return this.parseEnumTypeDefinition(description);
@@ -568,7 +570,22 @@ export class EndpointsParser extends ModelParser {
    * parse endpoint request (model or name after url string)
    */
   parseEndpointParameterRequest(): EndpointParameterNode | undefined {
-    if (this.peek(TokenKind.INDENT)) {
+    const HTTP_REQUEST_METHODS = [
+      'GET',
+      'HEAD',
+      'POST',
+      'PUT',
+      'DELETE',
+      'CONNECT',
+      'OPTIONS',
+      'TRACE',
+      'PATCH',
+    ];
+
+    if (
+      this.peek(TokenKind.INDENT) ||
+      (this.peek(TokenKind.NAME) && HTTP_REQUEST_METHODS.includes(this.lexer.token.value))
+    ) {
       return;
     }
     const type = this.parseTypeReference();
@@ -766,6 +783,7 @@ export class EndpointsParser extends ModelParser {
    */
   parseEndpointWithoutNamespaceTypeDefinition(): EndpointNamespaceTypeDefinitionNode {
     const start = this.lexer.token;
+
     const nextToken = this.lexer.lookahead();
     if (nextToken.kind === TokenKind.INDENT) {
       throw syntaxError(
