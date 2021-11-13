@@ -43,6 +43,18 @@ export interface ParseOptions {
   noLocation?: boolean;
 }
 
+const HTTP_REQUEST_METHODS = new Set([
+  'GET',
+  'HEAD',
+  'POST',
+  'PUT',
+  'DELETE',
+  'CONNECT',
+  'OPTIONS',
+  'TRACE',
+  'PATCH',
+]);
+
 export class ModelParser {
   private options: $Maybe<ParseOptions>;
   protected lexer: Lexer;
@@ -570,21 +582,9 @@ export class EndpointsParser extends ModelParser {
    * parse endpoint request (model or name after url string)
    */
   parseEndpointParameterRequest(): EndpointParameterNode | undefined {
-    const HTTP_REQUEST_METHODS = [
-      'GET',
-      'HEAD',
-      'POST',
-      'PUT',
-      'DELETE',
-      'CONNECT',
-      'OPTIONS',
-      'TRACE',
-      'PATCH',
-    ];
-
     if (
       this.peek(TokenKind.INDENT) ||
-      (this.peek(TokenKind.NAME) && HTTP_REQUEST_METHODS.includes(this.lexer.token.value))
+      (this.peek(TokenKind.NAME) && HTTP_REQUEST_METHODS.has(this.lexer.token.value))
     ) {
       return;
     }

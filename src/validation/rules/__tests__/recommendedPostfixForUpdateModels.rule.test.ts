@@ -1,5 +1,5 @@
 import { validate } from '../..';
-import { ASTNodeKind, parse, Source } from '../../../language';
+import { parse, Source } from '../../../language';
 import { concatAST } from '../../../language/concatAST';
 import { AnySpecSchema } from '../../../runtypes';
 import { toJSONDeep } from '../../../utils';
