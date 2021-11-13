@@ -744,6 +744,68 @@ describe(__filename, () => {
       });
     });
 
+    it('correctly parse description and strict model', () => {
+      const value = `
+      // deprecated
+PaymentMethodsResponse !{
+}`;
+      const ast = parse(value);
+
+      expect(ast).toMatchObject({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            fields: [],
+            name: {
+              kind: ASTNodeKind.NAME,
+              value: 'PaymentMethodsResponse',
+            },
+            kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+            strict: true,
+            description: { kind: ASTNodeKind.DESCRIPTION, value: 'deprecated' },
+            extendsModels: [],
+          },
+        ],
+      });
+    });
+
+    it('correctly parse description and extends model', () => {
+      const value = `// Deprecated fields
+      UserSelf < User {
+        roleId?: i,
+      }`;
+
+      const ast = parse(value);
+
+      expect(ast).toBeDefined();
+      expect(ast).toMatchObject({
+        kind: ASTNodeKind.DOCUMENT,
+        definitions: [
+          {
+            kind: ASTNodeKind.MODEL_TYPE_DEFINITION,
+            description: { kind: ASTNodeKind.DESCRIPTION, value: 'Deprecated fields' },
+            name: { kind: ASTNodeKind.NAME, value: 'UserSelf' },
+            extendsModels: [
+              { kind: ASTNodeKind.NAMED_TYPE, name: { kind: ASTNodeKind.NAME, value: 'User' } },
+            ],
+            fields: [
+              {
+                kind: ASTNodeKind.FIELD_DEFINITION,
+                name: { kind: ASTNodeKind.NAME, value: 'roleId' },
+                omitted: false,
+                type: {
+                  kind: ASTNodeKind.NAMED_TYPE,
+                  name: { kind: ASTNodeKind.NAME, value: 'i' },
+                },
+                optional: true,
+              },
+            ],
+            strict: false,
+          },
+        ],
+      });
+    });
+
     it('correctly parse with multiple extends model and strict model', () => {
       const model = `
       AcDocument < Kek, Lel !{

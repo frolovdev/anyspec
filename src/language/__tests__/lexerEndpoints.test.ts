@@ -416,6 +416,32 @@ HEAD /pechkin/mandrill/event {messageSenderId?: i, conversationId?: i, ticketId?
 
     expect(getFullTokenList(enumString)).toEqual(expectedTokens);
   });
+
+  it('lexer can parse endpoints with same indentation', () => {
+    const sourceString = `
+POST /tickets/return_agent_tickets_to_group/:agentId
+
+GET /tickets/:id:i/extended
+  => TicketsExtendedResponse
+`;
+    const source = new Source({
+      body: sourceString,
+      sourceType: 'endpoints',
+    });
+
+    const expectedTokens = [
+      'POST',
+      '/tickets/return_agent_tickets_to_group/:agentId',
+      'GET',
+      '/tickets/:id:i/extended',
+      '<INDENT>',
+      '=>',
+      'TicketsExtendedResponse',
+      '<DEDENT>',
+    ];
+
+    expect(getFullTokenList(source)).toEqual(expectedTokens);
+  });
 });
 
 describe('lexer can catch errors in endpoints', () => {

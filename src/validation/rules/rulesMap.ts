@@ -9,7 +9,6 @@ import * as recommended from './recommended';
 export const rulesMap: Record<string, (context: ValidationContext) => ASTVisitor> = {
   'base/known-type-names': base.knownTypeNamesRule,
   'base/no-explicit-string-rule': base.noExplicitStringRule,
-  'base/endpoints-known-http-verbs': base.endpointsKnownHttpVerbs,
   'recommended/endpoints-body-parameter-postfix':
     recommended.endpointsRecommendedBodyParameterPostfix,
   'recommended/endpoints-query-postfix': recommended.endpointsRecommendedQueryPostfix,
