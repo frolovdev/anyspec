@@ -30,7 +30,7 @@ import {
 } from './ast';
 import { syntaxError } from '../error/syntaxError';
 import { Lexer, isPunctuatorTokenKind } from './lexer';
-import { TokenKindEnum, Token, TokenKind } from './token';
+import { Token, TokenKind } from './token';
 import { isSource, Source } from './source';
 import { Location } from './location';
 
@@ -70,7 +70,7 @@ export class ModelParser {
    * This list begins with a lex token of openKind and ends with a lex token of closeKind.
    * Advances the parser to the next lex token after the closing token.
    */
-  many<T>(openKind: TokenKindEnum, parseFn: () => T, closeKind: TokenKindEnum): Array<T> {
+  many<T>(openKind: TokenKind, parseFn: () => T, closeKind: TokenKind): Array<T> {
     this.expectToken(openKind);
     let count = 0;
     const nodes = [];
@@ -90,7 +90,7 @@ export class ModelParser {
     return nodes;
   }
 
-  optionalMany<T>(openKind: TokenKindEnum, parseFn: () => T, closeKind: TokenKindEnum): Array<T> {
+  optionalMany<T>(openKind: TokenKind, parseFn: () => T, closeKind: TokenKind): Array<T> {
     if (this.expectOptionalToken(openKind)) {
       const nodes = [];
       let count = 0;
@@ -116,11 +116,7 @@ export class ModelParser {
    * This list begins with a lex token of openKind and ends with a lex token of closeKind.
    * Advances the parser to the closing token.
    */
-  repeatableManyTo<T>(
-    openKind: TokenKindEnum,
-    parseFn: () => T,
-    closeKinds: TokenKindEnum[],
-  ): Array<T> {
+  repeatableManyTo<T>(openKind: TokenKind, parseFn: () => T, closeKinds: TokenKind[]): Array<T> {
     this.expectToken(openKind);
 
     const nodes = [];
@@ -149,7 +145,7 @@ export class ModelParser {
    * If the next token is of the given kind, return that token after advancing the lexer.
    * Otherwise, do not change the parser state and throw an error.
    */
-  expectToken(kind: TokenKindEnum): Token {
+  expectToken(kind: TokenKind): Token {
     const token = this.lexer.token;
     if (token.kind === kind) {
       this.lexer.advance();
@@ -167,7 +163,7 @@ export class ModelParser {
    * If the next token is of the given kind, return that token after advancing the lexer.
    * Otherwise, do not change the parser state and return undefined.
    */
-  expectOptionalToken(kind: TokenKindEnum): $Maybe<Token> {
+  expectOptionalToken(kind: TokenKind): $Maybe<Token> {
     const token = this.lexer.token;
     if (token.kind === kind) {
       this.lexer.advance();
@@ -213,11 +209,11 @@ export class ModelParser {
   /**
    * Determines if the next token is of a given kind
    */
-  peek(kind: TokenKindEnum): boolean {
+  peek(kind: TokenKind): boolean {
     return this.lexer.token.kind === kind;
   }
 
-  peekMany(kinds: TokenKindEnum[]): boolean {
+  peekMany(kinds: TokenKind[]): boolean {
     return kinds.includes(this.lexer.token.kind);
   }
 
@@ -449,7 +445,7 @@ export class ModelParser {
   parseEnumValueDefinition(): EnumValueDefinitionNode {
     const start = this.lexer.token;
     const name = this.parseName();
-    this.expectOptionalToken('|');
+    this.expectOptionalToken(TokenKind.PIPE);
 
     return this.node<EnumValueDefinitionNode>(start, {
       kind: ASTNodeKind.ENUM_VALUE_DEFINITION,
@@ -688,7 +684,7 @@ export class EndpointsParser extends ModelParser {
                 value: q,
               }),
             }),
-          };
+          } as EndpointParameterQueryNode;
         })(),
       ),
     );
@@ -856,7 +852,7 @@ function getTokenDesc(token: Token): string {
 /**
  * A helper function to describe a token kind as a string for debugging.
  */
-function getTokenKindDesc(kind: TokenKindEnum): string {
+function getTokenKindDesc(kind: TokenKind): string {
   return isPunctuatorTokenKind(kind) ? `"${kind}"` : kind;
 }
 

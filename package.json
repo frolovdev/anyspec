@@ -23,7 +23,8 @@
     "lint:fix": "eslint --fix 'src/**/*.ts'",
     "docs:typedoc": "typedoc --entryPoints src/validation/rules --exclude \"**/*+(index|.spec|.e2e|.test).ts\" --exclude \"**/__tests__/*\" --highlightTheme github-light --out docs/rules",
     "static-checks": "npm run build && npm run lint",
-    "check:spelling": "cspell --no-progress 'src/**/*'"
+    "check:spelling": "cspell --no-progress 'src/**/*'",
+    "type-check": "tsc --project tsconfig.build.json --noEmit --noUnusedLocals"
   },
   "author": "",
   "license": "MIT",

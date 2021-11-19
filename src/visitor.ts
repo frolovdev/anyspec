@@ -1,5 +1,5 @@
 import { inspect } from './utils';
-import { ASTNode, ASTKindToNode, isNode } from './language';
+import { ASTNode, isNode, ASTNodeKind } from './language';
 
 /**
  * A visitor is provided to visit, it contains the collection of
@@ -8,9 +8,7 @@ import { ASTNode, ASTKindToNode, isNode } from './language';
 export type ASTVisitor = EnterLeaveVisitor<ASTNode> | KindVisitor;
 
 type KindVisitor = {
-  readonly [K in keyof ASTKindToNode]?:
-    | ASTVisitFn<ASTKindToNode[K]>
-    | EnterLeaveVisitor<ASTKindToNode[K]>;
+  readonly [NodeT in ASTNode as NodeT['kind']]?: ASTVisitFn<NodeT> | EnterLeaveVisitor<NodeT>;
 };
 
 interface EnterLeaveVisitor<TVisitedNode extends ASTNode> {
@@ -44,9 +42,9 @@ export type ASTVisitFn<TVisitedNode extends ASTNode> = (
  * another form.
  */
 export type ASTReducer<R> = {
-  readonly [K in keyof ASTKindToNode]?: {
-    readonly enter?: ASTVisitFn<ASTKindToNode[K]>;
-    readonly leave: ASTReducerFn<ASTKindToNode[K], R>;
+  readonly [NodeT in ASTNode as NodeT['kind']]?: {
+    readonly enter?: ASTVisitFn<NodeT>;
+    readonly leave: ASTReducerFn<NodeT, R>;
   };
 };
 
@@ -73,9 +71,10 @@ type ReducedField<T, R> = T extends null | undefined
   ? ReadonlyArray<R>
   : R;
 
-const QueryDocumentKeys = {
+const QueryDocumentKeys: { [NodeT in ASTNode as NodeT['kind']]: ReadonlyArray<keyof NodeT> } = {
   Description: [],
   Name: [],
+  // @ts-ignore because of types
   OptionalName: [],
   Document: ['definitions'],
 
@@ -296,7 +295,7 @@ export function visit(root: ASTNode, visitor: ASTVisitor | ASTReducer<any>): any
  */
 export function getVisitFn(
   visitor: ASTVisitor,
-  kind: keyof ASTKindToNode,
+  kind: ASTNodeKind,
   isLeaving: boolean,
 ): $Maybe<ASTVisitFn<ASTNode>> {
   const kindVisitor: ASTVisitFn<ASTNode> | EnterLeaveVisitor<ASTNode> | undefined = (

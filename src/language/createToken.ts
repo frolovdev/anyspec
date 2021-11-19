@@ -1,12 +1,12 @@
 import { ILexer } from './lexer';
-import { Token, TokenKindEnum } from './token';
+import { Token, TokenKind } from './token';
 
 /**
  * Create a token with line and column location information.
  */
 export function createToken(
   lexer: ILexer,
-  kind: TokenKindEnum,
+  kind: TokenKind,
   start: number,
   end: number,
   value?: string,

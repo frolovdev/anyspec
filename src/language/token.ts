@@ -2,7 +2,7 @@ export class Token {
   /**
    * The kind of Token.
    */
-  readonly kind: TokenKindEnum;
+  readonly kind: TokenKind;
 
   /**
    * The character offset at which this Node begins.
@@ -41,7 +41,7 @@ export class Token {
   readonly next: Token | null;
 
   constructor(
-    kind: TokenKindEnum,
+    kind: TokenKind,
     start: number,
     end: number,
     line: number,
@@ -59,7 +59,7 @@ export class Token {
   }
 
   toJSON(): {
-    kind: TokenKindEnum;
+    kind: TokenKind;
     value?: string;
     line: number;
     column: number;
@@ -81,36 +81,31 @@ export class Token {
  * An exported enum describing the different kinds of tokens that the
  * lexer emits.
  */
-export const TokenKind = {
+export enum TokenKind {
   // start of the file
-  SOF: '<SOF>',
+  SOF = '<SOF>',
   // end of the file
-  EOF: '<EOF>',
-  BANG: '!',
-  DOLLAR: '$',
-  AMP: '&',
-  PAREN_L: '(',
-  PAREN_R: ')',
-  COLON: ':',
-  EQUALS: '=',
-  AT: '@',
-  BRACKET_L: '[',
-  BRACKET_R: ']',
-  BRACE_L: '{',
-  PIPE: '|',
-  BRACE_R: '}',
-  NAME: 'Name',
-  COMMENT: 'Comment',
-  EXTENDS: '<',
-  QUESTION_MARK: '?',
-  DESCRIPTION: 'Description',
-  RETURN: '=>',
-  INDENT: '<INDENT>', // https://riptutorial.com/python/example/8674/how-indentation-is-parsed
-  DEDENT: '<DEDENT>', // https://github.com/python/cpython/blob/3.9/Lib/tokenize.py#L507
-  NUMBER: 'Number',
-} as const;
-
-/**
- * The enum type representing the token kinds values.
- */
-export type TokenKindEnum = typeof TokenKind[keyof typeof TokenKind];
+  EOF = '<EOF>',
+  BANG = '!',
+  DOLLAR = '$',
+  AMP = '&',
+  PAREN_L = '(',
+  PAREN_R = ')',
+  COLON = ':',
+  EQUALS = '=',
+  AT = '@',
+  BRACKET_L = '[',
+  BRACKET_R = ']',
+  BRACE_L = '{',
+  PIPE = '|',
+  BRACE_R = '}',
+  NAME = 'Name',
+  COMMENT = 'Comment',
+  EXTENDS = '<',
+  QUESTION_MARK = '?',
+  DESCRIPTION = 'Description',
+  RETURN = '=>',
+  INDENT = '<INDENT>', // https://riptutorial.com/python/example/8674/how-indentation-is-parsed
+  DEDENT = '<DEDENT>', // https://github.com/python/cpython/blob/3.9/Lib/tokenize.py#L507
+  NUMBER = 'Number',
+}

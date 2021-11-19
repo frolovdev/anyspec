@@ -1,6 +1,5 @@
 import { ILexer } from './lexer';
 import { syntaxError } from '../error';
-import { Source } from './source';
 import { Token, TokenKind } from './token';
 import { createToken } from './createToken';
 

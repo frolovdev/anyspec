@@ -1,4 +1,4 @@
-import { Token, TokenKind, TokenKindEnum } from './token';
+import { Token, TokenKind } from './token';
 import { Source } from './source';
 import { syntaxError } from '../error';
 import { IndentReader } from './indentReader';
@@ -591,7 +591,7 @@ function isLetter(code: number): boolean {
 /**
  * @internal
  */
-export function isPunctuatorTokenKind(kind: TokenKindEnum): boolean {
+export function isPunctuatorTokenKind(kind: TokenKind): boolean {
   const punctuators = [
     TokenKind.BANG,
     TokenKind.DOLLAR,
